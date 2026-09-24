@@ -1,50 +1,29 @@
-MERITARC
-========
+# MeritArc v0.2
 
-Folder structure
-----------------
-index.html
-css/style.css
-js/data.js
-js/app.js
-assets/logo.svg
+Backend step for MeritArc.
 
-Current functionality
----------------------
-1. MeritArc branded UI
-2. Eight subjects
-3. Separate question bank file
-4. Ten randomized questions per attempt
-5. Fresh randomized set on every retake
-6. Immediate answer checking
-7. Answer explanations
-8. Final assessment report
-9. Local browser result history
-10. Subject search
+Added:
+- SQLite structured question bank
+- Subject, topic and difficulty
+- Random question API
+- Question CRUD API
+- Basic admin question-bank page
+- Existing learner UI kept as the baseline
 
-Architecture
-------------
-The frontend is deliberately separated so we can add a backend later.
+Run with Node.js 20+:
 
-Recommended next phase
-----------------------
-- Move questions into a database
-- Add topic and difficulty fields
-- Add admin question management
-- Add configurable assessment length
-- Add timers
-- Add user accounts
-- Add server-side result storage
-- Add analytics
+npm install
+npm run seed
+npm start
+
+Learner: http://localhost:3000
+Admin: http://localhost:3000/admin/
+
+The admin page is a development prototype without authentication. Do not expose it publicly until authentication and authorization are added.
 
 
-Recent UI/UX fixes
-------------------
-- Changed the assessment badge to "10 questions per attempt"
-- Randomized answer options while preserving the correct answer
-- Improved SVG logo sizing/rendering in the header
-- Reduced top navigation font weight and improved hover styling
-- Search now scrolls to the assessment results
-- Empty search still shows all assessments and scrolls to results
-- No-match searches show a clear "No assessments found" message
-- Search suggestions appear while typing
+## Authentication
+
+This version includes account creation, sign-in, sign-out, password hashing with Node.js `crypto/scrypt`, and server-side sessions stored in SQLite.
+
+Email verification, password reset, rate limiting, role-based admin authentication, and production hardening are intentionally separate future steps.

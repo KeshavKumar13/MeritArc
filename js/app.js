@@ -6,7 +6,10 @@
     questions: [],
     index: 0,
     answers: [],
-    checked: {}
+    checked: {},
+    attemptId: null,
+    serverMode: false,
+    serverUser: null
   };
 
   const $ = id => document.getElementById(id);
@@ -59,31 +62,67 @@
     $("questionBankStat").textContent = `${total}+`;
   }
 
-  function startAssessment(subject) {
-    const bank = DATA[subject].questions;
+  async function startAssessment(subject) {
+    const user = await getCurrentUser();
 
-    // Randomize both the question order and the answer-option order.
-    // The correct-answer index is recalculated after the option shuffle.
     state.subject = subject;
-    state.questions = shuffle(bank)
-      .slice(0, Math.min(10, bank.length))
-      .map(question => {
-        const questionText = question[0];
-        const options = question.slice(1, 5);
-        const correctOption = options[question[5]];
-        const shuffledOptions = shuffle(options);
-
-        return [
-          questionText,
-          ...shuffledOptions,
-          shuffledOptions.indexOf(correctOption),
-          question[6]
-        ];
-      });
-
     state.index = 0;
-    state.answers = Array(state.questions.length).fill(null);
+    state.answers = [];
     state.checked = {};
+    state.attemptId = null;
+    state.serverMode = false;
+    state.serverUser = user;
+
+    if (user) {
+      try {
+        const response = await fetch("/api/attempts", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ subject, count: 10 })
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.error || "Unable to start assessment.");
+        }
+
+        const data = await response.json();
+        state.attemptId = data.attemptId;
+        state.serverMode = true;
+        state.questions = data.questions.map(q => [
+          q.question,
+          ...q.options,
+          null,
+          q.explanation,
+          q.id
+        ]);
+      } catch (error) {
+        console.error("Assessment API error:", error);
+        alert(error.message || "Unable to start the assessment.");
+        return;
+      }
+    } else {
+      const bank = DATA[subject].questions;
+
+      state.questions = shuffle(bank)
+        .slice(0, Math.min(10, bank.length))
+        .map(question => {
+          const questionText = question[0];
+          const options = question.slice(1, 5);
+          const correctOption = options[question[5]];
+          const shuffledOptions = shuffle(options);
+
+          return [
+            questionText,
+            ...shuffledOptions,
+            shuffledOptions.indexOf(correctOption),
+            question[6],
+            null
+          ];
+        });
+    }
+
+    state.answers = Array(state.questions.length).fill(null);
 
     hideViews();
     $("quizView").classList.remove("hidden");
@@ -130,22 +169,51 @@
     $("checkButton").disabled = selected === null;
   }
 
-  function showFeedback(correct) {
+  function showFeedback(correct, explanation) {
     const q = state.questions[state.index];
     const feedback = $("feedback");
 
     feedback.className = `feedback ${correct ? "correct" : "incorrect"}`;
     feedback.innerHTML =
-      `<strong>${correct ? "✓ Correct" : "✗ Incorrect"}</strong><br>${escapeHtml(q[6])}`;
+      `<strong>${correct ? "✓ Correct" : "✗ Incorrect"}</strong><br>${escapeHtml(explanation ?? q[6] ?? "")}`;
   }
 
-  function checkAnswer() {
+  async function checkAnswer() {
     const answer = state.answers[state.index];
     if (answer === null) return;
 
+    if (state.serverMode) {
+      const questionId = state.questions[state.index][7];
+
+      try {
+        const response = await fetch(`/api/attempts/${state.attemptId}/answers`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            questionId,
+            selectedOption: answer
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.error || "Unable to check the answer.");
+          return;
+        }
+
+        state.checked[state.index] = data.correct;
+        showFeedback(data.correct, data.explanation);
+      } catch {
+        alert("Unable to connect to MeritArc.");
+      }
+
+      return;
+    }
+
     const correct = answer === state.questions[state.index][5];
     state.checked[state.index] = correct;
-    showFeedback(correct);
+    showFeedback(correct, state.questions[state.index][6]);
   }
 
   function nextQuestion() {
@@ -164,8 +232,36 @@
     }
   }
 
-  function submitAssessment() {
+  async function submitAssessment() {
     if (!state.subject || !state.questions.length) return;
+
+    if (state.serverMode) {
+      const unanswered = state.answers.filter(value => value === null).length;
+      if (unanswered > 0 && !confirm(`${unanswered} question(s) are unanswered. Submit anyway?`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/attempts/${state.attemptId}/complete`, {
+          method: "POST"
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          alert(result.error || "Unable to submit the assessment.");
+          return;
+        }
+
+        hideViews();
+        $("reportView").classList.remove("hidden");
+        renderServerReport(result);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch {
+        alert("Unable to connect to MeritArc.");
+      }
+
+      return;
+    }
 
     const rows = state.questions.map((q, index) => ({
       q,
@@ -201,64 +297,63 @@
       <div class="card" style="text-align:center">
         <div class="score">${percentage}%</div>
         <h2>${score} / ${total} correct</h2>
-        <p class="muted">
-          Retake the assessment to receive another randomized question set.
-        </p>
+        <p class="muted">Retake the assessment to receive another randomized question set.</p>
       </div>
-
       <div class="stats-grid">
         <div class="statbox"><b>${score}</b>Correct</div>
         <div class="statbox"><b>${total - score}</b>Incorrect / skipped</div>
         <div class="statbox"><b>${total}</b>Total</div>
         <div class="statbox"><b>${percentage}%</b>Score</div>
       </div>
+      <div class="card" style="overflow:auto">
+        <h3>Question Review</h3>
+        <table><thead><tr><th>#</th><th>Question</th><th>Your answer</th><th>Correct answer</th><th>Result</th></tr></thead>
+        <tbody>
+          ${rows.map((row, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${escapeHtml(row.q[0])}</td>
+              <td>${row.answer === null ? "Not answered" : escapeHtml(row.q[row.answer + 1])}</td>
+              <td>${escapeHtml(row.q[row.q[5] + 1])}</td>
+              <td>${row.correct ? "✓ Correct" : "✗ Incorrect"}</td>
+            </tr>
+          `).join("")}
+        </tbody></table>
+      </div>
+    `;
+  }
 
+  function renderServerReport(result) {
+    $("reportContent").innerHTML = `
+      <div class="card" style="text-align:center">
+        <div class="score">${result.percentage}%</div>
+        <h2>${result.score} / ${result.total} correct</h2>
+        <p class="muted">Your result has been saved to your MeritArc account.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="statbox"><b>${result.score}</b>Correct</div>
+        <div class="statbox"><b>${result.total - result.score}</b>Incorrect / skipped</div>
+        <div class="statbox"><b>${result.total}</b>Total</div>
+        <div class="statbox"><b>${result.percentage}%</b>Score</div>
+      </div>
       <div class="card" style="overflow:auto">
         <h3>Question Review</h3>
         <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Question</th>
-              <th>Your answer</th>
-              <th>Correct answer</th>
-              <th>Result</th>
-            </tr>
-          </thead>
+          <thead><tr><th>#</th><th>Question</th><th>Your answer</th><th>Correct answer</th><th>Result</th></tr></thead>
           <tbody>
-            ${rows.map((row, i) => `
+            ${result.rows.map((row, i) => `
               <tr>
                 <td>${i + 1}</td>
-                <td>${escapeHtml(row.q[0])}</td>
-                <td>${row.answer === null ? "Not answered" : escapeHtml(row.q[row.answer + 1])}</td>
-                <td>${escapeHtml(row.q[row.q[5] + 1])}</td>
-                <td>${row.correct ? "✓" : "✗"}</td>
+                <td>${escapeHtml(row.question)}</td>
+                <td>${row.answer === null ? "Not answered" : escapeHtml(row.options[row.answer])}</td>
+                <td>${escapeHtml(row.options[row.correctAnswer])}</td>
+                <td>${row.correct ? "✓ Correct" : "✗ Incorrect"}</td>
               </tr>
             `).join("")}
           </tbody>
         </table>
       </div>
-
-      <div class="toolbar">
-        <button class="primary" id="retakeButton">
-          Retake with Fresh Questions
-        </button>
-        <button class="secondary" id="anotherSubjectButton">
-          Choose Another Subject
-        </button>
-      </div>
     `;
-
-    $("retakeButton").addEventListener("click", () => startAssessment(state.subject));
-    $("anotherSubjectButton").addEventListener("click", showHome);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function showHome() {
-    hideViews();
-    $("homeView").classList.remove("hidden");
-    renderSubjects();
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function showResults() {
@@ -389,6 +484,152 @@
     }
   });
 
+
+  async function getCurrentUser() {
+    try {
+      const response = await fetch("/api/auth/me");
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.authenticated ? data.user : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setAuthMessage(id, message) {
+    const element = $(id);
+    element.textContent = message || "";
+    element.classList.toggle("hidden", !message);
+  }
+
+  function showLogin() {
+    $("loginFormWrap").classList.remove("hidden");
+    $("registerFormWrap").classList.add("hidden");
+    $("loginTab").classList.add("active");
+    $("registerTab").classList.remove("active");
+    $("authForms").classList.remove("hidden");
+    $("accountView").classList.add("hidden");
+    setAuthMessage("loginMessage", "");
+    setAuthMessage("registerMessage", "");
+  }
+
+  function showRegister() {
+    $("loginFormWrap").classList.add("hidden");
+    $("registerFormWrap").classList.remove("hidden");
+    $("loginTab").classList.remove("active");
+    $("registerTab").classList.add("active");
+    $("authForms").classList.remove("hidden");
+    $("accountView").classList.add("hidden");
+    setAuthMessage("loginMessage", "");
+    setAuthMessage("registerMessage", "");
+  }
+
+  function openAuth() {
+    $("authModal").classList.remove("hidden");
+    $("authModal").setAttribute("aria-hidden", "false");
+    refreshAuthView();
+  }
+
+  function closeAuth() {
+    $("authModal").classList.add("hidden");
+    $("authModal").setAttribute("aria-hidden", "true");
+  }
+
+  async function refreshAuthView() {
+    const user = await getCurrentUser();
+    if (user) {
+      $("authForms").classList.add("hidden");
+      $("accountView").classList.remove("hidden");
+      $("accountName").textContent = `Hi, ${user.name}`;
+      $("accountEmail").textContent = user.email;
+      $("authButton").textContent = "Account";
+    } else {
+      $("authForms").classList.remove("hidden");
+      $("accountView").classList.add("hidden");
+      $("authButton").textContent = "Sign In";
+    }
+  }
+
+  async function login(event) {
+    event.preventDefault();
+    setAuthMessage("loginMessage", "");
+    const button = event.target.querySelector("button[type='submit']");
+    button.disabled = true;
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          email: $("loginEmail").value,
+          password: $("loginPassword").value
+        })
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAuthMessage("loginMessage", data.error || "Unable to sign in.");
+        return;
+      }
+
+      $("loginForm").reset();
+      await refreshAuthView();
+    } catch {
+      setAuthMessage("loginMessage", "Unable to connect to MeritArc.");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function register(event) {
+    event.preventDefault();
+    setAuthMessage("registerMessage", "");
+    const button = event.target.querySelector("button[type='submit']");
+    button.disabled = true;
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: $("registerName").value,
+          email: $("registerEmail").value,
+          password: $("registerPassword").value
+        })
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAuthMessage("registerMessage", data.error || "Unable to create the account.");
+        return;
+      }
+
+      $("registerForm").reset();
+      await refreshAuthView();
+    } catch {
+      setAuthMessage("registerMessage", "Unable to connect to MeritArc.");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function logout() {
+    try {
+      await fetch("/api/auth/logout", {method: "POST"});
+    } finally {
+      await refreshAuthView();
+      closeAuth();
+    }
+  }
+
+  function initAuth() {
+    $("loginForm").addEventListener("submit", login);
+    $("registerForm").addEventListener("submit", register);
+    refreshAuthView();
+  }
+
+  initAuth();
+
   window.MeritArc = {
     showHome,
     showResults,
@@ -396,7 +637,12 @@
     checkAnswer,
     nextQuestion,
     previousQuestion,
-    submitAssessment
+    submitAssessment,
+    openAuth,
+    closeAuth,
+    showLogin,
+    showRegister,
+    logout
   };
 
   renderSubjects();

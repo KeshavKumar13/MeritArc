@@ -1,0 +1,13 @@
+{
+  "name": "meritarc",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "start": "node backend/server.js",
+    "seed": "node backend/seed.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "better-sqlite3": "^11.8.1"
+  }
+}

@@ -14,7 +14,7 @@
   <nav class="nav">
     <button onclick="MeritArc.showHome()">Assessments</button>
     <button onclick="MeritArc.showResults()">Results</button>
-    <button onclick="alert('Accounts will be added later.')">Sign In</button>
+    <button id="authButton" onclick="MeritArc.openAuth()">Sign In</button>
   </nav>
 </header>
 
@@ -99,6 +99,61 @@
     </div>
     <div class="card" id="historyContent"></div>
   </section>
+
+<div id="authModal" class="auth-modal hidden" aria-hidden="true">
+  <div class="auth-backdrop" onclick="MeritArc.closeAuth()"></div>
+  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="auth-close" onclick="MeritArc.closeAuth()" aria-label="Close">×</button>
+
+    <div id="authForms">
+      <div class="auth-tabs">
+        <button id="loginTab" class="auth-tab active" onclick="MeritArc.showLogin()">Sign In</button>
+        <button id="registerTab" class="auth-tab" onclick="MeritArc.showRegister()">Create Account</button>
+      </div>
+
+      <div id="loginFormWrap">
+        <h2 id="authTitle">Welcome back</h2>
+        <p class="muted">Sign in to keep your MeritArc account ready for future assessments and results.</p>
+        <form id="loginForm" class="auth-form">
+          <label>Email
+            <input id="loginEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>Password
+            <input id="loginPassword" type="password" autocomplete="current-password" required>
+          </label>
+          <button class="primary" type="submit">Sign In</button>
+          <div id="loginMessage" class="auth-message hidden"></div>
+        </form>
+      </div>
+
+      <div id="registerFormWrap" class="hidden">
+        <h2>Create your account</h2>
+        <p class="muted">Your account will be used for your future assessment history and progress.</p>
+        <form id="registerForm" class="auth-form">
+          <label>Name
+            <input id="registerName" type="text" autocomplete="name" required minlength="2">
+          </label>
+          <label>Email
+            <input id="registerEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>Password
+            <input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required>
+          </label>
+          <small class="muted">Use at least 8 characters.</small>
+          <button class="primary" type="submit">Create Account</button>
+          <div id="registerMessage" class="auth-message hidden"></div>
+        </form>
+      </div>
+    </div>
+
+    <div id="accountView" class="hidden">
+      <h2 id="accountName"></h2>
+      <p id="accountEmail" class="muted"></p>
+      <p class="account-note">Your account is ready. Assessment history and progress will be connected to your account in the next step.</p>
+      <button class="secondary" onclick="MeritArc.logout()">Sign Out</button>
+    </div>
+  </div>
+</div>
 </main>
 
 <footer class="site-footer">MeritArc • Practice. Progress. Achieve.</footer>

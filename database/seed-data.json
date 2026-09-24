@@ -1,0 +1,1202 @@
+[
+  {
+    "subject": "Windows",
+    "topic": "Windows Administration",
+    "difficulty": "Easy",
+    "question": "Which command displays detailed IP configuration?",
+    "options": [
+      "ipconfig /all",
+      "netstat /all",
+      "route /show",
+      "arp /config"
+    ],
+    "correct": 0,
+    "explanation": "ipconfig /all displays detailed TCP/IP configuration.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "PowerShell",
+    "difficulty": "Easy",
+    "question": "Which Windows tool is used to inspect event logs?",
+    "options": [
+      "Event Viewer",
+      "Task Scheduler",
+      "Resource Monitor",
+      "Services"
+    ],
+    "correct": 0,
+    "explanation": "Event Viewer provides access to Windows event logs.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Networking",
+    "difficulty": "Easy",
+    "question": "Which port is commonly used by RDP?",
+    "options": [
+      "3389",
+      "443",
+      "53",
+      "5985"
+    ],
+    "correct": 0,
+    "explanation": "Remote Desktop Protocol commonly uses TCP 3389.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "DNS",
+    "difficulty": "Easy",
+    "question": "Which PowerShell cmdlet lists services?",
+    "options": [
+      "Get-Service",
+      "Get-Process",
+      "Get-EventLog",
+      "Get-ComputerInfo"
+    ],
+    "correct": 0,
+    "explanation": "Get-Service retrieves Windows service objects.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "DHCP",
+    "difficulty": "Medium",
+    "question": "Which record maps a hostname to an IPv4 address?",
+    "options": [
+      "A",
+      "MX",
+      "PTR",
+      "CNAME"
+    ],
+    "correct": 0,
+    "explanation": "An A record maps a hostname to an IPv4 address.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "System Management",
+    "difficulty": "Medium",
+    "question": "Which command releases a DHCP lease?",
+    "options": [
+      "ipconfig /release",
+      "ipconfig /drop",
+      "dhcp /release",
+      "netsh /free"
+    ],
+    "correct": 0,
+    "explanation": "ipconfig /release releases the current DHCP lease.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "File Services",
+    "difficulty": "Medium",
+    "question": "Which command checks protected system files?",
+    "options": [
+      "sfc /scannow",
+      "chkdsk /system",
+      "dism /scan-only",
+      "repair /files"
+    ],
+    "correct": 0,
+    "explanation": "SFC scans protected Windows system files.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Remote Management",
+    "difficulty": "Medium",
+    "question": "Which protocol is used for Windows file sharing?",
+    "options": [
+      "SMB",
+      "FTP",
+      "SMTP",
+      "NTP"
+    ],
+    "correct": 0,
+    "explanation": "SMB is the standard Windows file-sharing protocol.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Monitoring",
+    "difficulty": "Hard",
+    "question": "Which command tests a TCP connection in PowerShell?",
+    "options": [
+      "Test-NetConnection",
+      "Test-TCP",
+      "Check-Port",
+      "Port-Test"
+    ],
+    "correct": 0,
+    "explanation": "Test-NetConnection can test TCP connectivity.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Troubleshooting",
+    "difficulty": "Hard",
+    "question": "Which console manages local users and groups?",
+    "options": [
+      "lusrmgr.msc",
+      "gpedit.msc",
+      "diskmgmt.msc",
+      "perfmon.msc"
+    ],
+    "correct": 0,
+    "explanation": "lusrmgr.msc opens Local Users and Groups on supported editions.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Shell",
+    "difficulty": "Easy",
+    "question": "Which command shows the current directory?",
+    "options": [
+      "pwd",
+      "cwd",
+      "where",
+      "dir"
+    ],
+    "correct": 0,
+    "explanation": "pwd prints the current working directory.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Permissions",
+    "difficulty": "Easy",
+    "question": "Which command changes file permissions?",
+    "options": [
+      "chmod",
+      "chperm",
+      "setperm",
+      "permctl"
+    ],
+    "correct": 0,
+    "explanation": "chmod changes Linux file mode permissions.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Storage",
+    "difficulty": "Easy",
+    "question": "Which command shows filesystem space?",
+    "options": [
+      "df -h",
+      "du -p",
+      "disk -show",
+      "fslist"
+    ],
+    "correct": 0,
+    "explanation": "df -h shows filesystem usage in human-readable form.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "systemd",
+    "difficulty": "Easy",
+    "question": "Which command manages systemd services?",
+    "options": [
+      "systemctl",
+      "systemdctl-only",
+      "serviceconfig",
+      "svcadmin"
+    ],
+    "correct": 0,
+    "explanation": "systemctl manages systemd services.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Identity",
+    "difficulty": "Medium",
+    "question": "Which file stores local user account information?",
+    "options": [
+      "/etc/passwd",
+      "/etc/users",
+      "/var/accounts",
+      "/home/passwd"
+    ],
+    "correct": 0,
+    "explanation": "/etc/passwd contains local user account entries.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Text Processing",
+    "difficulty": "Medium",
+    "question": "Which command searches text?",
+    "options": [
+      "grep",
+      "findtext",
+      "locatex",
+      "sedsearch"
+    ],
+    "correct": 0,
+    "explanation": "grep searches input for matching patterns.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Package Management",
+    "difficulty": "Medium",
+    "question": "Which command changes file ownership?",
+    "options": [
+      "chown",
+      "chmod",
+      "chgrp",
+      "ownctl"
+    ],
+    "correct": 0,
+    "explanation": "chown changes file ownership.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Networking",
+    "difficulty": "Medium",
+    "question": "Which command shows listening sockets?",
+    "options": [
+      "ss -lntup",
+      "netshow",
+      "sockstat",
+      "ports -show"
+    ],
+    "correct": 0,
+    "explanation": "ss can display listening TCP and UDP sockets.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Processes",
+    "difficulty": "Hard",
+    "question": "Which package manager is standard on current RHEL-family systems?",
+    "options": [
+      "dnf",
+      "apt",
+      "pacman",
+      "zypper"
+    ],
+    "correct": 0,
+    "explanation": "DNF is standard on modern RHEL-family systems.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Troubleshooting",
+    "difficulty": "Hard",
+    "question": "Which command displays kernel information?",
+    "options": [
+      "uname -a",
+      "kernel -all",
+      "sysinfo -k",
+      "archinfo"
+    ],
+    "correct": 0,
+    "explanation": "uname -a displays kernel and system information.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Virtualization",
+    "difficulty": "Easy",
+    "question": "What is ESXi?",
+    "options": [
+      "A bare-metal hypervisor",
+      "A backup product",
+      "A DNS server",
+      "A guest OS"
+    ],
+    "correct": 0,
+    "explanation": "ESXi is VMware's type-1 hypervisor.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "vCenter",
+    "difficulty": "Easy",
+    "question": "What does vCenter provide?",
+    "options": [
+      "Centralized vSphere management",
+      "Only DNS",
+      "Only backups",
+      "Only physical switching"
+    ],
+    "correct": 0,
+    "explanation": "vCenter centrally manages vSphere hosts and resources.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "vMotion",
+    "difficulty": "Easy",
+    "question": "What is vMotion used for?",
+    "options": [
+      "Moving a running VM between hosts",
+      "Creating snapshots",
+      "Patching Windows",
+      "Changing DNS"
+    ],
+    "correct": 0,
+    "explanation": "vMotion migrates running VMs between compatible hosts.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Storage",
+    "difficulty": "Easy",
+    "question": "What is Storage vMotion used for?",
+    "options": [
+      "Moving VM storage while running",
+      "Moving users",
+      "Changing IPs",
+      "Creating hosts"
+    ],
+    "correct": 0,
+    "explanation": "Storage vMotion moves VM disks between datastores.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Snapshots",
+    "difficulty": "Medium",
+    "question": "What does a snapshot represent?",
+    "options": [
+      "A point-in-time VM state",
+      "A full independent backup",
+      "A physical disk clone",
+      "A network route"
+    ],
+    "correct": 0,
+    "explanation": "A snapshot preserves a point-in-time state and changed disk data.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Clustering",
+    "difficulty": "Medium",
+    "question": "What groups ESXi hosts for HA/DRS?",
+    "options": [
+      "Cluster",
+      "Datastore",
+      "Port group",
+      "Template"
+    ],
+    "correct": 0,
+    "explanation": "Clusters group hosts for HA and DRS.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "HA",
+    "difficulty": "Medium",
+    "question": "What does VMware HA primarily provide?",
+    "options": [
+      "VM restart after host failure",
+      "CPU overclocking",
+      "DNS failover",
+      "Disk compression"
+    ],
+    "correct": 0,
+    "explanation": "HA restarts affected VMs on surviving hosts.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "DRS",
+    "difficulty": "Medium",
+    "question": "What does DRS help with?",
+    "options": [
+      "Automated workload placement",
+      "Password management",
+      "Backup encryption",
+      "DNS records"
+    ],
+    "correct": 0,
+    "explanation": "DRS helps balance VM placement based on cluster resources.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "What is a datastore used for?",
+    "options": [
+      "Storing VM files",
+      "Managing AD users",
+      "Routing packets",
+      "Monitoring DNS"
+    ],
+    "correct": 0,
+    "explanation": "Datastores store VM configuration and disk files.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Troubleshooting",
+    "difficulty": "Hard",
+    "question": "What is a VMkernel adapter used for?",
+    "options": [
+      "Host networking services",
+      "Guest storage only",
+      "BIOS configuration",
+      "CPU scheduling"
+    ],
+    "correct": 0,
+    "explanation": "VMkernel adapters provide host services such as management and vMotion.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Virtualization",
+    "difficulty": "Easy",
+    "question": "Which Windows role enables Hyper-V?",
+    "options": [
+      "Hyper-V",
+      "IIS",
+      "WSUS",
+      "AD CS"
+    ],
+    "correct": 0,
+    "explanation": "The Hyper-V role enables Microsoft's hypervisor.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Networking",
+    "difficulty": "Easy",
+    "question": "Which switch connects VMs to the physical network?",
+    "options": [
+      "External",
+      "Internal",
+      "Private",
+      "Loopback"
+    ],
+    "correct": 0,
+    "explanation": "An External switch binds to a physical network adapter.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Virtual Switches",
+    "difficulty": "Easy",
+    "question": "Which switch permits host-to-VM communication?",
+    "options": [
+      "Internal",
+      "External",
+      "Private",
+      "WAN"
+    ],
+    "correct": 0,
+    "explanation": "An Internal switch connects VMs with the host.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Networking",
+    "difficulty": "Easy",
+    "question": "Which switch allows only VM-to-VM traffic on one host?",
+    "options": [
+      "Private",
+      "External",
+      "Internal",
+      "Public"
+    ],
+    "correct": 0,
+    "explanation": "A Private switch provides VM-to-VM connectivity only.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "PowerShell",
+    "difficulty": "Medium",
+    "question": "Which PowerShell cmdlet lists VMs?",
+    "options": [
+      "Get-VM",
+      "Get-Virtuals",
+      "Show-VM",
+      "List-HyperV"
+    ],
+    "correct": 0,
+    "explanation": "Get-VM returns Hyper-V VM objects.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "PowerShell",
+    "difficulty": "Medium",
+    "question": "Which cmdlet starts a VM?",
+    "options": [
+      "Start-VM",
+      "Boot-VM",
+      "Run-VM",
+      "Enable-VM"
+    ],
+    "correct": 0,
+    "explanation": "Start-VM starts a Hyper-V virtual machine.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Storage",
+    "difficulty": "Medium",
+    "question": "What is the modern Hyper-V disk format?",
+    "options": [
+      "VHDX",
+      "VMDK",
+      "QCOW",
+      "IMGX"
+    ],
+    "correct": 0,
+    "explanation": "VHDX is the modern Hyper-V virtual disk format.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Migration",
+    "difficulty": "Medium",
+    "question": "What does live migration do?",
+    "options": [
+      "Moves a running VM between hosts",
+      "Converts disks",
+      "Creates a switch",
+      "Backs up a host"
+    ],
+    "correct": 0,
+    "explanation": "Live migration moves a running VM with minimal interruption.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Checkpoints",
+    "difficulty": "Hard",
+    "question": "What captures a point-in-time VM state?",
+    "options": [
+      "Checkpoint",
+      "Replica",
+      "Switch Manager",
+      "Host Guardian"
+    ],
+    "correct": 0,
+    "explanation": "Checkpoints capture a point-in-time state.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Troubleshooting",
+    "difficulty": "Hard",
+    "question": "Which cmdlet creates a VM?",
+    "options": [
+      "New-VM",
+      "Add-VM",
+      "Create-HyperVM",
+      "Build-VM"
+    ],
+    "correct": 0,
+    "explanation": "New-VM creates a Hyper-V virtual machine.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Compute",
+    "difficulty": "Easy",
+    "question": "Which service provides Azure virtual machines?",
+    "options": [
+      "Azure Virtual Machines",
+      "Azure DNS",
+      "Azure Queue",
+      "Azure DevOps"
+    ],
+    "correct": 0,
+    "explanation": "Azure Virtual Machines provides cloud compute.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Resource Management",
+    "difficulty": "Easy",
+    "question": "What is a resource group?",
+    "options": [
+      "A logical container for related resources",
+      "A datacenter",
+      "A DNS zone",
+      "A VM disk"
+    ],
+    "correct": 0,
+    "explanation": "Resource groups organize related Azure resources.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Identity",
+    "difficulty": "Easy",
+    "question": "Which service provides Azure identity?",
+    "options": [
+      "Microsoft Entra ID",
+      "Azure Files",
+      "Azure Monitor",
+      "Storage Explorer"
+    ],
+    "correct": 0,
+    "explanation": "Microsoft Entra ID manages cloud identities.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Networking",
+    "difficulty": "Easy",
+    "question": "What is an NSG used for?",
+    "options": [
+      "Filtering network traffic",
+      "Creating storage",
+      "Managing users",
+      "Monitoring CPU"
+    ],
+    "correct": 0,
+    "explanation": "NSGs allow or deny network traffic using rules.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Storage",
+    "difficulty": "Medium",
+    "question": "Which service stores blobs?",
+    "options": [
+      "Azure Blob Storage",
+      "Azure DNS",
+      "Azure SQL",
+      "Azure Monitor"
+    ],
+    "correct": 0,
+    "explanation": "Blob Storage is Azure object storage.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Monitoring",
+    "difficulty": "Medium",
+    "question": "Which service monitors Azure resources?",
+    "options": [
+      "Azure Monitor",
+      "Azure Policy",
+      "Azure Bastion",
+      "Azure Migrate"
+    ],
+    "correct": 0,
+    "explanation": "Azure Monitor collects metrics, logs and telemetry.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Access Control",
+    "difficulty": "Medium",
+    "question": "What is Azure RBAC used for?",
+    "options": [
+      "Controlling resource access",
+      "Encrypting disks only",
+      "Creating DNS zones",
+      "Scaling VMs"
+    ],
+    "correct": 0,
+    "explanation": "RBAC assigns permissions to Azure resources.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Security",
+    "difficulty": "Medium",
+    "question": "Which service stores secrets and keys?",
+    "options": [
+      "Azure Key Vault",
+      "Azure Files",
+      "Azure Front Door",
+      "Azure Queue"
+    ],
+    "correct": 0,
+    "explanation": "Key Vault securely stores secrets, keys and certificates.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Remote Access",
+    "difficulty": "Hard",
+    "question": "What is Azure Bastion used for?",
+    "options": [
+      "Secure browser-based RDP/SSH",
+      "Object storage",
+      "DNS hosting",
+      "Database backup"
+    ],
+    "correct": 0,
+    "explanation": "Bastion provides secure RDP/SSH through the Azure portal.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Compute",
+    "difficulty": "Hard",
+    "question": "Which service autoscale groups of VMs?",
+    "options": [
+      "Virtual Machine Scale Sets",
+      "Azure DNS",
+      "Key Vault",
+      "Log Analytics"
+    ],
+    "correct": 0,
+    "explanation": "VM Scale Sets manage and autoscale VM groups.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Compute",
+    "difficulty": "Easy",
+    "question": "Which AWS service provides virtual servers?",
+    "options": [
+      "Amazon EC2",
+      "Amazon S3",
+      "IAM",
+      "Route 53"
+    ],
+    "correct": 0,
+    "explanation": "EC2 provides scalable virtual compute.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Storage",
+    "difficulty": "Easy",
+    "question": "Which service provides object storage?",
+    "options": [
+      "Amazon S3",
+      "EBS",
+      "EC2",
+      "VPC"
+    ],
+    "correct": 0,
+    "explanation": "S3 is AWS object storage.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "IAM",
+    "difficulty": "Easy",
+    "question": "Which service manages identities and permissions?",
+    "options": [
+      "IAM",
+      "CloudFront",
+      "CloudWatch",
+      "ECS"
+    ],
+    "correct": 0,
+    "explanation": "IAM manages identities and authorization.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Networking",
+    "difficulty": "Easy",
+    "question": "What is an AWS VPC?",
+    "options": [
+      "A logically isolated virtual network",
+      "A storage bucket",
+      "A database",
+      "A monitoring agent"
+    ],
+    "correct": 0,
+    "explanation": "A VPC provides an isolated network environment.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "DNS",
+    "difficulty": "Medium",
+    "question": "Which service provides DNS?",
+    "options": [
+      "Route 53",
+      "EBS",
+      "IAM",
+      "Lambda"
+    ],
+    "correct": 0,
+    "explanation": "Route 53 is AWS managed DNS.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Monitoring",
+    "difficulty": "Medium",
+    "question": "Which service provides metrics and monitoring?",
+    "options": [
+      "CloudWatch",
+      "CloudTrail",
+      "Config",
+      "Inspector"
+    ],
+    "correct": 0,
+    "explanation": "CloudWatch monitors AWS resources and applications.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "IAM",
+    "difficulty": "Medium",
+    "question": "What is an IAM policy?",
+    "options": [
+      "A document defining permissions",
+      "A subnet",
+      "A VM image",
+      "A DNS record"
+    ],
+    "correct": 0,
+    "explanation": "IAM policies define allowed or denied actions.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Compute",
+    "difficulty": "Medium",
+    "question": "What is an AMI?",
+    "options": [
+      "An image used to launch EC2 instances",
+      "A DNS zone",
+      "A security group",
+      "A bucket"
+    ],
+    "correct": 0,
+    "explanation": "An AMI is a template for launching EC2 instances.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "What is a security group?",
+    "options": [
+      "A stateful virtual firewall",
+      "A physical firewall",
+      "A DNS server",
+      "A backup vault"
+    ],
+    "correct": 0,
+    "explanation": "Security groups control resource network traffic.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Storage",
+    "difficulty": "Hard",
+    "question": "What is an EBS volume?",
+    "options": [
+      "Block storage for EC2",
+      "Object storage",
+      "DNS storage",
+      "IAM storage"
+    ],
+    "correct": 0,
+    "explanation": "EBS provides persistent block storage.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Authentication",
+    "difficulty": "Easy",
+    "question": "What does MFA add?",
+    "options": [
+      "An additional verification factor",
+      "A faster network",
+      "More storage",
+      "A backup"
+    ],
+    "correct": 0,
+    "explanation": "MFA requires more than one authentication factor.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Identity & Access",
+    "difficulty": "Easy",
+    "question": "What is least privilege?",
+    "options": [
+      "Only required access",
+      "Admin access for all",
+      "No logging",
+      "All ports open"
+    ],
+    "correct": 0,
+    "explanation": "Least privilege minimizes unnecessary permissions.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Vulnerability Management",
+    "difficulty": "Easy",
+    "question": "What does patching primarily reduce?",
+    "options": [
+      "Known vulnerabilities",
+      "Disk fragmentation",
+      "CPU temperature",
+      "DNS latency"
+    ],
+    "correct": 0,
+    "explanation": "Security updates commonly address known vulnerabilities.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "SIEM",
+    "difficulty": "Easy",
+    "question": "What is a SIEM used for?",
+    "options": [
+      "Collecting and analyzing security events",
+      "Creating VMs",
+      "Managing DNS",
+      "Backing up disks"
+    ],
+    "correct": 0,
+    "explanation": "SIEM platforms centralize and analyze security telemetry.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Social Engineering",
+    "difficulty": "Medium",
+    "question": "What is phishing?",
+    "options": [
+      "A social-engineering attack",
+      "A routing protocol",
+      "A backup method",
+      "A disk format"
+    ],
+    "correct": 0,
+    "explanation": "Phishing tricks users into unsafe actions.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Endpoint Security",
+    "difficulty": "Medium",
+    "question": "What is EDR?",
+    "options": [
+      "Endpoint Detection and Response",
+      "Encrypted DNS Routing",
+      "Enterprise Disk Recovery",
+      "External Data Replication"
+    ],
+    "correct": 0,
+    "explanation": "EDR detects and responds to endpoint threats.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Encryption",
+    "difficulty": "Medium",
+    "question": "What does encryption at rest protect?",
+    "options": [
+      "Stored data",
+      "Routing only",
+      "CPU instructions",
+      "DNS lookups"
+    ],
+    "correct": 0,
+    "explanation": "Encryption at rest protects stored data.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Vulnerabilities",
+    "difficulty": "Medium",
+    "question": "What is a vulnerability?",
+    "options": [
+      "A weakness that can be exploited",
+      "A policy",
+      "A backup file",
+      "A user role"
+    ],
+    "correct": 0,
+    "explanation": "A vulnerability is a weakness that may be exploited.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Network Security",
+    "difficulty": "Hard",
+    "question": "What does a firewall primarily control?",
+    "options": [
+      "Network traffic",
+      "File compression",
+      "CPU allocation",
+      "Passwords"
+    ],
+    "correct": 0,
+    "explanation": "Firewalls enforce network traffic rules.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Vulnerability Management",
+    "difficulty": "Hard",
+    "question": "What is a CVE?",
+    "options": [
+      "A publicly identified vulnerability record",
+      "A backup standard",
+      "A firewall vendor",
+      "A password policy"
+    ],
+    "correct": 0,
+    "explanation": "CVE identifiers reference publicly disclosed vulnerabilities.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "DNS",
+    "difficulty": "Easy",
+    "question": "Which protocol resolves domain names?",
+    "options": [
+      "DNS",
+      "DHCP",
+      "ARP",
+      "NTP"
+    ],
+    "correct": 0,
+    "explanation": "DNS resolves hostnames to IP addresses.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "DHCP",
+    "difficulty": "Easy",
+    "question": "Which service assigns IP configuration dynamically?",
+    "options": [
+      "DHCP",
+      "DNS",
+      "SSH",
+      "SNMP"
+    ],
+    "correct": 0,
+    "explanation": "DHCP provides IP configuration automatically.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "TCP/IP",
+    "difficulty": "Easy",
+    "question": "Which protocol is connection-oriented?",
+    "options": [
+      "TCP",
+      "UDP",
+      "ICMP",
+      "ARP"
+    ],
+    "correct": 0,
+    "explanation": "TCP establishes a connection and provides reliable delivery.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Web",
+    "difficulty": "Easy",
+    "question": "What is the common HTTPS port?",
+    "options": [
+      "443",
+      "22",
+      "53",
+      "25"
+    ],
+    "correct": 0,
+    "explanation": "HTTPS commonly uses TCP 443.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Troubleshooting",
+    "difficulty": "Medium",
+    "question": "Which command tests basic reachability?",
+    "options": [
+      "ping",
+      "mkdir",
+      "chmod",
+      "whoami"
+    ],
+    "correct": 0,
+    "explanation": "ping uses ICMP echo requests.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "ARP",
+    "difficulty": "Medium",
+    "question": "Which protocol maps IPv4 addresses to MAC addresses?",
+    "options": [
+      "ARP",
+      "DNS",
+      "DHCP",
+      "BGP"
+    ],
+    "correct": 0,
+    "explanation": "ARP resolves IPv4 addresses to MAC addresses.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Routing",
+    "difficulty": "Medium",
+    "question": "What does a default gateway provide?",
+    "options": [
+      "A route to other networks",
+      "DNS records",
+      "Usernames",
+      "Disk access"
+    ],
+    "correct": 0,
+    "explanation": "The default gateway routes traffic outside the local subnet.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Subnetting",
+    "difficulty": "Medium",
+    "question": "What is /24 equivalent to?",
+    "options": [
+      "255.255.255.0",
+      "255.255.0.0",
+      "255.0.0.0",
+      "255.255.255.128"
+    ],
+    "correct": 0,
+    "explanation": "A /24 mask is 255.255.255.0.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Remote Access",
+    "difficulty": "Hard",
+    "question": "Which protocol is commonly used for secure remote administration?",
+    "options": [
+      "SSH",
+      "Telnet",
+      "FTP",
+      "TFTP"
+    ],
+    "correct": 0,
+    "explanation": "SSH provides encrypted remote administration.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Routing",
+    "difficulty": "Hard",
+    "question": "Which device forwards traffic between IP networks?",
+    "options": [
+      "Router",
+      "Switch",
+      "Hub",
+      "Access point"
+    ],
+    "correct": 0,
+    "explanation": "Routers forward packets between IP networks.",
+    "status": "active"
+  }
+]
