@@ -1,11 +1,11 @@
 {
   "name": "meritarc",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "npm run seed && node backend/server.js",
     "seed": "node backend/seed.js",
-    "start:render": "npm run seed && npm start"
+    "start:render": "npm start"
   },
   "dependencies": {
     "express": "^5.1.0",
