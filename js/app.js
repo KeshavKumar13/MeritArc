@@ -356,40 +356,96 @@
     `;
   }
 
-  function showResults() {
+  function showHome() {
+    hideViews();
+    $("homeView").classList.remove("hidden");
+    renderSubjects();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function showResults() {
     hideViews();
     $("resultsView").classList.remove("hidden");
 
-    const history = JSON.parse(
-      localStorage.getItem("meritArcHistory") || "[]"
-    );
+    const user = await getCurrentUser();
 
-    $("historyContent").innerHTML = history.length
-      ? `
-        <div style="overflow:auto">
-          <table>
-            <thead>
-              <tr><th>Subject</th><th>Score</th><th>Percentage</th><th>Date</th></tr>
-            </thead>
-            <tbody>
-              ${history.map(item => `
-                <tr>
-                  <td>${escapeHtml(item.subject)}</td>
-                  <td>${item.score}/${item.total}</td>
-                  <td>${item.percentage}%</td>
-                  <td>${escapeHtml(item.date)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `
-      : `
-        <div style="padding:30px;text-align:center">
-          <h3>No results yet</h3>
-          <div class="muted">Complete an assessment to see your history.</div>
-        </div>
-      `;
+    if (user) {
+      try {
+        const response = await fetch("/api/attempts");
+        const attempts = await response.json();
+
+        if (!response.ok) {
+          throw new Error(attempts.error || "Unable to load your results.");
+        }
+
+        $("historyContent").innerHTML = attempts.length
+          ? `
+            <div style="overflow:auto">
+              <table>
+                <thead>
+                  <tr><th>Subject</th><th>Score</th><th>Percentage</th><th>Status</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  ${attempts.map(item => `
+                    <tr>
+                      <td>${escapeHtml(item.subject)}</td>
+                      <td>${item.score === null ? "—" : `${item.score}/${item.total}`}</td>
+                      <td>${item.percentage === null ? "—" : `${item.percentage}%`}</td>
+                      <td>${escapeHtml(item.status)}</td>
+                      <td>${escapeHtml(new Date(item.started_at).toLocaleString())}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `
+          : `
+            <div style="padding:30px;text-align:center">
+              <h3>No results yet</h3>
+              <div class="muted">Complete an assessment to see your history.</div>
+            </div>
+          `;
+      } catch (error) {
+        console.error("Results API error:", error);
+        $("historyContent").innerHTML = `
+          <div style="padding:30px;text-align:center">
+            <h3>Unable to load results</h3>
+            <div class="muted">${escapeHtml(error.message || "Please try again.")}</div>
+          </div>
+        `;
+      }
+    } else {
+      const history = JSON.parse(
+        localStorage.getItem("meritArcHistory") || "[]"
+      );
+
+      $("historyContent").innerHTML = history.length
+        ? `
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>Subject</th><th>Score</th><th>Percentage</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                ${history.map(item => `
+                  <tr>
+                    <td>${escapeHtml(item.subject)}</td>
+                    <td>${item.score}/${item.total}</td>
+                    <td>${item.percentage}%</td>
+                    <td>${escapeHtml(item.date)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        `
+        : `
+          <div style="padding:30px;text-align:center">
+            <h3>No results yet</h3>
+            <div class="muted">Complete an assessment to see your history.</div>
+          </div>
+        `;
+    }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
