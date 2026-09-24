@@ -1,44 +1,85 @@
 # MeritArc
 
-MeritArc is an assessment platform with a learner UI, question bank, user authentication, server-side assessment attempts, and SQLite persistence.
+MeritArc is an assessment platform with a learner UI, question bank, user authentication, server-side assessment attempts, and PostgreSQL persistence.
 
-## Local development
+## Project structure
 
-Requirements: Node.js 20+
+- `index.html` - learner-facing assessment UI
+- `css/` - application styles
+- `js/` - frontend logic and local question data fallback
+- `admin/` - question bank administration prototype
+- `backend/server.js` - Express API and web server
+- `backend/db.js` - PostgreSQL connection pool
+- `backend/seed.js` - schema initialization and question seeding
+- `database/schema.sql` - PostgreSQL schema
+- `database/seed-data.json` - starter question bank
+
+## Local / production environment variables
+
+Set `DATABASE_URL` to the PostgreSQL connection string from Supabase. Keep the real connection string private.
+
+Example:
+
+```text
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@<pooler-host>:5432/postgres
+PORT=3000
+NODE_ENV=development
+```
+
+## Run locally
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Initialize the PostgreSQL database and seed the starter questions:
+
+```bash
 npm run seed
+```
+
+Start the application:
+
+```bash
 npm start
 ```
 
-Learner: http://localhost:3000
-Admin: http://localhost:3000/admin/
+The application listens on the configured `PORT` and binds to `0.0.0.0`.
 
-## Render deployment
+## Free Render + Supabase deployment
 
-The app is configured for Render Web Services.
+MeritArc can run as a Render Web Service using the Render Free plan while Supabase provides the persistent PostgreSQL database.
 
-Build command:
-
-```bash
-npm install
-```
-
-Start command:
-
-```bash
-npm run start:render
-```
-
-For persistent SQLite storage on Render, configure a persistent disk and set:
+Render settings:
 
 ```text
-DATABASE_PATH=/var/data/meritarc.db
+Language: Node
+Branch: main
+Root Directory: blank
+Build Command: npm install
+Start Command: npm run start:render
 ```
 
-The server binds to `0.0.0.0` and uses Render's `PORT` environment variable.
+Set this Render environment variable:
 
-## Important
+```text
+DATABASE_URL=<your private Supabase Session Pooler connection string>
+```
 
-The admin question-bank interface is still a development prototype and does not yet have role-based administrator authentication. Do not expose or use it for public administration until that security layer is added.
+Do not add a Render persistent disk when using the free plan. The database lives in Supabase.
+
+`npm run start:render` initializes the schema and seeds the question bank on first deployment, then starts the Express server.
+
+Health check path:
+
+```text
+/api/health
+```
+
+## Important security notes
+
+- Never commit `.env` or a real `DATABASE_URL` to GitHub.
+- Never publish the Supabase database password.
+- The database password should only be stored as a hosting-provider environment variable or another secure secret store.

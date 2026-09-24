@@ -1,16 +1,21 @@
-const Database = require("better-sqlite3");
-const path = require("node:path");
-const fs = require("node:fs");
+const { Pool } = require("pg");
 
-// Local development keeps the SQLite database inside the project.
-// Render uses DATABASE_PATH (configured as /var/data/meritarc.db) on a persistent disk.
-const dbPath = process.env.DATABASE_PATH ||
-  path.join(__dirname, "..", "database", "meritarc.db");
+const connectionString = process.env.DATABASE_URL;
 
-const dbDir = path.dirname(dbPath);
-fs.mkdirSync(dbDir, { recursive: true });
+if (!connectionString) {
+  throw new Error("DATABASE_URL is required. Set it to your Supabase PostgreSQL connection string.");
+}
 
-const db = new Database(dbPath);
-db.pragma("journal_mode = WAL");
+const pool = new Pool({
+  connectionString,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
+  max: Number(process.env.DB_POOL_MAX || 5),
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000
+});
 
-module.exports = db;
+pool.on("error", (error) => {
+  console.error("Unexpected PostgreSQL pool error:", error);
+});
+
+module.exports = pool;
