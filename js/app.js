@@ -745,6 +745,24 @@
 
   initAuth();
 
+  function closeMobileMenu() {
+    const nav = $("siteNav");
+    const button = $("mobileMenuButton");
+    if (!nav || !button) return;
+    nav.classList.remove("open");
+    button.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleMobileMenu() {
+    const nav = $("siteNav");
+    const button = $("mobileMenuButton");
+    if (!nav || !button) return;
+    const open = nav.classList.toggle("open");
+    button.setAttribute("aria-expanded", String(open));
+  }
+
+  $("mobileMenuButton")?.addEventListener("click", toggleMobileMenu);
+
   window.MeritArc = {
     showHome,
     showAssessments,
@@ -758,7 +776,8 @@
     closeAuth,
     showLogin,
     showRegister,
-    logout
+    logout,
+    closeMobileMenu
   };
 
   renderSubjects();
@@ -766,7 +785,11 @@
   const requestedSubject = params.get("subject");
   if (requestedSubject && DATA[requestedSubject]) {
     setTimeout(() => startAssessment(requestedSubject), 0);
+  } else if (params.get("auth") === "1") {
+    requestAnimationFrame(() => openAuth());
   } else if (window.location.hash === "#assessment") {
     requestAnimationFrame(() => $("assessmentResults")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  } else if (window.location.hash === "#results") {
+    requestAnimationFrame(() => showResults());
   }
 })();

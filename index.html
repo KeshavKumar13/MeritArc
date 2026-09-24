@@ -11,11 +11,12 @@
   <a class="brand" href="#" onclick="MeritArc.showHome();return false;">
     <img src="assets/logo.svg" alt="MeritArc">
   </a>
-  <nav class="nav">
-    <button onclick="MeritArc.showHome()">Home</button>
-    <button onclick="MeritArc.showAssessments()">Assessments</button>
-    <button onclick="MeritArc.showResults()">Results</button>
-    <button id="authButton" onclick="MeritArc.openAuth()">Sign In</button>
+  <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+  <nav class="nav" id="siteNav">
+    <button onclick="MeritArc.showHome();MeritArc.closeMobileMenu()">Home</button>
+    <button onclick="MeritArc.showAssessments();MeritArc.closeMobileMenu()">Assessments</button>
+    <button onclick="MeritArc.showResults();MeritArc.closeMobileMenu()">Results</button>
+    <button id="authButton" onclick="MeritArc.openAuth();MeritArc.closeMobileMenu()">Sign In</button>
   </nav>
 </header>
 

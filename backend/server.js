@@ -254,6 +254,19 @@ app.get("/api/auth/me", async (req, res) => {
   }
 });
 
+async function requireStaff(req, res, next) {
+  try {
+    const user = await getCurrentUser(req);
+    if (!user) return res.status(401).json({ error: "Please sign in to the administrator console." });
+    if (!['admin', 'editor'].includes(user.role)) return res.status(403).json({ error: "Staff access required." });
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to verify staff access." });
+  }
+}
+
 async function requireAdmin(req, res, next) {
   try {
     const user = await getCurrentUser(req);
@@ -270,7 +283,7 @@ async function requireAdmin(req, res, next) {
 app.get("/api/admin/me", async (req, res) => {
   try {
     const user = await getCurrentUser(req);
-    res.json({ authenticated: Boolean(user && user.role === "admin"), user: user && user.role === "admin" ? user : null });
+    res.json({ authenticated: Boolean(user && ["admin", "editor"].includes(user.role)), user: user && ["admin", "editor"].includes(user.role) ? user : null });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Unable to check administrator session." });
@@ -283,7 +296,7 @@ app.post("/api/admin/login", async (req, res) => {
   try {
     const result = await db.query("SELECT id, name, email, password_hash, role FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1", [email]);
     const user = result.rows[0];
-    if (!user || user.role !== "admin" || !verifyPassword(password, user.password_hash)) {
+    if (!user || !["admin", "editor"].includes(user.role) || !verifyPassword(password, user.password_hash)) {
       return res.status(401).json({ error: "Invalid administrator credentials." });
     }
     const session = await createSession(user.id);
@@ -524,6 +537,124 @@ app.get("/api/attempts", requireUser, async (req, res) => {
 
 // ---------- Existing question bank API ----------
 
+
+// ---------- Admin management ----------
+
+app.get("/api/admin/users", requireAdmin, async (req, res) => {
+  const search = String(req.query.search || "").trim().toLowerCase();
+  const role = String(req.query.role || "").trim().toLowerCase();
+  try {
+    const result = await db.query(
+      `SELECT u.id, u.name, u.email, u.role, u.created_at,
+              COUNT(a.id)::int AS attempts,
+              COUNT(a.id) FILTER (WHERE a.status = 'completed')::int AS completed_attempts
+       FROM users u
+       LEFT JOIN attempts a ON a.user_id = u.id
+       WHERE ($1 = '' OR LOWER(u.name) LIKE '%' || $1 || '%' OR LOWER(u.email) LIKE '%' || $1 || '%')
+         AND ($2 = '' OR u.role = $2)
+       GROUP BY u.id
+       ORDER BY u.created_at DESC
+       LIMIT 200`,
+      [search, role]
+    );
+    res.json(result.rows.map(r => ({
+      id: Number(r.id), name: r.name, email: r.email, role: r.role,
+      created_at: r.created_at, attempts: Number(r.attempts), completed_attempts: Number(r.completed_attempts)
+    })));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to load users." });
+  }
+});
+
+app.put("/api/admin/users/:id", requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const role = String(req.body.role || "user").trim().toLowerCase();
+  const name = String(req.body.name || "").trim();
+  if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid user." });
+  if (!['user', 'editor', 'admin'].includes(role)) return res.status(400).json({ error: "Invalid role." });
+  if (name.length < 2) return res.status(400).json({ error: "Name must be at least 2 characters." });
+  if (id === Number(req.user.id) && role !== 'admin') return res.status(400).json({ error: "You cannot remove your own administrator access." });
+  try {
+    const result = await db.query(
+      `UPDATE users SET name = $1, role = $2 WHERE id = $3 RETURNING id, name, email, role, created_at`,
+      [name, role, id]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: "User not found." });
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to update user access." });
+  }
+});
+
+app.get("/api/admin/results", requireAdmin, async (req, res) => {
+  const search = String(req.query.search || "").trim().toLowerCase();
+  const status = String(req.query.status || "").trim().toLowerCase();
+  try {
+    const result = await db.query(
+      `SELECT a.id, a.user_id, u.name, u.email, a.subject, a.status,
+              a.started_at, a.completed_at, a.score, a.total, a.percentage
+       FROM attempts a JOIN users u ON u.id = a.user_id
+       WHERE ($1 = '' OR LOWER(u.name) LIKE '%' || $1 || '%' OR LOWER(u.email) LIKE '%' || $1 || '%' OR LOWER(a.subject) LIKE '%' || $1 || '%')
+         AND ($2 = '' OR a.status = $2)
+       ORDER BY a.started_at DESC LIMIT 200`,
+      [search, status]
+    );
+    res.json(result.rows.map(r => ({
+      id: Number(r.id), user_id: Number(r.user_id), name: r.name, email: r.email,
+      subject: r.subject, status: r.status, started_at: r.started_at, completed_at: r.completed_at,
+      score: r.score === null ? null : Number(r.score), total: r.total === null ? null : Number(r.total),
+      percentage: r.percentage === null ? null : Number(r.percentage)
+    })));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to load results." });
+  }
+});
+
+app.post("/api/admin/results/:id/reset", requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid result." });
+  try {
+    const result = await db.query(
+      `UPDATE attempts
+       SET status = 'abandoned', completed_at = NULL, score = NULL, percentage = NULL
+       WHERE id = $1
+       RETURNING id, status`, [id]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: "Result not found." });
+    await db.query("DELETE FROM attempt_answers WHERE attempt_question_id IN (SELECT id FROM attempt_questions WHERE attempt_id = $1)", [id]);
+    res.json({ ok: true, message: "Result reset. The user can start a fresh assessment." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to reset the result." });
+  }
+});
+
+app.put("/api/admin/results/:id", requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const score = Number(req.body.score);
+  if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid result." });
+  if (!Number.isInteger(score) || score < 0) return res.status(400).json({ error: "Score must be a non-negative whole number." });
+  try {
+    const current = await db.query("SELECT id, total FROM attempts WHERE id = $1", [id]);
+    if (!current.rows[0]) return res.status(404).json({ error: "Result not found." });
+    const total = Number(current.rows[0].total || 0);
+    if (score > total) return res.status(400).json({ error: "Score cannot exceed the total questions." });
+    const percentage = total ? Math.round((score / total) * 100) : 0;
+    const result = await db.query(
+      `UPDATE attempts SET status='completed', completed_at=COALESCE(completed_at, NOW()), score=$1, total=$2, percentage=$3 WHERE id=$4
+       RETURNING id, status, score, total, percentage, completed_at`,
+      [score, total, percentage, id]
+    );
+    res.json({ ...result.rows[0], id: Number(result.rows[0].id), score: Number(result.rows[0].score), total: Number(result.rows[0].total), percentage: Number(result.rows[0].percentage) });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to modify the result." });
+  }
+});
+
 app.get("/api/health", async (req, res) => {
   try {
     const [questions, users] = await Promise.all([
@@ -612,7 +743,7 @@ function validQuestion(q) {
     [0, 1, 2, 3].includes(Number(q.correct));
 }
 
-app.post("/api/questions", requireAdmin, async (req, res) => {
+app.post("/api/questions", requireStaff, async (req, res) => {
   if (!validQuestion(req.body)) return res.status(400).json({ error: "Invalid question data." });
   const q = req.body;
   try {
@@ -631,7 +762,7 @@ app.post("/api/questions", requireAdmin, async (req, res) => {
   }
 });
 
-app.put("/api/questions/:id", requireAdmin, async (req, res) => {
+app.put("/api/questions/:id", requireStaff, async (req, res) => {
   if (!validQuestion(req.body)) return res.status(400).json({ error: "Invalid question data." });
   const q = req.body;
   const id = Number(req.params.id);
@@ -652,7 +783,7 @@ app.put("/api/questions/:id", requireAdmin, async (req, res) => {
   }
 });
 
-app.delete("/api/questions/:id", requireAdmin, async (req, res) => {
+app.delete("/api/questions/:id", requireStaff, async (req, res) => {
   try {
     const result = await db.query(
       `UPDATE questions SET status='archived', updated_at=NOW() WHERE id=$1 RETURNING id`,

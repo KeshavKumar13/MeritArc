@@ -90,3 +90,7 @@ Health check path:
 - Added Quantitative Aptitude, Mathematics, Logical Reasoning, English, General Studies, Computer Science Fundamentals, Data Structures & Algorithms, Programming Fundamentals, and DBMS.
 - Assessment navigation now scrolls directly to the assessment section; Home returns to the top of the home page.
 - Seed script now adds missing questions without duplicating the existing question bank.
+
+
+## Staff access
+MeritArc supports three roles: `user` for assessments and personal results, `editor` for question-bank management, and `admin` for questions, results, and user access management. The admin console is available at `/admin/`. Administrators can reset completed attempts, adjust a recorded score, and change user roles.
