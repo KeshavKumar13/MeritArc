@@ -23,3 +23,14 @@ Use Render for the Node/Express service and Supabase PostgreSQL for the database
 
 ## Do not commit
 Do not commit `.env`, `node_modules/`, database files, or credentials.
+
+
+## v0.5.9 refinements
+
+* Assessment deep links open directly into the assessment without flashing the home view.
+* Question reports use a structured title dropdown, description, and optional attachment limited to 1 MB.
+* Admins can activate, block, remove, or permanently delete user accounts. Blocked/removed users can receive an admin-written message and optional input request.
+* Added support/contact page and support email link.
+* Mobile navigation alignment improved and the menu closes when tapping outside it.
+* Replaced the previous hero arc/peak decoration with a cleaner progress visual.
+* Search suggestion styling refined.

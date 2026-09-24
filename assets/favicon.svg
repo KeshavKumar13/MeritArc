@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 170">
-<defs><linearGradient id="brandBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b8cff"/><stop offset="1" stop-color="#0b55c8"/></linearGradient></defs>
-<path d="M18 122 45 43l29 43 29-43 31 79h-25l-7-29-28 43-28-43-6 29z" fill="url(#brandBlue)"/>
-<path d="M38 49Q70 8 103 49M92 49Q124 8 157 49" fill="none" stroke="#1b8cff" stroke-width="10" stroke-linecap="round"/>
-<circle cx="45" cy="43" r="4" fill="#fff" opacity=".9"/><circle cx="103" cy="43" r="4" fill="#fff" opacity=".9"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b8cff"/><stop offset="1" stop-color="#0b55c8"/></linearGradient></defs>
+<rect width="180" height="180" rx="38" fill="#ffffff"/>
+<path d="M25 137 49 48l31 47 31-47 32 89h-27l-7-32-29 46-29-46-7 32z" fill="url(#b)"/>
+<path d="M42 54Q76 14 111 54M101 54Q135 14 170 54" fill="none" stroke="#1b8cff" stroke-width="11" stroke-linecap="round"/>
+<circle cx="49" cy="48" r="5" fill="#fff" opacity=".95"/><circle cx="111" cy="48" r="5" fill="#fff" opacity=".95"/>
 </svg>

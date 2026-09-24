@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const SESSION_DAYS = 7;
 
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "2mb" }));
 app.use(express.static(path.join(__dirname, "..")));
 
 function outQuestion(r) {
@@ -60,7 +60,7 @@ async function getCurrentUser(req) {
   if (!token) return null;
 
   const result = await db.query(
-    `SELECT u.id, u.name, u.email, u.role
+    `SELECT u.id, u.name, u.email, u.role, u.access_status, u.access_message, u.request_input, u.request_prompt
      FROM sessions s
      JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = $1 AND s.expires_at > NOW()`,
@@ -127,6 +127,7 @@ async function requireUser(req, res, next) {
   try {
     const user = await getCurrentUser(req);
     if (!user) return res.status(401).json({ error: "Please sign in to start an assessment." });
+    if (user.access_status !== "active") return res.status(403).json({ error: user.access_message || "Your MeritArc account access is currently unavailable.", accessStatus: user.access_status, requestInput: Boolean(user.request_input), requestPrompt: user.request_prompt || "", email: user.email, supportEmail: "support@meritarc.in" });
     req.user = user;
     next();
   } catch (error) {
@@ -224,7 +225,7 @@ app.post("/api/auth/login", async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT id, name, email, password_hash
+      `SELECT id, name, email, password_hash, access_status, access_message, request_input, request_prompt
        FROM users
        WHERE LOWER(email) = LOWER($1)`,
       [email]
@@ -235,6 +236,18 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ error: "Email or password is incorrect." });
     }
 
+    if (user.access_status !== "active") {
+      const stateLabel = user.access_status === "blocked" ? "blocked" : "removed";
+      return res.status(403).json({
+        error: user.access_message || `Your MeritArc account access has been ${stateLabel}.`,
+        accessStatus: user.access_status,
+        requestInput: Boolean(user.request_input),
+        requestPrompt: user.request_prompt || "If you believe this was a mistake, please tell us why you need access.",
+        email: user.email,
+        supportEmail: "support@meritarc.in"
+      });
+    }
+
     const session = await createSession(user.id);
     setSessionCookie(res, session.token, session.expires);
 
@@ -242,6 +255,24 @@ app.post("/api/auth/login", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Unable to sign in." });
+  }
+});
+
+app.post("/api/access-response", async (req, res) => {
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const response = String(req.body.response || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: "Please enter a valid email address." });
+  if (response.length < 5 || response.length > 2000) return res.status(400).json({ error: "Please provide between 5 and 2000 characters." });
+  try {
+    const user = await db.query("SELECT id, access_status, request_input FROM users WHERE LOWER(email)=LOWER($1) LIMIT 1", [email]);
+    if (!user.rows[0] || user.rows[0].access_status === "active" || !user.rows[0].request_input) {
+      return res.status(400).json({ error: "Input is not currently requested for this account." });
+    }
+    await db.query("INSERT INTO access_responses (user_id, email, response) VALUES ($1,$2,$3)", [user.rows[0].id, email, response]);
+    res.status(201).json({ ok: true, message: "Your response has been submitted." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to submit your response." });
   }
 });
 
@@ -260,6 +291,9 @@ app.post("/api/auth/logout", async (req, res) => {
 app.get("/api/auth/me", async (req, res) => {
   try {
     const user = await getCurrentUser(req);
+    if (user && user.access_status !== "active") {
+      return res.json({ authenticated:false, user:null, access:{status:user.access_status, message:user.access_message || "Your MeritArc account access is currently unavailable.", requestInput:Boolean(user.request_input), requestPrompt:user.request_prompt || "", email:user.email, supportEmail:"support@meritarc.in"} });
+    }
     res.json({ authenticated: Boolean(user), user });
   } catch (error) {
     console.error(error);
@@ -558,9 +592,11 @@ app.get("/api/admin/users", requireAdmin, async (req, res) => {
   const role = String(req.query.role || "").trim().toLowerCase();
   try {
     const result = await db.query(
-      `SELECT u.id, u.name, u.email, u.role, u.created_at,
+      `SELECT u.id, u.name, u.email, u.role, u.access_status, u.access_message, u.request_input, u.request_prompt, u.created_at,
               COUNT(a.id)::int AS attempts,
-              COUNT(a.id) FILTER (WHERE a.status = 'completed')::int AS completed_attempts
+              COUNT(a.id) FILTER (WHERE a.status = 'completed')::int AS completed_attempts,
+              (SELECT ar.response FROM access_responses ar WHERE ar.user_id=u.id ORDER BY ar.created_at DESC LIMIT 1) AS latest_response,
+              (SELECT ar.created_at FROM access_responses ar WHERE ar.user_id=u.id ORDER BY ar.created_at DESC LIMIT 1) AS latest_response_at
        FROM users u
        LEFT JOIN attempts a ON a.user_id = u.id
        WHERE ($1 = '' OR LOWER(u.name) LIKE '%' || $1 || '%' OR LOWER(u.email) LIKE '%' || $1 || '%')
@@ -572,6 +608,8 @@ app.get("/api/admin/users", requireAdmin, async (req, res) => {
     );
     res.json(result.rows.map(r => ({
       id: Number(r.id), name: r.name, email: r.email, role: r.role,
+      access_status: r.access_status, access_message: r.access_message || "", request_input: Boolean(r.request_input), request_prompt: r.request_prompt || "",
+      latest_response: r.latest_response || "", latest_response_at: r.latest_response_at,
       created_at: r.created_at, attempts: Number(r.attempts), completed_attempts: Number(r.completed_attempts)
     })));
   } catch (error) {
@@ -615,21 +653,56 @@ app.post("/api/admin/users", requireAdmin, async (req, res) => {
 app.put("/api/admin/users/:id", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   const role = String(req.body.role || "user").trim().toLowerCase();
+  const accessStatus = String(req.body.accessStatus || "active").trim().toLowerCase();
+  const accessMessage = String(req.body.accessMessage || "").trim().slice(0, 1000);
+  const requestInput = Boolean(req.body.requestInput);
+  const requestPrompt = String(req.body.requestPrompt || "").trim().slice(0, 500);
   if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid user." });
   if (!["user", "editor", "admin"].includes(role)) return res.status(400).json({ error: "Invalid role." });
+  if (!["active", "blocked", "removed"].includes(accessStatus)) return res.status(400).json({ error: "Invalid access status." });
   if (id === Number(req.user.id)) return res.status(400).json({ error: "Your administrator account can only be changed through Render environment variables." });
+  if (accessStatus !== "active" && !accessMessage) return res.status(400).json({ error: "Please enter the message the user should see when access is denied." });
+  if (requestInput && !requestPrompt) return res.status(400).json({ error: "Please enter the question you want to ask the user." });
   try {
-    const current = await db.query("SELECT id, name, email, role, created_at FROM users WHERE id=$1", [id]);
+    const current = await db.query("SELECT id, name, email, role, access_status, access_message, request_input, request_prompt, created_at FROM users WHERE id=$1", [id]);
     if (!current.rows[0]) return res.status(404).json({ error: "User not found." });
+    const before = current.rows[0];
     const result = await db.query(
-      `UPDATE users SET role = $1 WHERE id = $2 RETURNING id, name, email, role, created_at`,
-      [role, id]
+      `UPDATE users SET role=$1, access_status=$2, access_message=$3, request_input=$4, request_prompt=$5, updated_at=NOW() WHERE id=$6
+       RETURNING id, name, email, role, access_status, access_message, request_input, request_prompt, created_at`,
+      [role, accessStatus, accessMessage, requestInput, requestPrompt, id]
     );
-    await writeAudit(req, "user_role_changed", "user", id, { email: result.rows[0].email, from_role: current.rows[0].role, to_role: role });
+    await writeAudit(req, "user_access_changed", "user", id, {
+      email: result.rows[0].email,
+      from_role: before.role, to_role: role,
+      from_access_status: before.access_status, to_access_status: accessStatus,
+      message_changed: before.access_message !== accessMessage,
+      access_message: accessMessage,
+      request_input: requestInput,
+      request_prompt: requestPrompt
+    });
+    if (accessStatus !== "active") await db.query("DELETE FROM sessions WHERE user_id=$1", [id]);
     res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Unable to update user access." });
+  }
+});
+
+app.delete("/api/admin/users/:id", requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid user." });
+  if (id === Number(req.user.id)) return res.status(400).json({ error: "Your administrator account cannot be deleted here." });
+  try {
+    const current = await db.query("SELECT id, name, email, role, access_status FROM users WHERE id=$1", [id]);
+    if (!current.rows[0]) return res.status(404).json({ error: "User not found." });
+    const u = current.rows[0];
+    await writeAudit(req, "user_deleted", "user", id, { email: u.email, role: u.role, access_status: u.access_status });
+    await db.query("DELETE FROM users WHERE id=$1", [id]);
+    res.json({ ok:true, message:"User permanently deleted." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to delete the user." });
   }
 });
 
@@ -707,9 +780,24 @@ app.put("/api/admin/results/:id", requireAdmin, async (req, res) => {
 
 app.post("/api/attempt-questions/:id/report", requireUser, async (req, res) => {
   const attemptQuestionId = Number(req.params.id);
-  const reason = String(req.body.reason || "").trim();
+  const title = String(req.body.title || "Other").trim();
+  const description = String(req.body.description || "").trim();
+  const attachmentName = String(req.body.attachmentName || "").trim().slice(0, 255);
+  const attachmentType = String(req.body.attachmentType || "").trim().slice(0, 120);
+  const attachmentBase64 = String(req.body.attachmentBase64 || "").trim();
+  const allowedTitles = ["Incorrect answer", "Incorrect question", "Unclear wording", "Typo or formatting", "Duplicate question", "Outdated information", "Other"];
   if (!Number.isInteger(attemptQuestionId) || attemptQuestionId < 1) return res.status(400).json({ error: "Invalid question." });
-  if (reason.length < 5 || reason.length > 500) return res.status(400).json({ error: "Please provide a short reason (5 to 500 characters)." });
+  if (!allowedTitles.includes(title)) return res.status(400).json({ error: "Please select a valid report type." });
+  if (description.length < 5 || description.length > 2000) return res.status(400).json({ error: "Please provide a description between 5 and 2000 characters." });
+  let attachmentBuffer = null;
+  if (attachmentBase64) {
+    try {
+      attachmentBuffer = Buffer.from(attachmentBase64, "base64");
+      if (!attachmentBuffer.length || attachmentBuffer.length > 1024 * 1024) return res.status(400).json({ error: "Attachment must be 1 MB or smaller." });
+    } catch {
+      return res.status(400).json({ error: "Invalid attachment." });
+    }
+  }
   try {
     const result = await db.query(
       `SELECT aq.id, aq.question_id, a.user_id
@@ -720,8 +808,9 @@ app.post("/api/attempt-questions/:id/report", requireUser, async (req, res) => {
     if (!result.rows[0]) return res.status(404).json({ error: "Question not found in your assessment." });
     const row = result.rows[0];
     await db.query(
-      `INSERT INTO question_reports (user_id, question_id, attempt_question_id, reason) VALUES ($1,$2,$3,$4)`,
-      [req.user.id, row.question_id, attemptQuestionId, reason]
+      `INSERT INTO question_reports (user_id, question_id, attempt_question_id, title, description, reason, attachment_name, attachment_type, attachment_size, attachment_data)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+      [req.user.id, row.question_id, attemptQuestionId, title, description, description, attachmentName || null, attachmentType || null, attachmentBuffer ? attachmentBuffer.length : null, attachmentBuffer]
     );
     res.status(201).json({ ok: true, message: "Thanks. Your report has been submitted." });
   } catch (error) {
@@ -734,7 +823,7 @@ app.get("/api/admin/reports", requireAdmin, async (req, res) => {
   const status = String(req.query.status || "").trim().toLowerCase();
   try {
     const result = await db.query(
-      `SELECT r.id, r.reason, r.status, r.created_at, r.reviewed_at,
+      `SELECT r.id, r.title, r.description, r.reason, r.status, r.created_at, r.reviewed_at, r.attachment_name, r.attachment_type, r.attachment_size,
               q.id AS question_id, q.question_text, u.name, u.email,
               ru.name AS reviewer_name
        FROM question_reports r
@@ -745,7 +834,8 @@ app.get("/api/admin/reports", requireAdmin, async (req, res) => {
        ORDER BY r.created_at DESC LIMIT 200`, [status]
     );
     res.json(result.rows.map(r => ({
-      id:Number(r.id), reason:r.reason, status:r.status, created_at:r.created_at, reviewed_at:r.reviewed_at,
+      id:Number(r.id), title:r.title || "Other", description:r.description || r.reason || "", reason:r.reason, status:r.status, created_at:r.created_at, reviewed_at:r.reviewed_at,
+      attachment_name:r.attachment_name || null, attachment_type:r.attachment_type || null, attachment_size:r.attachment_size ? Number(r.attachment_size) : null,
       question_id:r.question_id ? Number(r.question_id) : null, question:r.question_text || "Question removed",
       name:r.name || "Unknown user", email:r.email || "", reviewer_name:r.reviewer_name || null
     })));
@@ -771,6 +861,33 @@ app.put("/api/admin/reports/:id", requireAdmin, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Unable to update the report." });
+  }
+});
+
+app.get("/api/admin/reports/:id/attachment", requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) return res.status(400).send("Invalid report.");
+  try {
+    const result = await db.query("SELECT attachment_name, attachment_type, attachment_data FROM question_reports WHERE id=$1", [id]);
+    const row = result.rows[0];
+    if (!row || !row.attachment_data) return res.status(404).send("Attachment not found.");
+    res.setHeader("Content-Type", row.attachment_type || "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename="${String(row.attachment_name || "attachment").replace(/[^a-zA-Z0-9._-]/g, "_")}"`);
+    res.send(row.attachment_data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Unable to download attachment.");
+  }
+});
+
+app.get("/api/admin/access-responses", requireAdmin, async (req, res) => {
+  try {
+    const result = await db.query(`SELECT ar.id, ar.user_id, ar.email, ar.response, ar.created_at, u.name
+      FROM access_responses ar LEFT JOIN users u ON u.id=ar.user_id ORDER BY ar.created_at DESC LIMIT 200`);
+    res.json(result.rows.map(r => ({id:Number(r.id), user_id:r.user_id ? Number(r.user_id) : null, name:r.name || "Unknown user", email:r.email, response:r.response, created_at:r.created_at})));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({error:"Unable to load user responses."});
   }
 });
 
