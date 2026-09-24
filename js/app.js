@@ -418,6 +418,31 @@
     });
   }
 
+  function prettyStatus(status) {
+    return String(status || "").replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  async function reportQuestion() {
+    if (!state.serverMode || !state.questions[state.index]?.[7]) {
+      alert("Please sign in to report a question.");
+      return;
+    }
+    const reason = prompt("What is wrong with this question? For example: incorrect answer, unclear wording, duplicate, or outdated information.");
+    if (reason === null) return;
+    const text = reason.trim();
+    if (text.length < 5) { alert("Please provide a short reason."); return; }
+    try {
+      const response = await fetch(`/api/attempt-questions/${state.questions[state.index][7]}/report`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({reason: text})
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Unable to submit the report.");
+      alert("Thanks. Your report has been submitted.");
+    } catch (error) { alert(error.message || "Unable to submit the report."); }
+  }
+
   async function showResults() {
     hideViews();
     $("resultsView").classList.remove("hidden");
@@ -448,7 +473,7 @@
                       <td>${escapeHtml(item.subject)}</td>
                       <td>${item.score === null ? "—" : `${item.score}/${item.total}`}</td>
                       <td>${item.percentage === null ? "—" : `${item.percentage}%`}</td>
-                      <td>${escapeHtml(item.status)}</td>
+                      <td>${escapeHtml(prettyStatus(item.status))}</td>
                       <td>${escapeHtml(new Date(item.started_at).toLocaleString())}</td>
                     </tr>
                   `).join("")}
@@ -767,6 +792,7 @@
     showHome,
     showAssessments,
     showResults,
+    reportQuestion,
     startAssessment,
     checkAnswer,
     nextQuestion,

@@ -1,96 +1,25 @@
-# MeritArc
+# MeritArc v0.5.8
 
-MeritArc is an assessment platform with a learner UI, question bank, user authentication, server-side assessment attempts, and PostgreSQL persistence.
+Practice and assessment platform with PostgreSQL-backed accounts, assessments, admin controls, question reporting, modification history, category pages, and mobile-friendly navigation.
 
-## Project structure
+## Admin roles
+- User: take assessments and view own results.
+- Editor: manage questions.
+- Administrator: manage questions, results, users, question reports, and modification history.
 
-- `index.html` - learner-facing assessment UI
-- `css/` - application styles
-- `js/` - frontend logic and local question data fallback
-- `admin/` - question bank administration prototype
-- `backend/server.js` - Express API and web server
-- `backend/db.js` - PostgreSQL connection pool
-- `backend/seed.js` - schema initialization and question seeding
-- `database/schema.sql` - PostgreSQL schema
-- `database/seed-data.json` - starter question bank
+The environment-managed administrator account is controlled by `ADMIN_EMAIL` and `ADMIN_PASSWORD`. The current administrator cannot change their own profile or role through the website.
 
-## Local / production environment variables
+## Admin result management
+Administrators can edit a recorded score or permanently delete an assessment result after confirmation. Deleting an attempt removes its stored answers and result through database cascades.
 
-Set `DATABASE_URL` to the PostgreSQL connection string from Supabase. Keep the real connection string private.
+## Users
+Administrators can add users with a role and temporary password. The temporary password is shown once in the admin console. Email delivery is not configured yet.
 
-Example:
+## Question reports and audit history
+Signed-in users can report a question during an assessment. Administrators can review report status and see a modification history showing who changed questions, results, users, and reports.
 
-```text
-DATABASE_URL=postgresql://postgres.<project-ref>:<password>@<pooler-host>:5432/postgres
-PORT=3000
-NODE_ENV=development
-```
+## Deployment
+Use Render for the Node/Express service and Supabase PostgreSQL for the database. Required Render environment variables: `DATABASE_URL`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
 
-## Run locally
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Initialize the PostgreSQL database and seed the starter questions:
-
-```bash
-npm run seed
-```
-
-Start the application:
-
-```bash
-npm start
-```
-
-The application listens on the configured `PORT` and binds to `0.0.0.0`.
-
-## Free Render + Supabase deployment
-
-MeritArc can run as a Render Web Service using the Render Free plan while Supabase provides the persistent PostgreSQL database.
-
-Render settings:
-
-```text
-Language: Node
-Branch: main
-Root Directory: blank
-Build Command: npm install
-Start Command: npm run start:render
-```
-
-Set this Render environment variable:
-
-```text
-DATABASE_URL=<your private Supabase Session Pooler connection string>
-```
-
-Do not add a Render persistent disk when using the free plan. The database lives in Supabase.
-
-`npm run start:render` initializes the schema and seeds the question bank on first deployment, then starts the Express server.
-
-Health check path:
-
-```text
-/api/health
-```
-
-## Important security notes
-
-- Never commit `.env` or a real `DATABASE_URL` to GitHub.
-- Never publish the Supabase database password.
-- The database password should only be stored as a hosting-provider environment variable or another secure secret store.
-
-
-## v0.5.5 additions
-- Added grouped assessments for Technical & Infrastructure, Computer Science & Programming, and Aptitude & Competitive Exams.
-- Added Quantitative Aptitude, Mathematics, Logical Reasoning, English, General Studies, Computer Science Fundamentals, Data Structures & Algorithms, Programming Fundamentals, and DBMS.
-- Assessment navigation now scrolls directly to the assessment section; Home returns to the top of the home page.
-- Seed script now adds missing questions without duplicating the existing question bank.
-
-
-## Staff access
-MeritArc supports three roles: `user` for assessments and personal results, `editor` for question-bank management, and `admin` for questions, results, and user access management. The admin console is available at `/admin/`. Administrators can reset completed attempts, adjust a recorded score, and change user roles.
+## Do not commit
+Do not commit `.env`, `node_modules/`, database files, or credentials.

@@ -87,6 +87,19 @@ function clearSessionCookie(res) {
   );
 }
 
+async function writeAudit(req, action, entityType, entityId, details = {}) {
+  try {
+    const actor = req.user || {};
+    await db.query(
+      `INSERT INTO audit_logs (actor_user_id, actor_name, actor_email, action, entity_type, entity_id, details)
+       VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb)`,
+      [actor.id || null, actor.name || null, actor.email || null, action, entityType, entityId || null, JSON.stringify(details)]
+    );
+  } catch (error) {
+    console.error("Audit log failed:", error);
+  }
+}
+
 function validatePassword(password) {
   return typeof password === "string" && password.length >= 8;
 }
@@ -567,20 +580,52 @@ app.get("/api/admin/users", requireAdmin, async (req, res) => {
   }
 });
 
+app.post("/api/admin/users", requireAdmin, async (req, res) => {
+  const name = String(req.body.name || "").trim();
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const role = String(req.body.role || "user").trim().toLowerCase();
+  let temporaryPassword = String(req.body.temporaryPassword || "");
+
+  if (name.length < 2) return res.status(400).json({ error: "Name must be at least 2 characters." });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: "Please enter a valid email address." });
+  if (!["user", "editor", "admin"].includes(role)) return res.status(400).json({ error: "Invalid role." });
+  if (!temporaryPassword) temporaryPassword = crypto.randomBytes(9).toString("base64url");
+  if (!validatePassword(temporaryPassword)) return res.status(400).json({ error: "Temporary password must be at least 8 characters." });
+
+  try {
+    const result = await db.query(
+      `INSERT INTO users (name, email, password_hash, role)
+       VALUES ($1,$2,$3,$4)
+       RETURNING id, name, email, role, created_at`,
+      [name, email, hashPassword(temporaryPassword), role]
+    );
+    const user = result.rows[0];
+    await writeAudit(req, "user_created", "user", user.id, { email: user.email, role: user.role });
+    res.status(201).json({
+      user: { id: Number(user.id), name: user.name, email: user.email, role: user.role, created_at: user.created_at },
+      temporaryPassword
+    });
+  } catch (error) {
+    if (error.code === "23505") return res.status(409).json({ error: "An account with this email already exists." });
+    console.error(error);
+    res.status(500).json({ error: "Unable to add the user." });
+  }
+});
+
 app.put("/api/admin/users/:id", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   const role = String(req.body.role || "user").trim().toLowerCase();
-  const name = String(req.body.name || "").trim();
   if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid user." });
-  if (!['user', 'editor', 'admin'].includes(role)) return res.status(400).json({ error: "Invalid role." });
-  if (name.length < 2) return res.status(400).json({ error: "Name must be at least 2 characters." });
-  if (id === Number(req.user.id) && role !== 'admin') return res.status(400).json({ error: "You cannot remove your own administrator access." });
+  if (!["user", "editor", "admin"].includes(role)) return res.status(400).json({ error: "Invalid role." });
+  if (id === Number(req.user.id)) return res.status(400).json({ error: "Your administrator account can only be changed through Render environment variables." });
   try {
+    const current = await db.query("SELECT id, name, email, role, created_at FROM users WHERE id=$1", [id]);
+    if (!current.rows[0]) return res.status(404).json({ error: "User not found." });
     const result = await db.query(
-      `UPDATE users SET name = $1, role = $2 WHERE id = $3 RETURNING id, name, email, role, created_at`,
-      [name, role, id]
+      `UPDATE users SET role = $1 WHERE id = $2 RETURNING id, name, email, role, created_at`,
+      [role, id]
     );
-    if (!result.rows[0]) return res.status(404).json({ error: "User not found." });
+    await writeAudit(req, "user_role_changed", "user", id, { email: result.rows[0].email, from_role: current.rows[0].role, to_role: role });
     res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
@@ -613,22 +658,24 @@ app.get("/api/admin/results", requireAdmin, async (req, res) => {
   }
 });
 
-app.post("/api/admin/results/:id/reset", requireAdmin, async (req, res) => {
+app.delete("/api/admin/results/:id", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid result." });
   try {
-    const result = await db.query(
-      `UPDATE attempts
-       SET status = 'abandoned', completed_at = NULL, score = NULL, percentage = NULL
-       WHERE id = $1
-       RETURNING id, status`, [id]
+    const current = await db.query(
+      `SELECT a.id, a.subject, a.status, a.score, a.total, u.email, u.name
+       FROM attempts a JOIN users u ON u.id=a.user_id WHERE a.id=$1`, [id]
     );
-    if (!result.rows[0]) return res.status(404).json({ error: "Result not found." });
-    await db.query("DELETE FROM attempt_answers WHERE attempt_question_id IN (SELECT id FROM attempt_questions WHERE attempt_id = $1)", [id]);
-    res.json({ ok: true, message: "Result reset. The user can start a fresh assessment." });
+    if (!current.rows[0]) return res.status(404).json({ error: "Result not found." });
+    const r = current.rows[0];
+    await writeAudit(req, "result_deleted", "attempt", id, {
+      subject: r.subject, status: r.status, score: r.score, total: r.total, user_email: r.email
+    });
+    await db.query("DELETE FROM attempts WHERE id=$1", [id]);
+    res.json({ ok: true, message: "Result permanently removed from the database." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Unable to reset the result." });
+    res.status(500).json({ error: "Unable to delete the result." });
   }
 });
 
@@ -648,10 +695,98 @@ app.put("/api/admin/results/:id", requireAdmin, async (req, res) => {
        RETURNING id, status, score, total, percentage, completed_at`,
       [score, total, percentage, id]
     );
+    await writeAudit(req, "result_score_changed", "attempt", id, { from_score: current.rows[0].score, to_score: score, total });
     res.json({ ...result.rows[0], id: Number(result.rows[0].id), score: Number(result.rows[0].score), total: Number(result.rows[0].total), percentage: Number(result.rows[0].percentage) });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Unable to modify the result." });
+  }
+});
+
+// ---------- Question reports & audit history ----------
+
+app.post("/api/attempt-questions/:id/report", requireUser, async (req, res) => {
+  const attemptQuestionId = Number(req.params.id);
+  const reason = String(req.body.reason || "").trim();
+  if (!Number.isInteger(attemptQuestionId) || attemptQuestionId < 1) return res.status(400).json({ error: "Invalid question." });
+  if (reason.length < 5 || reason.length > 500) return res.status(400).json({ error: "Please provide a short reason (5 to 500 characters)." });
+  try {
+    const result = await db.query(
+      `SELECT aq.id, aq.question_id, a.user_id
+       FROM attempt_questions aq JOIN attempts a ON a.id=aq.attempt_id
+       WHERE aq.id=$1 AND a.user_id=$2`,
+      [attemptQuestionId, req.user.id]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: "Question not found in your assessment." });
+    const row = result.rows[0];
+    await db.query(
+      `INSERT INTO question_reports (user_id, question_id, attempt_question_id, reason) VALUES ($1,$2,$3,$4)`,
+      [req.user.id, row.question_id, attemptQuestionId, reason]
+    );
+    res.status(201).json({ ok: true, message: "Thanks. Your report has been submitted." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to submit the report." });
+  }
+});
+
+app.get("/api/admin/reports", requireAdmin, async (req, res) => {
+  const status = String(req.query.status || "").trim().toLowerCase();
+  try {
+    const result = await db.query(
+      `SELECT r.id, r.reason, r.status, r.created_at, r.reviewed_at,
+              q.id AS question_id, q.question_text, u.name, u.email,
+              ru.name AS reviewer_name
+       FROM question_reports r
+       LEFT JOIN questions q ON q.id=r.question_id
+       LEFT JOIN users u ON u.id=r.user_id
+       LEFT JOIN users ru ON ru.id=r.reviewed_by
+       WHERE ($1='' OR r.status=$1)
+       ORDER BY r.created_at DESC LIMIT 200`, [status]
+    );
+    res.json(result.rows.map(r => ({
+      id:Number(r.id), reason:r.reason, status:r.status, created_at:r.created_at, reviewed_at:r.reviewed_at,
+      question_id:r.question_id ? Number(r.question_id) : null, question:r.question_text || "Question removed",
+      name:r.name || "Unknown user", email:r.email || "", reviewer_name:r.reviewer_name || null
+    })));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to load question reports." });
+  }
+});
+
+app.put("/api/admin/reports/:id", requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const status = String(req.body.status || "").trim().toLowerCase();
+  if (!Number.isInteger(id) || id < 1) return res.status(400).json({ error: "Invalid report." });
+  if (!["open","reviewed","dismissed"].includes(status)) return res.status(400).json({ error: "Invalid report status." });
+  try {
+    const result = await db.query(
+      `UPDATE question_reports SET status=$1, reviewed_by=$2, reviewed_at=NOW() WHERE id=$3 RETURNING id,status`,
+      [status, req.user.id, id]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: "Report not found." });
+    await writeAudit(req, "question_report_updated", "question_report", id, { status });
+    res.json({ ok:true, ...result.rows[0], id:Number(result.rows[0].id) });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to update the report." });
+  }
+});
+
+app.get("/api/admin/audit", requireAdmin, async (req, res) => {
+  const search = String(req.query.search || "").trim().toLowerCase();
+  try {
+    const result = await db.query(
+      `SELECT id, actor_name, actor_email, action, entity_type, entity_id, details, created_at
+       FROM audit_logs
+       WHERE ($1='' OR LOWER(COALESCE(actor_name,'')) LIKE '%'||$1||'%' OR LOWER(COALESCE(actor_email,'')) LIKE '%'||$1||'%' OR LOWER(action) LIKE '%'||$1||'%' OR LOWER(entity_type) LIKE '%'||$1||'%')
+       ORDER BY created_at DESC LIMIT 300`, [search]
+    );
+    res.json(result.rows.map(r => ({ id:Number(r.id), actor_name:r.actor_name || "System", actor_email:r.actor_email || "", action:r.action, entity_type:r.entity_type, entity_id:r.entity_id ? Number(r.entity_id) : null, details:r.details || {}, created_at:r.created_at })));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to load modification history." });
   }
 });
 
@@ -755,6 +890,7 @@ app.post("/api/questions", requireStaff, async (req, res) => {
        RETURNING *`,
       [q.subject, q.topic, q.difficulty, q.question, ...q.options, Number(q.correct), q.explanation || "", q.status || "active"]
     );
+    await writeAudit(req, "question_created", "question", result.rows[0].id, { subject: result.rows[0].subject, topic: result.rows[0].topic });
     res.status(201).json(outQuestion(result.rows[0]));
   } catch (error) {
     console.error(error);
@@ -776,6 +912,7 @@ app.put("/api/questions/:id", requireStaff, async (req, res) => {
       [q.subject, q.topic, q.difficulty, q.question, ...q.options, Number(q.correct), q.explanation || "", q.status || "active", id]
     );
     if (!result.rows[0]) return res.status(404).json({ error: "Question not found" });
+    await writeAudit(req, "question_updated", "question", id, { subject: result.rows[0].subject, topic: result.rows[0].topic });
     res.json(outQuestion(result.rows[0]));
   } catch (error) {
     console.error(error);
@@ -790,6 +927,7 @@ app.delete("/api/questions/:id", requireStaff, async (req, res) => {
       [Number(req.params.id)]
     );
     if (!result.rows[0]) return res.status(404).json({ error: "Question not found" });
+    await writeAudit(req, "question_archived", "question", Number(req.params.id), {});
     res.json({ ok: true });
   } catch (error) {
     console.error(error);

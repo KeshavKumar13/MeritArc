@@ -10,7 +10,7 @@
   </section>
   <section id="adminPanel" hidden>
     <div class="bar"><div><h1 id="consoleTitle">Question Bank</h1><p id="adminUser" class="muted"></p></div><div class="bar-actions"><button id="new">+ Add Question</button> <button id="logout">Sign Out</button></div></div>
-    <nav class="tabs"><button class="tab active" data-tab="questions">Questions</button><button class="tab admin-only" data-tab="results">Results</button><button class="tab admin-only" data-tab="users">Users & Access</button></nav>
+    <nav class="tabs"><button class="tab active" data-tab="questions">Questions</button><button class="tab admin-only" data-tab="results">Results</button><button class="tab admin-only" data-tab="users">Users & Access</button><button class="tab admin-only" data-tab="reports">Question Reports</button><button class="tab admin-only" data-tab="audit">Modification History</button></nav>
     <section id="questionsTab" class="tab-panel">
       <p id="status"></p>
       <div class="filters"><input id="search" placeholder="Search question"><select id="subject"><option value="">All subjects</option></select><select id="difficulty"><option value="">All difficulties</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
@@ -22,9 +22,31 @@
       <p id="resultStatusMessage" class="muted"></p><div class="table-wrap"><table><thead><tr><th>User</th><th>Assessment</th><th>Status</th><th>Score</th><th>Date</th><th>Action</th></tr></thead><tbody id="resultRows"></tbody></table></div>
     </section>
     <section id="usersTab" class="tab-panel" hidden>
-      <div class="access-note"><b>Access levels</b><span><strong>User:</strong> assessments and own results.</span><span><strong>Editor:</strong> question bank only.</span><span><strong>Administrator:</strong> questions, results and user access.</span></div>
+      <div class="access-note"><b>Access levels</b><span><strong>User:</strong> assessments and own results.</span><span><strong>Editor:</strong> question bank only.</span><span><strong>Administrator:</strong> questions, results, users, reports and modification history.</span><span><strong>Your administrator account:</strong> managed only through Render environment variables.</span></div>
+      <section class="add-user-card">
+        <h3>Add / Invite User</h3>
+        <p class="muted">Creates a MeritArc account. No email is sent automatically yet; securely give the temporary password to the user.</p>
+        <form id="addUserForm" class="user-form">
+          <input id="newUserName" placeholder="Full name" required minlength="2">
+          <input id="newUserEmail" type="email" placeholder="Email address" required>
+          <select id="newUserRole"><option value="user">User</option><option value="editor">Editor</option><option value="admin">Administrator</option></select>
+          <input id="newUserPassword" type="password" placeholder="Temporary password (optional)">
+          <button type="submit">Add User</button>
+        </form>
+        <p id="addUserMessage" class="message"></p>
+      </section>
       <div class="filters"><input id="userSearch" placeholder="Search name or email"><select id="userRole"><option value="">All roles</option><option value="user">User</option><option value="editor">Editor</option><option value="admin">Administrator</option></select></div>
       <div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Attempts</th><th>Joined</th><th>Action</th></tr></thead><tbody id="userRows"></tbody></table></div>
+    </section>
+    <section id="reportsTab" class="tab-panel" hidden>
+      <div class="filters"><select id="reportStatus"><option value="">All report statuses</option><option value="open">Open</option><option value="reviewed">Reviewed</option><option value="dismissed">Dismissed</option></select></div>
+      <p id="reportStatusMessage" class="muted"></p>
+      <div class="table-wrap"><table><thead><tr><th>Reported by</th><th>Question</th><th>Reason</th><th>Status</th><th>Reported</th><th>Update</th></tr></thead><tbody id="reportRows"></tbody></table></div>
+    </section>
+    <section id="auditTab" class="tab-panel" hidden>
+      <div class="filters"><input id="auditSearch" placeholder="Search user, action or item"></div>
+      <p id="auditStatusMessage" class="muted"></p>
+      <div class="table-wrap"><table><thead><tr><th>When</th><th>Modified by</th><th>Action</th><th>Item</th><th>Details</th></tr></thead><tbody id="auditRows"></tbody></table></div>
     </section>
   </section>
 </main><script src="admin.js"></script></body></html>
