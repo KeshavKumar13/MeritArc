@@ -10,7 +10,7 @@ button,input{font:inherit}
 button{cursor:pointer}
 .site-header{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:20}
 .brand{display:flex;align-items:center;text-decoration:none}.brand img{width:225px;height:auto;display:block}
-.nav{display:flex;gap:8px}
+.nav{display:flex;gap:8px;flex-shrink:0}
 .nav button{border:0;background:transparent;color:#45556d;padding:10px 13px;font-weight:500;font-size:14px;letter-spacing:.1px}
 .nav button:hover{color:var(--blue);background:#f4f8fd;border-radius:8px}
 .container{width:min(1180px,92%);margin:28px auto}
@@ -49,7 +49,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   .site-header{height:64px;padding:8px 4%;position:sticky;top:0}
   .brand img{width:180px;max-width:70vw}
   .mobile-menu-button{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:10px;font-size:22px;line-height:1;position:relative;z-index:22}
-  .nav{display:none;position:absolute;left:4%;right:4%;top:58px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 30px rgba(18,49,89,.14);padding:8px;flex-direction:column;gap:3px;z-index:21}
+  .nav{display:none;position:absolute;left:4%;right:4%;top:58px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 30px rgba(18,49,89,.14);padding:8px;flex-direction:column;gap:3px;z-index:50}
   .nav.open{display:flex}
   .nav button{width:100%;text-align:left;padding:12px 13px}
   .container{width:min(94%,1180px);margin:18px auto}
@@ -90,7 +90,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 .account-note{padding:12px;border-radius:8px;background:#f8f9fc;color:#475467;line-height:1.5}
 
 .assessment-group{margin:28px 0 34px}.assessment-group-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}.assessment-group-head h3{margin:0;color:var(--navy);font-size:20px}.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.category-card{display:block;text-decoration:none;color:inherit;min-height:180px;transition:transform .18s ease,box-shadow .18s ease}.category-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(18,49,89,.12)}.category-card-icon{width:52px;height:52px;border-radius:15px;background:#edf6ff;color:var(--blue);display:grid;place-items:center;font-size:28px;font-weight:900}.category-card h3{margin:15px 0 8px}.brand img{width:245px;height:auto;image-rendering:auto}
+.category-card{display:block;text-decoration:none;color:inherit;min-height:180px;transition:transform .18s ease,box-shadow .18s ease}.category-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(18,49,89,.12)}.category-card-icon{width:52px;height:52px;border-radius:15px;background:#edf6ff;color:var(--blue);display:grid;place-items:center;font-size:28px;font-weight:900}.category-card h3{margin:15px 0 8px}.brand img{width:225px;height:auto;display:block;image-rendering:auto}
 
 /* Search and mobile refinements */
 .hero{overflow:visible}
