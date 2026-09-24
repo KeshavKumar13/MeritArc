@@ -112,8 +112,6 @@
         ]);
       } catch (error) {
         console.error("Assessment API error:", error);
-        document.documentElement.classList.remove("assessment-boot");
-        showHome();
         alert(error.message || "Unable to start the assessment.");
         return;
       }
@@ -142,7 +140,6 @@
 
     hideViews();
     $("quizView").classList.remove("hidden");
-    document.documentElement.classList.remove("assessment-boot");
     renderQuestion();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -430,100 +427,20 @@
       alert("Please sign in to report a question.");
       return;
     }
-
-    const modal = document.createElement("div");
-    modal.className = "report-modal";
-    modal.innerHTML = `
-      <div class="report-backdrop"></div>
-      <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
-        <button type="button" class="auth-close report-close" aria-label="Close">×</button>
-        <h2 id="reportTitle">Report this question</h2>
-        <p class="muted">Tell us what needs attention. Your report will be reviewed by the MeritArc team.</p>
-        <form class="report-form">
-          <label>Title
-            <select id="reportType" required>
-              <option value="">Select a reason</option>
-              <option>Incorrect answer</option>
-              <option>Incorrect question</option>
-              <option>Unclear wording</option>
-              <option>Typo or formatting</option>
-              <option>Duplicate question</option>
-              <option>Outdated information</option>
-              <option>Other</option>
-            </select>
-          </label>
-          <label>Description
-            <textarea id="reportDescription" rows="5" maxlength="2000" required placeholder="Describe the issue clearly..."></textarea>
-          </label>
-          <label>Attachment <span class="muted">(optional, max 1 MB)</span>
-            <input id="reportAttachment" type="file" accept="image/*,.pdf,.txt,.doc,.docx">
-          </label>
-          <div id="reportFileNote" class="muted"></div>
-          <div class="report-actions">
-            <button type="button" class="secondary" id="reportCancel">Cancel</button>
-            <button type="submit" class="primary">Submit Report</button>
-          </div>
-          <div id="reportFormMessage" class="auth-message hidden"></div>
-        </form>
-      </div>`;
-    document.body.appendChild(modal);
-    const close = () => modal.remove();
-    modal.querySelector(".report-backdrop").onclick = close;
-    modal.querySelector(".report-close").onclick = close;
-    modal.querySelector("#reportCancel").onclick = close;
-    const fileInput = modal.querySelector("#reportAttachment");
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files?.[0];
-      if (!file) { modal.querySelector("#reportFileNote").textContent = ""; return; }
-      if (file.size > 1024 * 1024) {
-        modal.querySelector("#reportFileNote").textContent = "This file is larger than 1 MB.";
-        fileInput.value = "";
-        return;
-      }
-      modal.querySelector("#reportFileNote").textContent = `${file.name} · ${(file.size / 1024).toFixed(0)} KB`;
-    });
-    modal.querySelector(".report-form").onsubmit = async event => {
-      event.preventDefault();
-      const type = modal.querySelector("#reportType").value;
-      const description = modal.querySelector("#reportDescription").value.trim();
-      const file = fileInput.files?.[0] || null;
-      const message = modal.querySelector("#reportFormMessage");
-      message.classList.add("hidden");
-      if (!type) { message.textContent = "Please select a report type."; message.classList.remove("hidden"); return; }
-      if (description.length < 5) { message.textContent = "Please provide a little more detail."; message.classList.remove("hidden"); return; }
-      if (file && file.size > 1024 * 1024) { message.textContent = "Attachment must be 1 MB or smaller."; message.classList.remove("hidden"); return; }
-      let attachmentBase64 = "";
-      if (file) {
-        attachmentBase64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      }
-      const submit = modal.querySelector("button[type='submit']");
-      submit.disabled = true;
-      try {
-        const response = await fetch(`/api/attempt-questions/${state.questions[state.index][7]}/report`, {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({
-            title: type,
-            description,
-            attachmentName: file?.name || "",
-            attachmentType: file?.type || "",
-            attachmentBase64
-          })
-        });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.error || "Unable to submit the report.");
-        close();
-        alert("Thanks. Your report has been submitted.");
-      } catch (error) {
-        message.textContent = error.message || "Unable to submit the report.";
-        message.classList.remove("hidden");
-      } finally { submit.disabled = false; }
-    };
+    const reason = prompt("What is wrong with this question? For example: incorrect answer, unclear wording, duplicate, or outdated information.");
+    if (reason === null) return;
+    const text = reason.trim();
+    if (text.length < 5) { alert("Please provide a short reason."); return; }
+    try {
+      const response = await fetch(`/api/attempt-questions/${state.questions[state.index][7]}/report`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({reason: text})
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Unable to submit the report.");
+      alert("Thanks. Your report has been submitted.");
+    } catch (error) { alert(error.message || "Unable to submit the report."); }
   }
 
   async function showResults() {
@@ -734,7 +651,6 @@
     $("accountView").classList.add("hidden");
     setAuthMessage("loginMessage", "");
     setAuthMessage("registerMessage", "");
-    $("accessResponseBox")?.classList.add("hidden");
   }
 
   function showRegister() {
@@ -746,7 +662,6 @@
     $("accountView").classList.add("hidden");
     setAuthMessage("loginMessage", "");
     setAuthMessage("registerMessage", "");
-    $("accessResponseBox")?.classList.add("hidden");
   }
 
   function openAuth() {
@@ -794,19 +709,8 @@
 
       if (!response.ok) {
         setAuthMessage("loginMessage", data.error || "Unable to sign in.");
-        const box = $("accessResponseBox");
-        if (box) {
-          box.classList.toggle("hidden", !(data.requestInput && data.email));
-          if (data.requestInput && data.email) {
-            $("accessResponsePrompt").textContent = data.requestPrompt || "Please tell us why you need access.";
-            $("accessResponseText").value = "";
-            box.dataset.email = data.email;
-            $("accessResponseMessage").textContent = "";
-          }
-        }
         return;
       }
-      $("accessResponseBox")?.classList.add("hidden");
 
       $("loginForm").reset();
       await refreshAuthView();
@@ -866,24 +770,6 @@
 
   initAuth();
 
-  $("accessResponseButton")?.addEventListener("click", async () => {
-    const box = $("accessResponseBox");
-    const text = $("accessResponseText").value.trim();
-    const email = box?.dataset.email || "";
-    const message = $("accessResponseMessage");
-    if (text.length < 5) { message.textContent = "Please enter a little more detail."; return; }
-    const button = $("accessResponseButton");
-    button.disabled = true;
-    try {
-      const response = await fetch("/api/access-response", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,response:text})});
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "Unable to submit your response.");
-      message.textContent = data.message || "Your response has been submitted.";
-      $("accessResponseText").value = "";
-    } catch (error) { message.textContent = error.message; }
-    finally { button.disabled = false; }
-  });
-
   function closeMobileMenu() {
     const nav = $("siteNav");
     const button = $("mobileMenuButton");
@@ -900,12 +786,7 @@
     button.setAttribute("aria-expanded", String(open));
   }
 
-  $("mobileMenuButton")?.addEventListener("click", event => { event.stopPropagation(); toggleMobileMenu(); });
-  document.addEventListener("pointerdown", event => {
-    const nav = $("siteNav");
-    const button = $("mobileMenuButton");
-    if (nav?.classList.contains("open") && !nav.contains(event.target) && !button?.contains(event.target)) closeMobileMenu();
-  });
+  $("mobileMenuButton")?.addEventListener("click", toggleMobileMenu);
 
   window.MeritArc = {
     showHome,

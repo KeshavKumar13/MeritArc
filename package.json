@@ -1,6 +1,6 @@
 {
   "name": "meritarc",
-  "version": "0.5.9",
+  "version": "0.5.7",
   "private": true,
   "scripts": {
     "start": "npm run seed && node backend/server.js",
