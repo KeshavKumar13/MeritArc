@@ -70,16 +70,18 @@ function getCurrentUser(req) {
 
 function setSessionCookie(res, token, expires) {
   const maxAge = Math.floor((new Date(expires).getTime() - Date.now()) / 1000);
+  const secure = process.env.NODE_ENV === "production" || process.env.RENDER ? "; Secure" : "";
   res.setHeader(
     "Set-Cookie",
-    `meritArcSession=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${Math.max(maxAge, 0)}`
+    `meritArcSession=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax${secure}; Max-Age=${Math.max(maxAge, 0)}`
   );
 }
 
 function clearSessionCookie(res) {
+  const secure = process.env.NODE_ENV === "production" || process.env.RENDER ? "; Secure" : "";
   res.setHeader(
     "Set-Cookie",
-    "meritArcSession=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
+    `meritArcSession=; HttpOnly; Path=/; SameSite=Lax${secure}; Max-Age=0`
   );
 }
 
@@ -565,6 +567,6 @@ app.delete("/api/questions/:id", (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, () => {
-  console.log(`MeritArc running at http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`MeritArc running on port ${PORT}`);
 });
