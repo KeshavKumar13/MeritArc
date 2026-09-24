@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 150" role="img" aria-labelledby="title desc">
+<title id="title">MeritArc</title>
+<desc id="desc">MeritArc logo with the tagline Practice. Progress. Achieve.</desc>
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#1687f5"/>
+    <stop offset="1" stop-color="#0d55c9"/>
+  </linearGradient>
+</defs>
+<!-- Mark -->
+<path d="M30 111 L57 42 L84 84 L111 42 L142 111 L117 111 L111 83 L84 123 L57 83 L51 111 Z"
+      fill="url(#blue)"/>
+<path d="M51 47 Q84 8 117 47 M108 47 Q141 8 174 47"
+      fill="none" stroke="#1687f5" stroke-width="10" stroke-linecap="round"/>
+<!-- Wordmark -->
+<text x="205" y="79" font-family="Arial, Helvetica, sans-serif" font-size="55"
+      font-weight="700" fill="#10213f">Merit</text>
+<text x="362" y="79" font-family="Arial, Helvetica, sans-serif" font-size="55"
+      font-weight="700" fill="#1475ee">Arc</text>
+<text x="207" y="112" font-family="Arial, Helvetica, sans-serif" font-size="14"
+      font-weight="600" fill="#6c7a90" letter-spacing="2.2">PRACTICE. PROGRESS. ACHIEVE.</text>
+</svg>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MeritArc | Practice. Progress. Achieve.</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="#" onclick="MeritArc.showHome();return false;">
+    <img src="assets/logo.svg" alt="MeritArc">
+  </a>
+  <nav class="nav">
+    <button onclick="MeritArc.showHome()">Assessments</button>
+    <button onclick="MeritArc.showResults()">Results</button>
+    <button onclick="alert('Accounts will be added later.')">Sign In</button>
+  </nav>
+</header>
+
+<main class="container">
+  <section id="homeView">
+    <div class="hero">
+      <div>
+        <span class="pill">Your journey to success</span>
+        <h1>Practice Today.<br><span>Build Your Potential.</span></h1>
+        <p>High-quality practice questions and assessments for technical skills, certifications, aptitude and competitive exams.</p>
+        <div class="search-wrap">
+          <div class="search">
+            <input id="subjectSearch" type="search" autocomplete="off"
+                   placeholder="Search subjects or assessments...">
+            <button class="primary" id="searchButton">Search</button>
+          </div>
+          <div id="searchSuggestions" class="search-suggestions hidden"></div>
+        </div>
+        <div class="search-hint">Try Windows, Linux, VMware, Azure, AWS, Security or Networking.</div>
+        <div class="stats">
+          <div><strong id="questionBankStat">80+</strong><small>Question bank</small></div>
+          <div><strong>8</strong><small>Subjects</small></div>
+          <div><strong>Fresh</strong><small>Every attempt</small></div>
+          <div><strong>Detailed</strong><small>Explanations</small></div>
+        </div>
+      </div>
+      <div class="hero-art"><div class="arc"></div><div class="peak">▲</div></div>
+    </div>
+
+    <div id="assessmentResults" class="section-head">
+      <div>
+        <h2>Practice by Subject</h2>
+        <div class="muted">Every attempt selects a fresh random set of questions.</div>
+      </div>
+    </div>
+    <div id="subjectGrid" class="grid"></div>
+  </section>
+
+  <section id="quizView" class="hidden">
+    <div class="toolbar">
+      <button class="secondary" onclick="MeritArc.showHome()">← Subjects</button>
+      <strong id="quizTitle"></strong>
+      <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <span id="questionCount"></span>
+        <span id="answeredCount" class="tag"></span>
+      </div>
+      <div class="progress"><div id="progressBar" style="width:10%"></div></div>
+      <div id="questionText" class="question"></div>
+      <div id="options"></div>
+      <div id="feedback" class="hidden"></div>
+
+      <div class="toolbar">
+        <button class="secondary" onclick="MeritArc.previousQuestion()">Previous</button>
+        <div>
+          <button id="checkButton" class="secondary" onclick="MeritArc.checkAnswer()">Check Answer</button>
+          <button class="primary" onclick="MeritArc.nextQuestion()">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="muted" style="margin-top:12px">
+      10 questions are randomly selected from the subject bank. Retaking gives a new set.
+    </div>
+  </section>
+
+  <section id="reportView" class="hidden">
+    <div class="toolbar">
+      <button class="secondary" onclick="MeritArc.showHome()">← Assessments</button>
+      <h2>Assessment Report</h2>
+    </div>
+    <div id="reportContent"></div>
+  </section>
+
+  <section id="resultsView" class="hidden">
+    <div class="toolbar">
+      <button class="secondary" onclick="MeritArc.showHome()">← Assessments</button>
+      <h2>Previous Results</h2>
+    </div>
+    <div class="card" id="historyContent"></div>
+  </section>
+</main>
+
+<footer class="site-footer">MeritArc • Practice. Progress. Achieve.</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
