@@ -36,17 +36,36 @@
         <p id="addUserMessage" class="message"></p>
       </section>
       <div class="filters"><input id="userSearch" placeholder="Search name or email"><select id="userRole"><option value="">All roles</option><option value="user">User</option><option value="editor">Editor</option><option value="admin">Administrator</option></select></div>
-      <div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Attempts</th><th>Joined</th><th>Action</th></tr></thead><tbody id="userRows"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Access</th><th>Attempts</th><th>Joined</th><th>User input</th><th>Action</th></tr></thead><tbody id="userRows"></tbody></table></div>
     </section>
     <section id="reportsTab" class="tab-panel" hidden>
       <div class="filters"><select id="reportStatus"><option value="">All report statuses</option><option value="open">Open</option><option value="reviewed">Reviewed</option><option value="dismissed">Dismissed</option></select></div>
       <p id="reportStatusMessage" class="muted"></p>
-      <div class="table-wrap"><table><thead><tr><th>Reported by</th><th>Question</th><th>Reason</th><th>Status</th><th>Reported</th><th>Update</th></tr></thead><tbody id="reportRows"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Reported by</th><th>Question</th><th>Title</th><th>Description</th><th>Attachment</th><th>Status</th><th>Reported</th><th>Update</th></tr></thead><tbody id="reportRows"></tbody></table></div>
     </section>
     <section id="auditTab" class="tab-panel" hidden>
       <div class="filters"><input id="auditSearch" placeholder="Search user, action or item"></div>
       <p id="auditStatusMessage" class="muted"></p>
       <div class="table-wrap"><table><thead><tr><th>When</th><th>Modified by</th><th>Action</th><th>Item</th><th>Details</th></tr></thead><tbody id="auditRows"></tbody></table></div>
     </section>
+    <div id="accessModal" class="access-modal" hidden>
+      <div class="access-backdrop"></div>
+      <section class="access-dialog" role="dialog" aria-modal="true" aria-labelledby="accessDialogTitle">
+        <button type="button" id="accessClose" class="access-close" aria-label="Close">×</button>
+        <h2 id="accessDialogTitle">Manage user access</h2>
+        <p id="accessDialogUser" class="muted"></p>
+        <form id="accessForm" class="access-form">
+          <input type="hidden" id="accessUserId">
+          <label>Role<select id="accessRole"><option value="user">User</option><option value="editor">Editor</option><option value="admin">Administrator</option></select></label>
+          <label>Access status<select id="accessStatus"><option value="active">Active</option><option value="blocked">Blocked</option><option value="removed">Removed</option></select></label>
+          <label>Message shown when access is denied<textarea id="accessMessage" rows="4" maxlength="1000" placeholder="Example: Your access has been temporarily blocked. Please contact support if you need help."></textarea></label>
+          <label class="check-row"><input id="accessRequestInput" type="checkbox"> Ask the user for input</label>
+          <label id="accessPromptWrap">Question to ask the user<textarea id="accessPrompt" rows="3" maxlength="500" placeholder="Example: Please tell us why you need access restored."></textarea></label>
+          <div id="accessFormMessage" class="message"></div>
+          <div class="access-actions"><button type="button" id="accessCancel">Cancel</button><button type="submit">Save Access</button></div>
+        </form>
+      </section>
+    </div>
+
   </section>
 </main><script src="admin.js"></script></body></html>

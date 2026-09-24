@@ -18,7 +18,7 @@ async function seedAdmin() {
   const existing = await db.query("SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1", [email]);
   const passwordHash = hashPassword(password);
   if (existing.rows[0]) {
-    await db.query("UPDATE users SET role='admin', password_hash=$1 WHERE id=$2", [passwordHash, existing.rows[0].id]);
+    await db.query("UPDATE users SET role='admin', password_hash=$1, access_status='active', access_message='', request_input=FALSE, request_prompt='', updated_at=NOW() WHERE id=$2", [passwordHash, existing.rows[0].id]);
     console.log(`Admin account ready: ${email}`);
   } else {
     await db.query(

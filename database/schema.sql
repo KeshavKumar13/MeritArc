@@ -25,10 +25,21 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    role TEXT NOT NULL DEFAULT 'user'
+    role TEXT NOT NULL DEFAULT 'user',
+    access_status TEXT NOT NULL DEFAULT 'active' CHECK (access_status IN ('active','blocked','removed')),
+    access_message TEXT NOT NULL DEFAULT '',
+    request_input BOOLEAN NOT NULL DEFAULT FALSE,
+    request_prompt TEXT NOT NULL DEFAULT '',
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS access_status TEXT NOT NULL DEFAULT 'active';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS access_message TEXT NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS request_input BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS request_prompt TEXT NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+UPDATE users SET access_status='active' WHERE access_status IS NULL;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_lower ON users(LOWER(email));
 
@@ -105,3 +116,20 @@ CREATE TABLE IF NOT EXISTS question_reports (
 
 CREATE INDEX IF NOT EXISTS idx_question_reports_status ON question_reports(status);
 CREATE INDEX IF NOT EXISTS idx_question_reports_created_at ON question_reports(created_at DESC);
+
+ALTER TABLE question_reports ADD COLUMN IF NOT EXISTS title TEXT NOT NULL DEFAULT 'Other';
+ALTER TABLE question_reports ADD COLUMN IF NOT EXISTS description TEXT NOT NULL DEFAULT '';
+ALTER TABLE question_reports ADD COLUMN IF NOT EXISTS attachment_name TEXT;
+ALTER TABLE question_reports ADD COLUMN IF NOT EXISTS attachment_type TEXT;
+ALTER TABLE question_reports ADD COLUMN IF NOT EXISTS attachment_size INTEGER;
+ALTER TABLE question_reports ADD COLUMN IF NOT EXISTS attachment_data BYTEA;
+
+CREATE TABLE IF NOT EXISTS access_responses (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    email TEXT NOT NULL,
+    response TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_access_responses_created_at ON access_responses(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_access_responses_email ON access_responses(LOWER(email));

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MeritArc | Support & Contact</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/" aria-label="MeritArc Home"><img src="assets/logo.svg" alt="MeritArc"></a>
+  <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+  <nav class="nav" id="siteNav">
+    <button onclick="location.href='/'">Home</button>
+    <button onclick="location.href='/#assessment'">Assessments</button>
+    <button onclick="location.href='/#results'">Results</button>
+    <button onclick="location.href='support.html'">Support</button>
+    <button onclick="location.href='/?auth=1'">Sign In</button>
+  </nav>
+</header>
+<main class="container support-page">
+  <section class="support-hero">
+    <span class="pill support-pill">MeritArc Support</span>
+    <h1>How can we help?</h1>
+    <p class="muted">For account access, assessment issues, question reports or general assistance, contact the MeritArc support team.</p>
+  </section>
+  <section class="support-grid">
+    <div class="card support-card">
+      <div class="support-icon">✉</div>
+      <h2>Support & Contact</h2>
+      <p class="muted">Send us an email and include enough detail for us to understand the issue. For assessment questions, mentioning the subject and question number helps.</p>
+      <a class="support-email" href="mailto:support@meritarc.in">support@meritarc.in</a>
+      <div class="support-actions"><a class="primary support-button" href="mailto:support@meritarc.in">Email Support</a><a class="secondary support-button" href="/">Back to MeritArc</a></div>
+    </div>
+    <div class="card support-card">
+      <div class="support-icon">?</div>
+      <h2>Before contacting us</h2>
+      <ul class="support-list">
+        <li>For a question issue, use <strong>Report this question</strong> during the assessment.</li>
+        <li>For login or access issues, include the email address registered with MeritArc.</li>
+        <li>Never send your password or other sensitive account credentials by email.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="support.html">Support & Contact</a></footer>
+<script>
+const menu=document.getElementById('siteNav'),menuBtn=document.getElementById('mobileMenuButton');
+menuBtn.addEventListener('click',e=>{e.stopPropagation();const o=menu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(o));});
+document.querySelectorAll('#siteNav button').forEach(b=>b.addEventListener('click',()=>menu.classList.remove('open')));
+document.addEventListener('pointerdown',e=>{if(menu.classList.contains('open')&&!menu.contains(e.target)&&!menuBtn.contains(e.target)){menu.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');}});
+</script>
+</body>
+</html>

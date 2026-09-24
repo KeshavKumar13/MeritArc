@@ -107,3 +107,39 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   .search-suggestions{left:0;right:0;top:calc(100% + 5px);max-height:55vh}
   .hero{overflow:visible}
 }
+
+/* MeritArc visual and interaction refinements */
+html.assessment-boot #homeView{display:none!important}html.assessment-boot .assessment-boot-loader{display:grid!important}
+
+.hero-art{min-height:310px;display:flex;align-items:center;justify-content:center;overflow:visible}
+.hero-visual{width:min(430px,100%);height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.visual-glow{position:absolute;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(87,171,255,.28) 0%,rgba(87,171,255,.08) 45%,transparent 72%);filter:blur(2px)}
+.progress-card{position:relative;z-index:2;width:270px;padding:22px;border-radius:22px;background:rgba(255,255,255,.98);color:#172a46;box-shadow:0 24px 55px rgba(3,22,53,.28);transform:rotate(-4deg)}
+.visual-card-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;color:#54708f;text-transform:uppercase;letter-spacing:.08em}
+.visual-dot{width:9px;height:9px;border-radius:50%;background:#38b979;box-shadow:0 0 0 5px #eaf9f1}
+.visual-card-title{font-size:20px;font-weight:850;line-height:1.2;margin:18px 0 22px;color:#10213f}
+.visual-bars{height:92px;display:flex;align-items:end;gap:13px;padding:0 10px;border-bottom:1px solid #e6edf6}
+.visual-bars span{flex:1;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,#62b4ff,#1475ee)}
+.visual-progress{height:9px;background:#e9f0f8;border-radius:99px;overflow:hidden;margin-top:20px}.visual-progress span{display:block;width:94%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#1475ee,#57adff)}
+.visual-caption{display:flex;justify-content:space-between;align-items:center;margin-top:9px;color:#71839a;font-size:12px}.visual-caption strong{color:#1475ee;font-size:14px}
+.visual-chip{position:absolute;z-index:3;padding:10px 15px;border-radius:999px;background:#fff;color:#173052;font-size:13px;font-weight:800;box-shadow:0 10px 28px rgba(3,22,53,.18);border:1px solid rgba(220,230,242,.9)}
+.chip-practice{left:0;top:48px}.chip-progress{right:0;top:122px}.chip-achieve{left:30px;bottom:32px}
+
+.access-response{margin-top:12px;padding:14px;border:1px solid #dbe5f0;border-radius:12px;background:#f8fbff;display:grid;gap:9px}.access-response strong{color:#173052}.access-response textarea{width:100%;box-sizing:border-box;resize:vertical;padding:10px;border:1px solid #d0d9e5;border-radius:8px;font:inherit}.access-response button{width:max-content;margin-top:2px}
+
+.report-modal{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:18px}.report-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.52)}.report-card{position:relative;z-index:1;width:min(560px,100%);max-height:min(90vh,760px);overflow:auto;background:#fff;border:1px solid #e3e8f0;border-radius:18px;padding:26px;box-shadow:0 24px 70px rgba(16,24,40,.2)}.report-close{right:14px;top:10px}.report-form{display:grid;gap:14px;margin-top:20px}.report-form label{display:grid;gap:7px;color:#344054;font-size:14px;font-weight:650}.report-form select,.report-form textarea,.report-form input[type=file]{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #d0d5dd;border-radius:9px;background:#fff;font:inherit;color:#172033}.report-form textarea{resize:vertical}.report-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:3px}.report-actions button{width:auto}.report-form input[type=file]{padding:9px}.report-form .auth-message{margin:0}
+
+.search-suggestions{border-radius:14px;padding:5px}.search-suggestion{border-radius:9px;margin:1px 0;padding:10px 11px}.search-suggestion:hover{background:#f2f7fd}.search-suggestion-icon{flex:0 0 30px}.search-suggestion small{display:block;max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+
+.site-footer a{color:#1767c5;text-decoration:none;font-weight:700}.site-footer a:hover{text-decoration:underline}
+
+@media(max-width:800px){
+  .site-header{position:sticky;z-index:100;padding:7px 12px}.brand img{width:180px}.mobile-menu-button{flex:0 0 42px}
+  .nav{left:auto;right:12px;top:58px;width:min(270px,calc(100vw - 24px));padding:7px;border-radius:14px;gap:2px}.nav button{padding:12px 14px;border-radius:9px;text-align:left}.nav button:hover{background:#f4f8fd}
+  .hero{padding:22px 18px}.hero-art{min-height:250px;margin-top:4px}.hero-visual{height:245px}.progress-card{width:235px;padding:18px}.visual-card-title{font-size:17px;margin:14px 0 18px}.visual-bars{height:72px;gap:9px}.visual-chip{padding:8px 12px;font-size:11px}.chip-practice{left:2px;top:28px}.chip-progress{right:0;top:100px}.chip-achieve{left:18px;bottom:18px}.visual-glow{width:180px;height:180px}
+  .report-card{padding:22px 17px;border-radius:15px}.report-actions{justify-content:stretch}.report-actions button{flex:1}.site-footer{gap:10px}
+}
+
+.support-page{min-height:calc(100vh - 160px)}.support-hero{padding:46px 0 26px;max-width:760px}.support-hero h1{font-size:clamp(34px,5vw,52px);margin:12px 0}.support-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;padding-bottom:55px}.support-card{padding:26px}.support-icon{width:48px;height:48px;border-radius:14px;background:#edf6ff;color:#1475ee;display:grid;place-items:center;font-size:22px;font-weight:900}.support-card h2{margin:16px 0 9px}.support-email{display:inline-block;margin:8px 0 18px;color:#1466c2;font-size:18px;font-weight:800;text-decoration:none}.support-email:hover{text-decoration:underline}.support-actions{display:flex;gap:9px;flex-wrap:wrap}.support-button{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.support-list{margin:18px 0 0;padding-left:20px;color:#5f6f84;line-height:1.75}.support-list li+li{margin-top:10px}@media(max-width:800px){.support-grid{grid-template-columns:1fr}.support-card{padding:20px}.support-actions{display:grid;grid-template-columns:1fr}.support-button{width:100%;box-sizing:border-box}}
+
+.assessment-boot-loader{display:none;position:fixed;inset:0;z-index:200;background:#f6f9fd;place-items:center;color:#173052;font-weight:800;font-size:16px}
