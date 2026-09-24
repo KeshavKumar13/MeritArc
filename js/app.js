@@ -28,17 +28,20 @@
     return copy;
   }
 
-  function renderSubjects() {
-    const raw = ($("subjectSearch").value || "").trim();
-    const filter = raw.toLowerCase();
+  function categorySlug(group) {
+    return group === "Technical & Infrastructure" ? "technical.html" :
+      group === "Computer Science & Programming" ? "computer-science.html" :
+      group === "Aptitude & Competitive Exams" ? "aptitude.html" : "category.html";
+  }
 
+  function renderSubjects() {
+    const raw = ($("subjectSearch")?.value || "").trim();
+    const filter = raw.toLowerCase();
     const groups = {};
     for (const [name, item] of Object.entries(DATA)) {
-      if (`${name} ${item.desc} ${item.group || ""}`.toLowerCase().includes(filter)) {
-        const group = item.group || "Other";
-        if (!groups[group]) groups[group] = [];
-        groups[group].push([name, item]);
-      }
+      const group = item.group || "Other";
+      if (!groups[group]) groups[group] = [];
+      groups[group].push([name, item]);
     }
 
     const groupOrder = [
@@ -47,43 +50,24 @@
       "Aptitude & Competitive Exams"
     ];
 
-    const orderedGroups = [
-      ...groupOrder.filter(group => groups[group]),
-      ...Object.keys(groups).filter(group => !groupOrder.includes(group))
-    ];
-
-    if (!orderedGroups.length) {
-      $("subjectGrid").innerHTML = `
-        <div class="card search-empty">
-          <h3>No assessments found</h3>
-          <p>We couldn't find a subject matching "${escapeHtml(raw)}". Try another subject name.</p>
-        </div>
-      `;
+    if (!filter) {
+      $("subjectGrid").innerHTML = groupOrder.filter(group => groups[group]).map(group => `
+        <a class="card category-card" href="${categorySlug(group)}">
+          <div class="category-card-icon">${group === "Technical & Infrastructure" ? "⚙" : group === "Computer Science & Programming" ? "⌘" : "∑"}</div>
+          <h3>${escapeHtml(group)}</h3>
+          <div class="muted">${groups[group].length} assessments covering ${groups[group].slice(0,3).map(([name]) => escapeHtml(name)).join(", ")}${groups[group].length > 3 ? ", and more" : ""}.</div>
+          <span class="tag">Explore category →</span>
+        </a>`).join("");
     } else {
-      $("subjectGrid").innerHTML = orderedGroups.map(group => `
-        <section class="assessment-group">
-          <div class="assessment-group-head">
-            <div>
-              <h3>${escapeHtml(group)}</h3>
-              <div class="muted">${groups[group].length} assessment${groups[group].length === 1 ? "" : "s"}</div>
-            </div>
-          </div>
-          <div class="group-grid">
-            ${groups[group].map(([name, item]) => `
-              <div class="card subject" data-subject="${escapeHtml(name)}">
-                <div class="subject-icon">${escapeHtml(item.icon)}</div>
-                <h3>${escapeHtml(name)}</h3>
-                <div class="muted">${escapeHtml(item.desc)}</div>
-                <span class="tag">10 questions per attempt</span>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-      `).join("");
-
-      document.querySelectorAll(".subject").forEach(card => {
-        card.addEventListener("click", () => startAssessment(card.dataset.subject));
-      });
+      const matches = Object.entries(DATA).filter(([name, item]) =>
+        `${name} ${item.desc} ${item.group || ""}`.toLowerCase().includes(filter)
+      );
+      $("subjectGrid").innerHTML = matches.length ? matches.map(([name, item]) => `
+        <div class="card subject" data-subject="${escapeHtml(name)}">
+          <div class="subject-icon">${escapeHtml(item.icon)}</div><h3>${escapeHtml(name)}</h3>
+          <div class="muted">${escapeHtml(item.desc)}</div><span class="tag">10 questions per attempt</span>
+        </div>`).join("") : `<div class="card search-empty"><h3>No assessments found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
+      document.querySelectorAll(".subject").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
     }
 
     const total = Object.values(DATA).reduce((sum, item) => sum + item.questions.length, 0);
@@ -449,7 +433,9 @@
           throw new Error(attempts.error || "Unable to load your results.");
         }
 
-        $("historyContent").innerHTML = attempts.length
+        const completed = attempts.filter(item => item.status === "completed");
+        const unfinished = attempts.filter(item => item.status === "in_progress");
+        $("historyContent").innerHTML = completed.length
           ? `
             <div style="overflow:auto">
               <table>
@@ -457,7 +443,7 @@
                   <tr><th>Subject</th><th>Score</th><th>Percentage</th><th>Status</th><th>Date</th></tr>
                 </thead>
                 <tbody>
-                  ${attempts.map(item => `
+                  ${completed.map(item => `
                     <tr>
                       <td>${escapeHtml(item.subject)}</td>
                       <td>${item.score === null ? "—" : `${item.score}/${item.total}`}</td>
@@ -469,11 +455,13 @@
                 </tbody>
               </table>
             </div>
+            ${unfinished.length ? `<div class="muted" style="margin-top:14px;padding:12px;background:#f8f9fc;border-radius:10px">${unfinished.length} unfinished assessment${unfinished.length===1?"":"s"} is not shown as a result.</div>` : ""}
           `
           : `
             <div style="padding:30px;text-align:center">
               <h3>No results yet</h3>
               <div class="muted">Complete an assessment to see your history.</div>
+              ${unfinished.length ? `<div class="muted" style="margin-top:10px">${unfinished.length} unfinished assessment${unfinished.length===1?"":"s"} is not shown as a result.</div>` : ""}
             </div>
           `;
       } catch (error) {
@@ -774,4 +762,11 @@
   };
 
   renderSubjects();
+  const params = new URLSearchParams(window.location.search);
+  const requestedSubject = params.get("subject");
+  if (requestedSubject && DATA[requestedSubject]) {
+    setTimeout(() => startAssessment(requestedSubject), 0);
+  } else if (window.location.hash === "#assessment") {
+    requestAnimationFrame(() => $("assessmentResults")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
 })();

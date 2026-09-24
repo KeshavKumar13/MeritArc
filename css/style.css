@@ -78,3 +78,5 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 .account-note{padding:12px;border-radius:8px;background:#f8f9fc;color:#475467;line-height:1.5}
 
 .assessment-group{margin:28px 0 34px}.assessment-group-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}.assessment-group-head h3{margin:0;color:var(--navy);font-size:20px}.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.category-card{display:block;text-decoration:none;color:inherit;min-height:180px;transition:transform .18s ease,box-shadow .18s ease}.category-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(18,49,89,.12)}.category-card-icon{width:52px;height:52px;border-radius:15px;background:#edf6ff;color:var(--blue);display:grid;place-items:center;font-size:28px;font-weight:900}.category-card h3{margin:15px 0 8px}.brand img{width:245px;height:auto;image-rendering:auto}
+@media(max-width:800px){.brand img{width:180px}}

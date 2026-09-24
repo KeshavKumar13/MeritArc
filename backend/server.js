@@ -60,7 +60,7 @@ async function getCurrentUser(req) {
   if (!token) return null;
 
   const result = await db.query(
-    `SELECT u.id, u.name, u.email
+    `SELECT u.id, u.name, u.email, u.role
      FROM sessions s
      JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = $1 AND s.expires_at > NOW()`,
@@ -254,6 +254,59 @@ app.get("/api/auth/me", async (req, res) => {
   }
 });
 
+async function requireAdmin(req, res, next) {
+  try {
+    const user = await getCurrentUser(req);
+    if (!user) return res.status(401).json({ error: "Please sign in as an administrator." });
+    if (user.role !== "admin") return res.status(403).json({ error: "Administrator access required." });
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to verify administrator access." });
+  }
+}
+
+app.get("/api/admin/me", async (req, res) => {
+  try {
+    const user = await getCurrentUser(req);
+    res.json({ authenticated: Boolean(user && user.role === "admin"), user: user && user.role === "admin" ? user : null });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to check administrator session." });
+  }
+});
+
+app.post("/api/admin/login", async (req, res) => {
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const password = String(req.body.password || "");
+  try {
+    const result = await db.query("SELECT id, name, email, password_hash, role FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1", [email]);
+    const user = result.rows[0];
+    if (!user || user.role !== "admin" || !verifyPassword(password, user.password_hash)) {
+      return res.status(401).json({ error: "Invalid administrator credentials." });
+    }
+    const session = await createSession(user.id);
+    setSessionCookie(res, session.token, session.expires);
+    res.json({ user: { id: Number(user.id), name: user.name, email: user.email, role: user.role } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to sign in as administrator." });
+  }
+});
+
+app.post("/api/admin/logout", async (req, res) => {
+  const token = parseCookies(req).meritArcSession;
+  try {
+    if (token) await db.query("DELETE FROM sessions WHERE token_hash = $1", [hash(token)]);
+    clearSessionCookie(res);
+    res.json({ ok: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Unable to sign out." });
+  }
+});
+
 // ---------- Assessment attempts ----------
 
 app.post("/api/attempts", requireUser, async (req, res) => {
@@ -263,6 +316,11 @@ app.post("/api/attempts", requireUser, async (req, res) => {
   if (!subject) return res.status(400).json({ error: "Subject is required." });
 
   try {
+    await db.query(
+      `UPDATE attempts SET status = 'abandoned' WHERE user_id = $1 AND status = 'in_progress' AND started_at < NOW() - INTERVAL '30 minutes'`,
+      [req.user.id]
+    );
+
     const sourceResult = await db.query(
       `SELECT id, subject, topic, difficulty, question_text,
               option_a, option_b, option_c, option_d, correct_option, explanation
@@ -442,6 +500,10 @@ app.post("/api/attempts/:id/complete", requireUser, async (req, res) => {
 
 app.get("/api/attempts", requireUser, async (req, res) => {
   try {
+    await db.query(
+      `UPDATE attempts SET status = 'abandoned' WHERE user_id = $1 AND status = 'in_progress' AND started_at < NOW() - INTERVAL '30 minutes'`,
+      [req.user.id]
+    );
     const result = await db.query(
       `SELECT id, subject, status, started_at, completed_at, score, total, percentage
        FROM attempts WHERE user_id = $1 ORDER BY started_at DESC LIMIT 50`,
@@ -550,7 +612,7 @@ function validQuestion(q) {
     [0, 1, 2, 3].includes(Number(q.correct));
 }
 
-app.post("/api/questions", async (req, res) => {
+app.post("/api/questions", requireAdmin, async (req, res) => {
   if (!validQuestion(req.body)) return res.status(400).json({ error: "Invalid question data." });
   const q = req.body;
   try {
@@ -569,7 +631,7 @@ app.post("/api/questions", async (req, res) => {
   }
 });
 
-app.put("/api/questions/:id", async (req, res) => {
+app.put("/api/questions/:id", requireAdmin, async (req, res) => {
   if (!validQuestion(req.body)) return res.status(400).json({ error: "Invalid question data." });
   const q = req.body;
   const id = Number(req.params.id);
@@ -590,7 +652,7 @@ app.put("/api/questions/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/questions/:id", async (req, res) => {
+app.delete("/api/questions/:id", requireAdmin, async (req, res) => {
   try {
     const result = await db.query(
       `UPDATE questions SET status='archived', updated_at=NOW() WHERE id=$1 RETURNING id`,
