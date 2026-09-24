@@ -32,11 +32,27 @@
     const raw = ($("subjectSearch").value || "").trim();
     const filter = raw.toLowerCase();
 
-    const entries = Object.entries(DATA).filter(([name, item]) => {
-      return `${name} ${item.desc}`.toLowerCase().includes(filter);
-    });
+    const groups = {};
+    for (const [name, item] of Object.entries(DATA)) {
+      if (`${name} ${item.desc} ${item.group || ""}`.toLowerCase().includes(filter)) {
+        const group = item.group || "Other";
+        if (!groups[group]) groups[group] = [];
+        groups[group].push([name, item]);
+      }
+    }
 
-    if (!entries.length) {
+    const groupOrder = [
+      "Technical & Infrastructure",
+      "Computer Science & Programming",
+      "Aptitude & Competitive Exams"
+    ];
+
+    const orderedGroups = [
+      ...groupOrder.filter(group => groups[group]),
+      ...Object.keys(groups).filter(group => !groupOrder.includes(group))
+    ];
+
+    if (!orderedGroups.length) {
       $("subjectGrid").innerHTML = `
         <div class="card search-empty">
           <h3>No assessments found</h3>
@@ -44,13 +60,25 @@
         </div>
       `;
     } else {
-      $("subjectGrid").innerHTML = entries.map(([name, item]) => `
-        <div class="card subject" data-subject="${escapeHtml(name)}">
-          <div class="subject-icon">${escapeHtml(item.icon)}</div>
-          <h3>${escapeHtml(name)}</h3>
-          <div class="muted">${escapeHtml(item.desc)}</div>
-          <span class="tag">10 questions per attempt</span>
-        </div>
+      $("subjectGrid").innerHTML = orderedGroups.map(group => `
+        <section class="assessment-group">
+          <div class="assessment-group-head">
+            <div>
+              <h3>${escapeHtml(group)}</h3>
+              <div class="muted">${groups[group].length} assessment${groups[group].length === 1 ? "" : "s"}</div>
+            </div>
+          </div>
+          <div class="group-grid">
+            ${groups[group].map(([name, item]) => `
+              <div class="card subject" data-subject="${escapeHtml(name)}">
+                <div class="subject-icon">${escapeHtml(item.icon)}</div>
+                <h3>${escapeHtml(name)}</h3>
+                <div class="muted">${escapeHtml(item.desc)}</div>
+                <span class="tag">10 questions per attempt</span>
+              </div>
+            `).join("")}
+          </div>
+        </section>
       `).join("");
 
       document.querySelectorAll(".subject").forEach(card => {
@@ -60,6 +88,8 @@
 
     const total = Object.values(DATA).reduce((sum, item) => sum + item.questions.length, 0);
     $("questionBankStat").textContent = `${total}+`;
+    const subjectCount = $("subjectCountStat");
+    if (subjectCount) subjectCount.textContent = Object.keys(DATA).length;
   }
 
   async function startAssessment(subject) {
@@ -152,21 +182,54 @@
       </label>
     `).join("");
 
+    const isChecked = state.checked[state.index] !== undefined;
+
     document.querySelectorAll('input[name="answer"]').forEach(input => {
+      input.disabled = isChecked;
       input.addEventListener("change", e => {
+        if (isChecked) return;
         state.answers[state.index] = Number(e.target.value);
         renderQuestion();
+        if (state.serverMode) {
+          saveServerAnswer(state.index).catch(error => {
+            console.error("Unable to save answer:", error);
+          });
+        }
       });
     });
 
     $("feedback").className = "hidden";
     $("feedback").innerHTML = "";
 
-    if (state.checked[state.index] !== undefined) {
+    if (isChecked) {
       showFeedback(state.checked[state.index]);
     }
 
-    $("checkButton").disabled = selected === null;
+    $("checkButton").disabled = selected === null || isChecked;
+  }
+
+  async function saveServerAnswer(index = state.index) {
+    if (!state.serverMode) return null;
+
+    const answer = state.answers[index];
+    if (answer === null || answer === undefined) return null;
+
+    const questionId = state.questions[index][7];
+    const response = await fetch(`/api/attempts/${state.attemptId}/answers`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        questionId,
+        selectedOption: answer
+      })
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to save the answer.");
+    }
+
+    return data;
   }
 
   function showFeedback(correct, explanation) {
@@ -180,32 +243,17 @@
 
   async function checkAnswer() {
     const answer = state.answers[state.index];
-    if (answer === null) return;
+    if (answer === null || answer === undefined) return;
+    if (state.checked[state.index] !== undefined) return;
 
     if (state.serverMode) {
-      const questionId = state.questions[state.index][7];
-
       try {
-        const response = await fetch(`/api/attempts/${state.attemptId}/answers`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-            questionId,
-            selectedOption: answer
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          alert(data.error || "Unable to check the answer.");
-          return;
-        }
-
+        const data = await saveServerAnswer(state.index);
         state.checked[state.index] = data.correct;
         showFeedback(data.correct, data.explanation);
-      } catch {
-        alert("Unable to connect to MeritArc.");
+        renderQuestion();
+      } catch (error) {
+        alert(error.message || "Unable to connect to MeritArc.");
       }
 
       return;
@@ -214,14 +262,24 @@
     const correct = answer === state.questions[state.index][5];
     state.checked[state.index] = correct;
     showFeedback(correct, state.questions[state.index][6]);
+    renderQuestion();
   }
 
-  function nextQuestion() {
+  async function nextQuestion() {
+    try {
+      if (state.serverMode && state.answers[state.index] !== null && state.answers[state.index] !== undefined) {
+        await saveServerAnswer(state.index);
+      }
+    } catch (error) {
+      alert(error.message || "Unable to save your answer. Please try again.");
+      return;
+    }
+
     if (state.index < state.questions.length - 1) {
       state.index++;
       renderQuestion();
     } else {
-      submitAssessment();
+      await submitAssessment();
     }
   }
 
@@ -242,6 +300,10 @@
       }
 
       try {
+        if (state.answers[state.index] !== null && state.answers[state.index] !== undefined) {
+          await saveServerAnswer(state.index);
+        }
+
         const response = await fetch(`/api/attempts/${state.attemptId}/complete`, {
           method: "POST"
         });
@@ -361,6 +423,15 @@
     $("homeView").classList.remove("hidden");
     renderSubjects();
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showAssessments() {
+    hideViews();
+    $("homeView").classList.remove("hidden");
+    renderSubjects();
+    requestAnimationFrame(() => {
+      $("assessmentResults").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   async function showResults() {
@@ -688,6 +759,7 @@
 
   window.MeritArc = {
     showHome,
+    showAssessments,
     showResults,
     startAssessment,
     checkAnswer,

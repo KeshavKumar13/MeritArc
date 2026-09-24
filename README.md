@@ -83,3 +83,10 @@ Health check path:
 - Never commit `.env` or a real `DATABASE_URL` to GitHub.
 - Never publish the Supabase database password.
 - The database password should only be stored as a hosting-provider environment variable or another secure secret store.
+
+
+## v0.5.5 additions
+- Added grouped assessments for Technical & Infrastructure, Computer Science & Programming, and Aptitude & Competitive Exams.
+- Added Quantitative Aptitude, Mathematics, Logical Reasoning, English, General Studies, Computer Science Fundamentals, Data Structures & Algorithms, Programming Fundamentals, and DBMS.
+- Assessment navigation now scrolls directly to the assessment section; Home returns to the top of the home page.
+- Seed script now adds missing questions without duplicating the existing question bank.

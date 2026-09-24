@@ -13,18 +13,19 @@ async function seed() {
     fs.readFileSync(path.join(__dirname, "..", "database", "seed-data.json"), "utf8")
   );
 
-  const countResult = await db.query("SELECT COUNT(*)::int AS count FROM questions");
-  if (countResult.rows[0].count > 0) {
-    console.log("Seed skipped: database already has questions.");
-    await db.end();
-    return;
-  }
-
+  let inserted = 0;
   const client = await db.connect();
   try {
     await client.query("BEGIN");
 
     for (const q of seedData) {
+      const existing = await client.query(
+        `SELECT id FROM questions WHERE subject = $1 AND question_text = $2 LIMIT 1`,
+        [q.subject, q.question]
+      );
+
+      if (existing.rowCount > 0) continue;
+
       await client.query(
         `INSERT INTO questions
           (subject, topic, difficulty, question_text, option_a, option_b, option_c, option_d,
@@ -44,10 +45,11 @@ async function seed() {
           q.status || "active"
         ]
       );
+      inserted++;
     }
 
     await client.query("COMMIT");
-    console.log(`Seeded ${seedData.length} questions.`);
+    console.log(inserted ? `Seeded ${inserted} new questions.` : "Seed skipped: all questions already exist.");
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;

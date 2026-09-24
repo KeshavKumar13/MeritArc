@@ -1198,5 +1198,1355 @@
     "correct": 0,
     "explanation": "Routers forward packets between IP networks.",
     "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is 25% of 240?",
+    "options": [
+      "60",
+      "50",
+      "55",
+      "65"
+    ],
+    "correct": 0,
+    "explanation": "25% of 240 is 60.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "If the ratio of boys to girls is 3:5 and there are 24 boys, how many girls are there?",
+    "options": [
+      "40",
+      "32",
+      "36",
+      "30"
+    ],
+    "correct": 0,
+    "explanation": "24 corresponds to 3 parts, so one part is 8 and 5 parts are 40.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "A shopkeeper buys an item for ₹800 and sells it for ₹920. What is the profit percentage?",
+    "options": [
+      "15%",
+      "12%",
+      "10%",
+      "20%"
+    ],
+    "correct": 0,
+    "explanation": "Profit is ₹120, and 120/800 × 100 = 15%.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "The average of 12, 18, 20 and 30 is:",
+    "options": [
+      "20",
+      "19",
+      "21",
+      "22"
+    ],
+    "correct": 0,
+    "explanation": "The sum is 80, and 80 ÷ 4 = 20.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "A train travels 180 km in 3 hours. What is its average speed?",
+    "options": [
+      "60 km/h",
+      "50 km/h",
+      "70 km/h",
+      "90 km/h"
+    ],
+    "correct": 0,
+    "explanation": "Average speed is distance divided by time: 180 ÷ 3 = 60 km/h.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "If x + 15 = 42, what is x?",
+    "options": [
+      "27",
+      "25",
+      "26",
+      "28"
+    ],
+    "correct": 0,
+    "explanation": "Subtract 15 from both sides: x = 27.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "A can complete a job in 10 days. At the same rate, what fraction of the job does A complete in one day?",
+    "options": [
+      "1/10",
+      "1/5",
+      "1/20",
+      "10"
+    ],
+    "correct": 0,
+    "explanation": "One day represents 1/10 of the total work.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is the simple interest on ₹5,000 at 8% per annum for 2 years?",
+    "options": [
+      "₹800",
+      "₹400",
+      "₹600",
+      "₹1,000"
+    ],
+    "correct": 0,
+    "explanation": "SI = P × R × T / 100 = 5000 × 8 × 2 / 100 = ₹800.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "A number is increased from 200 to 250. What is the percentage increase?",
+    "options": [
+      "25%",
+      "20%",
+      "30%",
+      "50%"
+    ],
+    "correct": 0,
+    "explanation": "The increase is 50, and 50/200 × 100 = 25%.",
+    "status": "active"
+  },
+  {
+    "subject": "Quantitative Aptitude",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "If 6 workers finish a task in 12 days, assuming equal productivity, how many worker-days are required?",
+    "options": [
+      "72",
+      "18",
+      "60",
+      "84"
+    ],
+    "correct": 0,
+    "explanation": "Worker-days = 6 × 12 = 72.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is the HCF of 18 and 24?",
+    "options": [
+      "6",
+      "3",
+      "12",
+      "9"
+    ],
+    "correct": 0,
+    "explanation": "The greatest common factor of 18 and 24 is 6.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is the LCM of 8 and 12?",
+    "options": [
+      "24",
+      "16",
+      "48",
+      "36"
+    ],
+    "correct": 0,
+    "explanation": "The least common multiple of 8 and 12 is 24.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is the value of 7² − 5²?",
+    "options": [
+      "24",
+      "14",
+      "12",
+      "49"
+    ],
+    "correct": 0,
+    "explanation": "49 − 25 = 24.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "The sum of the angles of a triangle is:",
+    "options": [
+      "180°",
+      "90°",
+      "270°",
+      "360°"
+    ],
+    "correct": 0,
+    "explanation": "The interior angles of every triangle sum to 180°.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is the square root of 144?",
+    "options": [
+      "12",
+      "14",
+      "10",
+      "16"
+    ],
+    "correct": 0,
+    "explanation": "12 × 12 = 144.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "If 2x = 18, what is x?",
+    "options": [
+      "9",
+      "8",
+      "10",
+      "6"
+    ],
+    "correct": 0,
+    "explanation": "Divide both sides by 2: x = 9.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is the perimeter of a square with side 7 cm?",
+    "options": [
+      "28 cm",
+      "14 cm",
+      "49 cm",
+      "21 cm"
+    ],
+    "correct": 0,
+    "explanation": "Perimeter of a square is 4 × side = 28 cm.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is 3/4 expressed as a decimal?",
+    "options": [
+      "0.75",
+      "0.34",
+      "0.25",
+      "0.8"
+    ],
+    "correct": 0,
+    "explanation": "3 divided by 4 equals 0.75.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "What is the median of 3, 7, 9, 12 and 15?",
+    "options": [
+      "9",
+      "7",
+      "12",
+      "10"
+    ],
+    "correct": 0,
+    "explanation": "The middle value in the ordered list is 9.",
+    "status": "active"
+  },
+  {
+    "subject": "Mathematics",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "What is the area of a rectangle 8 cm long and 5 cm wide?",
+    "options": [
+      "40 cm²",
+      "26 cm²",
+      "13 cm²",
+      "80 cm²"
+    ],
+    "correct": 0,
+    "explanation": "Area = length × width = 8 × 5 = 40 cm².",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Find the next number: 2, 4, 8, 16, ?",
+    "options": [
+      "32",
+      "24",
+      "30",
+      "34"
+    ],
+    "correct": 0,
+    "explanation": "Each term is multiplied by 2.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Book is to Reading as Fork is to:",
+    "options": [
+      "Eating",
+      "Writing",
+      "Cutting",
+      "Cooking"
+    ],
+    "correct": 0,
+    "explanation": "A book is used for reading; a fork is used for eating.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "If CAT is coded as DBU by shifting each letter one position forward, DOG is coded as:",
+    "options": [
+      "EPH",
+      "EOG",
+      "FPH",
+      "DPI"
+    ],
+    "correct": 0,
+    "explanation": "D→E, O→P and G→H gives EPH.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "A person walks 5 km north and then 5 km east. In which direction is the person from the starting point?",
+    "options": [
+      "North-east",
+      "North-west",
+      "South-east",
+      "South-west"
+    ],
+    "correct": 0,
+    "explanation": "Moving north and east places the person to the north-east.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Find the odd one out:",
+    "options": [
+      "Apple",
+      "Mango",
+      "Carrot",
+      "Banana"
+    ],
+    "correct": 2,
+    "explanation": "Carrot is a vegetable; the others are fruits.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "If all roses are flowers and some flowers fade quickly, which statement must be true?",
+    "options": [
+      "All roses are flowers",
+      "All flowers are roses",
+      "Some roses fade quickly",
+      "No roses fade quickly"
+    ],
+    "correct": 0,
+    "explanation": "The first statement directly follows from the premise.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Find the missing letter: A, C, F, J, ?",
+    "options": [
+      "O",
+      "N",
+      "P",
+      "M"
+    ],
+    "correct": 0,
+    "explanation": "The gaps are +2, +3, +4, so the next gap is +5: O.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "If Monday is coded as 1 and Tuesday as 2, what number represents Friday?",
+    "options": [
+      "5",
+      "4",
+      "6",
+      "7"
+    ],
+    "correct": 0,
+    "explanation": "Friday is the fifth day in the sequence.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Which number does not belong: 9, 16, 25, 36, 45?",
+    "options": [
+      "45",
+      "36",
+      "25",
+      "16"
+    ],
+    "correct": 0,
+    "explanation": "9, 16, 25 and 36 are perfect squares; 45 is not.",
+    "status": "active"
+  },
+  {
+    "subject": "Logical Reasoning",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "A is taller than B, and B is taller than C. Who is shortest?",
+    "options": [
+      "C",
+      "A",
+      "B",
+      "Cannot be determined"
+    ],
+    "correct": 0,
+    "explanation": "The ordering is A > B > C, so C is shortest.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Choose the correct sentence:",
+    "options": [
+      "She goes to school every day.",
+      "She go to school every day.",
+      "She going to school every day.",
+      "She gone to school every day."
+    ],
+    "correct": 0,
+    "explanation": "The singular subject 'she' takes 'goes' in the simple present.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Choose the synonym of 'rapid':",
+    "options": [
+      "Quick",
+      "Slow",
+      "Weak",
+      "Late"
+    ],
+    "correct": 0,
+    "explanation": "Rapid means quick or fast.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Choose the antonym of 'ancient':",
+    "options": [
+      "Modern",
+      "Old",
+      "Historic",
+      "Former"
+    ],
+    "correct": 0,
+    "explanation": "Modern is the opposite of ancient.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Fill in the blank: He is good ___ mathematics.",
+    "options": [
+      "at",
+      "in",
+      "on",
+      "for"
+    ],
+    "correct": 0,
+    "explanation": "The standard expression is 'good at mathematics'.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Choose the correctly spelled word:",
+    "options": [
+      "Accommodation",
+      "Accomodation",
+      "Acommodation",
+      "Accommadation"
+    ],
+    "correct": 0,
+    "explanation": "Accommodation is the correct spelling.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Identify the noun in: 'The manager approved the request.'",
+    "options": [
+      "manager",
+      "approved",
+      "the",
+      "quickly"
+    ],
+    "correct": 0,
+    "explanation": "Manager is a noun; approved is a verb, the is an article, and quickly is an adverb.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is the plural of 'analysis'?",
+    "options": [
+      "Analyses",
+      "Analysises",
+      "Analysis",
+      "Analysies"
+    ],
+    "correct": 0,
+    "explanation": "The plural of analysis is analyses.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Choose the correct passive form: 'The team completed the project.'",
+    "options": [
+      "The project was completed by the team.",
+      "The project completed the team.",
+      "The team was completed by the project.",
+      "The project is completing by the team."
+    ],
+    "correct": 0,
+    "explanation": "The object becomes the subject: The project was completed by the team.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Choose the word closest in meaning to 'assist':",
+    "options": [
+      "Help",
+      "Avoid",
+      "Delay",
+      "Refuse"
+    ],
+    "correct": 0,
+    "explanation": "Assist means help.",
+    "status": "active"
+  },
+  {
+    "subject": "English",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Fill in the blank: If I ___ time, I will call you.",
+    "options": [
+      "have",
+      "had",
+      "having",
+      "has"
+    ],
+    "correct": 0,
+    "explanation": "For a real future condition, the if-clause uses the present simple: 'If I have time'.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which is the largest planet in the Solar System?",
+    "options": [
+      "Jupiter",
+      "Saturn",
+      "Earth",
+      "Neptune"
+    ],
+    "correct": 0,
+    "explanation": "Jupiter is the largest planet in the Solar System.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which organ pumps blood through the human body?",
+    "options": [
+      "Heart",
+      "Liver",
+      "Lung",
+      "Kidney"
+    ],
+    "correct": 0,
+    "explanation": "The heart pumps blood through the circulatory system.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "The Constitution of India came into effect on:",
+    "options": [
+      "26 January 1950",
+      "15 August 1947",
+      "26 November 1949",
+      "2 October 1950"
+    ],
+    "correct": 0,
+    "explanation": "The Constitution came into force on 26 January 1950.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which is the longest river in India by length within India?",
+    "options": [
+      "Ganga",
+      "Yamuna",
+      "Godavari",
+      "Narmada"
+    ],
+    "correct": 0,
+    "explanation": "The Ganga is commonly identified as India's longest river within the country.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Who is known as the Father of the Indian Constitution?",
+    "options": [
+      "B. R. Ambedkar",
+      "Mahatma Gandhi",
+      "Jawaharlal Nehru",
+      "Sardar Patel"
+    ],
+    "correct": 0,
+    "explanation": "B. R. Ambedkar chaired the Drafting Committee and played a central role in drafting the Constitution.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is the chemical symbol for gold?",
+    "options": [
+      "Au",
+      "Ag",
+      "Gd",
+      "Go"
+    ],
+    "correct": 0,
+    "explanation": "Au is the chemical symbol for gold, from the Latin aurum.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which gas is most abundant in Earth's atmosphere?",
+    "options": [
+      "Nitrogen",
+      "Oxygen",
+      "Carbon dioxide",
+      "Hydrogen"
+    ],
+    "correct": 0,
+    "explanation": "Nitrogen makes up about 78% of Earth's atmosphere.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "The Reserve Bank of India is primarily responsible for:",
+    "options": [
+      "Monetary policy and currency management",
+      "Building national highways",
+      "Conducting school examinations",
+      "Managing railways"
+    ],
+    "correct": 0,
+    "explanation": "The RBI is India's central bank and handles monetary policy and currency management.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Which continent is the Sahara Desert located in?",
+    "options": [
+      "Africa",
+      "Asia",
+      "Australia",
+      "South America"
+    ],
+    "correct": 0,
+    "explanation": "The Sahara is located in northern Africa.",
+    "status": "active"
+  },
+  {
+    "subject": "General Studies",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Photosynthesis in green plants primarily uses which gas from the atmosphere?",
+    "options": [
+      "Carbon dioxide",
+      "Oxygen",
+      "Nitrogen",
+      "Helium"
+    ],
+    "correct": 0,
+    "explanation": "Plants use carbon dioxide during photosynthesis to make food.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What does CPU stand for?",
+    "options": [
+      "Central Processing Unit",
+      "Computer Primary Unit",
+      "Central Program Utility",
+      "Core Processing User"
+    ],
+    "correct": 0,
+    "explanation": "CPU stands for Central Processing Unit.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which data structure follows FIFO order?",
+    "options": [
+      "Queue",
+      "Stack",
+      "Tree",
+      "Graph"
+    ],
+    "correct": 0,
+    "explanation": "A queue follows First In, First Out.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which language is primarily used to structure the content of a web page?",
+    "options": [
+      "HTML",
+      "CSS",
+      "SQL",
+      "Bash"
+    ],
+    "correct": 0,
+    "explanation": "HTML defines the structure and content of web pages.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which component temporarily stores data for quick CPU access?",
+    "options": [
+      "RAM",
+      "Hard disk",
+      "Power supply",
+      "Monitor"
+    ],
+    "correct": 0,
+    "explanation": "RAM provides fast temporary storage for active data and programs.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is an operating system's primary role?",
+    "options": [
+      "Manage hardware and provide services for applications",
+      "Only browse the internet",
+      "Only store files",
+      "Only compile programs"
+    ],
+    "correct": 0,
+    "explanation": "An operating system manages hardware resources and provides common services to applications.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which number system uses only 0 and 1?",
+    "options": [
+      "Binary",
+      "Decimal",
+      "Hexadecimal",
+      "Octal"
+    ],
+    "correct": 0,
+    "explanation": "Binary uses the digits 0 and 1.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which protocol is commonly used to retrieve web pages securely?",
+    "options": [
+      "HTTPS",
+      "FTP",
+      "SMTP",
+      "SNMP"
+    ],
+    "correct": 0,
+    "explanation": "HTTPS is HTTP secured using TLS.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is an algorithm?",
+    "options": [
+      "A finite sequence of steps to solve a problem",
+      "A type of hardware",
+      "A database table",
+      "A network cable"
+    ],
+    "correct": 0,
+    "explanation": "An algorithm is a defined sequence of steps for solving a problem.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Which SQL command is used to retrieve data?",
+    "options": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE"
+    ],
+    "correct": 0,
+    "explanation": "SELECT retrieves rows from a database.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "What is the main purpose of a compiler?",
+    "options": [
+      "Translate source code into another form such as machine code",
+      "Store passwords",
+      "Route network traffic",
+      "Compress images"
+    ],
+    "correct": 0,
+    "explanation": "A compiler translates source code into a lower-level representation that can be executed.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which data structure allows insertion and deletion at one end and follows LIFO?",
+    "options": [
+      "Stack",
+      "Queue",
+      "Heap",
+      "Graph"
+    ],
+    "correct": 0,
+    "explanation": "A stack follows Last In, First Out.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is the average time complexity of binary search on a sorted array?",
+    "options": [
+      "O(log n)",
+      "O(n)",
+      "O(n log n)",
+      "O(1)"
+    ],
+    "correct": 0,
+    "explanation": "Binary search halves the search space at each step, giving O(log n) average time.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which traversal visits a binary search tree's keys in sorted order?",
+    "options": [
+      "In-order",
+      "Pre-order",
+      "Post-order",
+      "Level-order"
+    ],
+    "correct": 0,
+    "explanation": "In-order traversal of a BST visits keys in ascending order.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which structure is best suited for representing parent-child relationships?",
+    "options": [
+      "Tree",
+      "Queue",
+      "Stack",
+      "Array"
+    ],
+    "correct": 0,
+    "explanation": "Trees naturally represent hierarchical parent-child relationships.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is the worst-case time complexity of linear search in an array?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    "correct": 0,
+    "explanation": "Linear search may inspect every element, giving O(n) worst-case time.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which sorting algorithm repeatedly swaps adjacent out-of-order elements?",
+    "options": [
+      "Bubble sort",
+      "Merge sort",
+      "Heap sort",
+      "Quick sort"
+    ],
+    "correct": 0,
+    "explanation": "Bubble sort compares adjacent elements and swaps them when they are out of order.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "A queue typically uses which operations at its ends?",
+    "options": [
+      "Enqueue at rear and dequeue at front",
+      "Push at top and pop at top",
+      "Insert at front and delete at rear only",
+      "Search and sort"
+    ],
+    "correct": 0,
+    "explanation": "A standard queue enqueues at the rear and dequeues from the front.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which graph representation stores a list of neighbors for each vertex?",
+    "options": [
+      "Adjacency list",
+      "Binary tree",
+      "Hash stack",
+      "Sorted array only"
+    ],
+    "correct": 0,
+    "explanation": "An adjacency list stores the neighboring vertices for each graph vertex.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "What does Big-O notation describe?",
+    "options": [
+      "Asymptotic growth of resource usage",
+      "Exact execution time in seconds",
+      "Programming language syntax",
+      "Database size only"
+    ],
+    "correct": 0,
+    "explanation": "Big-O describes how time or space requirements grow with input size.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Which data structure provides average O(1) key lookup?",
+    "options": [
+      "Hash table",
+      "Linked list",
+      "Binary tree without balancing",
+      "Stack"
+    ],
+    "correct": 0,
+    "explanation": "A well-designed hash table provides average O(1) lookup by key.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which construct is commonly used to repeat a block while a condition remains true?",
+    "options": [
+      "while loop",
+      "class",
+      "import",
+      "comment"
+    ],
+    "correct": 0,
+    "explanation": "A while loop repeats while its condition evaluates to true.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is a variable used for?",
+    "options": [
+      "Store a value that can be referenced by a name",
+      "Connect a computer to Wi-Fi",
+      "Compile an operating system",
+      "Create a network cable"
+    ],
+    "correct": 0,
+    "explanation": "A variable associates a name with a value or storage location.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which symbol commonly represents equality comparison in many programming languages?",
+    "options": [
+      "==",
+      "=",
+      "=>",
+      "++"
+    ],
+    "correct": 0,
+    "explanation": "In many languages, == compares values while = performs assignment.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What is a function?",
+    "options": [
+      "A reusable block of code that performs a task",
+      "A database server",
+      "A hardware port",
+      "A file extension"
+    ],
+    "correct": 0,
+    "explanation": "Functions package reusable logic that can accept inputs and return results.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which OOP concept hides internal implementation details behind an interface?",
+    "options": [
+      "Encapsulation",
+      "Inheritance",
+      "Compilation",
+      "Iteration"
+    ],
+    "correct": 0,
+    "explanation": "Encapsulation bundles data and behavior and controls access to internal details.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is recursion?",
+    "options": [
+      "A function calling itself directly or indirectly",
+      "A variable changing type",
+      "A database backup",
+      "A network request"
+    ],
+    "correct": 0,
+    "explanation": "Recursion occurs when a function calls itself, directly or indirectly.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which value represents a Boolean false in many languages?",
+    "options": [
+      "false",
+      "0.5",
+      "nullified",
+      "negative"
+    ],
+    "correct": 0,
+    "explanation": "Boolean values commonly include true and false; false represents the negative Boolean state.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is debugging?",
+    "options": [
+      "Finding and fixing defects in software",
+      "Encrypting a hard disk",
+      "Installing RAM",
+      "Designing a logo"
+    ],
+    "correct": 0,
+    "explanation": "Debugging is the process of locating and fixing software defects.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Which control structure chooses between alternatives based on a condition?",
+    "options": [
+      "if/else",
+      "for only",
+      "import",
+      "return type"
+    ],
+    "correct": 0,
+    "explanation": "if/else selects a branch based on a condition.",
+    "status": "active"
+  },
+  {
+    "subject": "Programming Fundamentals",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "What is an API?",
+    "options": [
+      "A defined interface through which software components communicate",
+      "A type of CPU",
+      "A file compression format",
+      "A monitor setting"
+    ],
+    "correct": 0,
+    "explanation": "An API defines how software components can interact and exchange data.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "What does DBMS stand for?",
+    "options": [
+      "Database Management System",
+      "Data Backup Management Service",
+      "Database Machine Security",
+      "Digital Base Management Software"
+    ],
+    "correct": 0,
+    "explanation": "DBMS stands for Database Management System.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which key uniquely identifies a row in a relational table?",
+    "options": [
+      "Primary key",
+      "Foreign key",
+      "Candidate value",
+      "Index page"
+    ],
+    "correct": 0,
+    "explanation": "A primary key uniquely identifies each row in a table.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which SQL command adds new rows to a table?",
+    "options": [
+      "INSERT",
+      "SELECT",
+      "ALTER",
+      "GRANT"
+    ],
+    "correct": 0,
+    "explanation": "INSERT adds new rows to a table.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Easy",
+    "question": "Which SQL command changes existing rows?",
+    "options": [
+      "UPDATE",
+      "CREATE",
+      "DROP",
+      "SELECT"
+    ],
+    "correct": 0,
+    "explanation": "UPDATE modifies existing rows.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What is normalization primarily used for?",
+    "options": [
+      "Reduce redundancy and improve data integrity",
+      "Increase duplicate data",
+      "Encrypt all tables",
+      "Replace SQL"
+    ],
+    "correct": 0,
+    "explanation": "Normalization organizes data to reduce unnecessary redundancy and update anomalies.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "What does a foreign key typically reference?",
+    "options": [
+      "A key in another table",
+      "A file on disk",
+      "A programming function",
+      "A network address"
+    ],
+    "correct": 0,
+    "explanation": "A foreign key commonly references a primary or unique key in another table.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which ACID property ensures committed transactions survive a system failure?",
+    "options": [
+      "Durability",
+      "Atomicity",
+      "Consistency",
+      "Isolation"
+    ],
+    "correct": 0,
+    "explanation": "Durability ensures committed changes persist after failures.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Medium",
+    "question": "Which clause filters rows in a SELECT query?",
+    "options": [
+      "WHERE",
+      "ORDER BY",
+      "GROUP BY",
+      "JOIN"
+    ],
+    "correct": 0,
+    "explanation": "WHERE filters rows according to a condition.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "Which SQL operation combines rows from related tables?",
+    "options": [
+      "JOIN",
+      "SORT",
+      "FORMAT",
+      "RENAME"
+    ],
+    "correct": 0,
+    "explanation": "JOIN combines related rows from two or more tables.",
+    "status": "active"
+  },
+  {
+    "subject": "DBMS",
+    "topic": "General",
+    "difficulty": "Hard",
+    "question": "What is an index mainly used for?",
+    "options": [
+      "Speed up data retrieval",
+      "Store application passwords in plain text",
+      "Replace a primary key in all cases",
+      "Prevent all updates"
+    ],
+    "correct": 0,
+    "explanation": "Indexes can improve query performance by making data retrieval more efficient.",
+    "status": "active"
   }
 ]
