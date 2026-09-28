@@ -196,11 +196,11 @@
     if (assessmentSetupSubject !== subject) return;
 
     if (countSelect) {
-      const max = user ? 50 : Math.min(10, DATA[subject]?.questions?.length || 10);
+      const max = Math.min(50, DATA[subject]?.questions?.length || 0);
       [...countSelect.options].forEach(option => {
         option.disabled = Number(option.value) > max;
       });
-      if (Number(countSelect.value) > max) countSelect.value = String(max >= 10 ? 10 : max);
+      if (Number(countSelect.value) > max) countSelect.value = String(Math.min(10, max || 10));
     }
 
     if (difficultySelect) {

@@ -456,13 +456,8 @@ app.post("/api/admin/logout", async (req, res) => {
 app.post("/api/attempts", requireUser, async (req, res) => {
   const subject = String(req.body.subject || "").trim();
   const requestedCount = Math.min(Math.max(Number(req.body.count || 10), 1), 50);
-  const requestedDifficulty = String(req.body.difficulty || "Mixed").trim();
-  const allowedDifficulties = new Set(["Mixed", "Easy", "Medium", "Hard"]);
 
   if (!subject) return res.status(400).json({ error: "Subject is required." });
-  if (!allowedDifficulties.has(requestedDifficulty)) {
-    return res.status(400).json({ error: "Invalid difficulty selection." });
-  }
 
   try {
     await db.query(
@@ -486,12 +481,9 @@ app.post("/api/attempts", requireUser, async (req, res) => {
        ORDER BY RANDOM()`,
       [subject, req.user.id]
     );
-    let source = sourceResult.rows;
-    if (requestedDifficulty !== "Mixed") {
-      source = source.filter(q => q.difficulty === requestedDifficulty);
-    }
+    const source = sourceResult.rows;
 
-    if (!source.length) return res.status(404).json({ error: `No active ${requestedDifficulty.toLowerCase()} questions found for this subject.` });
+    if (!source.length) return res.status(404).json({ error: "No active questions found for this subject." });
 
     const selectedQuestions = selectAssessmentQuestions(source, requestedCount);
     if (!selectedQuestions.length) {
