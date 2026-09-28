@@ -15298,5 +15298,1490 @@
     "correct": 3,
     "explanation": "Sunlight exposure helps the skin synthesize vitamin D.",
     "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Active Directory",
+    "difficulty": "Medium",
+    "question": "A user can sign in to the domain but cannot access a newly created shared folder. Other users can access it. The share and NTFS permissions both allow the user. What should you check next?",
+    "options": [
+      "Whether the user is in a group with an explicit Deny permission",
+      "Whether the domain controller is powered off",
+      "Whether DHCP scope is full",
+      "Whether Windows Update is pending"
+    ],
+    "correct": 0,
+    "explanation": "An explicit Deny permission takes precedence over Allow permissions and is a common cause when both share and NTFS permissions appear permissive.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "DNS",
+    "difficulty": "Medium",
+    "question": "A Windows server can ping an IP address but cannot resolve the corresponding hostname. Which service should be checked first?",
+    "options": [
+      "DNS client configuration and configured DNS servers",
+      "Print Spooler",
+      "Windows Time",
+      "BITS"
+    ],
+    "correct": 0,
+    "explanation": "Successful IP connectivity with hostname resolution failure points first to DNS configuration or DNS service availability.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "DHCP",
+    "difficulty": "Medium",
+    "question": "Several clients in one VLAN suddenly receive 169.254.x.x addresses while clients in another VLAN work normally. What is the most relevant first check?",
+    "options": [
+      "DHCP scope availability and relay/connectivity for the affected VLAN",
+      "CPU usage on every client",
+      "Windows activation status",
+      "Disk fragmentation"
+    ],
+    "correct": 0,
+    "explanation": "A 169.254.x.x address indicates APIPA. A VLAN-specific failure points toward DHCP scope, relay, or network path issues.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "PowerShell",
+    "difficulty": "Medium",
+    "question": "You need to identify Windows services that are stopped and configured to start automatically. Which command is most appropriate?",
+    "options": [
+      "Get-Service | Where-Object {$_.Status -eq \"Stopped\" -and $_.StartType -eq \"Automatic\"}",
+      "Get-Process | Where-Object {$_.CPU -gt 0}",
+      "Get-EventLog -LogName Security",
+      "Get-NetAdapter"
+    ],
+    "correct": 0,
+    "explanation": "Get-Service exposes service state and startup type, allowing the required filter.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Troubleshooting",
+    "difficulty": "Medium",
+    "question": "A server becomes slow after a scheduled task starts. CPU is normal, but disk latency rises sharply. Which evidence is most useful first?",
+    "options": [
+      "Disk I/O and process-level disk activity during the task",
+      "Desktop wallpaper settings",
+      "Installed browser extensions",
+      "Keyboard layout"
+    ],
+    "correct": 0,
+    "explanation": "High disk latency with normal CPU suggests storage I/O contention, so disk and process I/O counters are relevant.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Group Policy",
+    "difficulty": "Medium",
+    "question": "A new Group Policy setting is not appearing on one domain-joined workstation, while other machines receive it. What is a sensible first action?",
+    "options": [
+      "Run gpupdate /force and review Group Policy results",
+      "Reinstall Windows",
+      "Disable the firewall permanently",
+      "Change the computer name"
+    ],
+    "correct": 0,
+    "explanation": "Refreshing policy and checking Resultant Set of Policy helps determine whether the client processed the GPO.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Remote Management",
+    "difficulty": "Hard",
+    "question": "WinRM works from one management server but fails from another for the same target. Both resolve the hostname. What should be compared first?",
+    "options": [
+      "WinRM listener, firewall rules, and client authentication configuration",
+      "Monitor brightness",
+      "Local printer drivers",
+      "Disk defragmentation schedule"
+    ],
+    "correct": 0,
+    "explanation": "A source-specific WinRM failure suggests differences in network reachability, firewall, listener, or authentication settings.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Storage",
+    "difficulty": "Hard",
+    "question": "A Windows volume is nearly full, but user files account for only a small portion. Which investigation is most relevant?",
+    "options": [
+      "Check VSS shadow-copy storage, system files, logs, and hidden data",
+      "Change the desktop theme",
+      "Restart the print spooler",
+      "Disable DNS"
+    ],
+    "correct": 0,
+    "explanation": "Volume usage can be consumed by VSS, logs, page files, hibernation, or hidden/system data even when normal files are small.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "A server shows repeated failed logons for a privileged account followed by one successful logon from an unusual workstation. What should be preserved first for investigation?",
+    "options": [
+      "Relevant security logs and authentication/network telemetry",
+      "The browser cache only",
+      "The desktop wallpaper",
+      "The recycle bin contents only"
+    ],
+    "correct": 0,
+    "explanation": "Authentication events and surrounding telemetry provide the evidence needed to establish source, timing, and scope.",
+    "status": "active"
+  },
+  {
+    "subject": "Windows",
+    "topic": "DNS",
+    "difficulty": "Hard",
+    "question": "Internal DNS resolves a service name correctly from servers but intermittently fails from clients in one subnet. What is the strongest next comparison?",
+    "options": [
+      "DNS server selection, suffix configuration, and packet path from the affected subnet",
+      "CPU model of the clients",
+      "Monitor refresh rate",
+      "Installed fonts"
+    ],
+    "correct": 0,
+    "explanation": "Comparing DNS configuration and network path from the affected subnet can isolate whether the issue is client configuration or connectivity.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Processes",
+    "difficulty": "Medium",
+    "question": "A Linux application is consuming 100% CPU on one host. What should you identify before restarting it?",
+    "options": [
+      "The process ID, command line, owner, and whether the load is expected",
+      "The hostname of the DNS server only",
+      "The SSH banner",
+      "The system wallpaper"
+    ],
+    "correct": 0,
+    "explanation": "Identifying the process and context helps determine whether the load is legitimate and avoids unnecessary service disruption.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Filesystem",
+    "difficulty": "Medium",
+    "question": "A filesystem is 95% full, but deleting a large log file does not free the expected space. What is a likely cause?",
+    "options": [
+      "A running process still has the deleted file open",
+      "The hostname is incorrect",
+      "The SSH key expired",
+      "The CPU is underclocked"
+    ],
+    "correct": 0,
+    "explanation": "An open deleted file can continue consuming blocks until the process closes the file descriptor.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Permissions",
+    "difficulty": "Medium",
+    "question": "A script has read and write permissions but fails with \"Permission denied\" when executed. What should you check?",
+    "options": [
+      "The execute bit and the filesystem mount options",
+      "The system timezone only",
+      "The DNS MX record",
+      "The shell history length"
+    ],
+    "correct": 0,
+    "explanation": "A file must have execute permission for direct execution, and mount options such as noexec can also prevent execution.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Packages",
+    "difficulty": "Medium",
+    "question": "On a RHEL-like server, an update should be applied but one package is excluded by dnf.conf. What is the safest way to verify the exclusion before changing it?",
+    "options": [
+      "Inspect the active DNF configuration and test with the exclusion override",
+      "Delete the entire dnf.conf",
+      "Reinstall the kernel immediately",
+      "Disable networking"
+    ],
+    "correct": 0,
+    "explanation": "Inspecting configuration and using a controlled override confirms whether the package is intentionally excluded.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Networking",
+    "difficulty": "Medium",
+    "question": "A Linux server can reach external IP addresses but cannot resolve names. Which command is useful for checking the configured DNS path?",
+    "options": [
+      "resolvectl status or cat /etc/resolv.conf",
+      "lsblk",
+      "free -m",
+      "df -h"
+    ],
+    "correct": 0,
+    "explanation": "resolvectl status and /etc/resolv.conf show resolver configuration and DNS servers.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Storage",
+    "difficulty": "Hard",
+    "question": "A filesystem is mounted read-only after an I/O error. What should be investigated before simply remounting it read-write?",
+    "options": [
+      "Kernel logs, filesystem health, and underlying storage errors",
+      "The SSH client theme",
+      "The login shell prompt",
+      "The CPU governor only"
+    ],
+    "correct": 0,
+    "explanation": "Read-only remounts can protect filesystem integrity after storage errors; logs and storage health should be checked first.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Systemd",
+    "difficulty": "Medium",
+    "question": "A service starts successfully when run manually but fails during boot. Which evidence is most useful?",
+    "options": [
+      "systemctl status and journalctl for the service and boot transaction",
+      "The contents of /tmp only",
+      "The current terminal color",
+      "The browser version"
+    ],
+    "correct": 0,
+    "explanation": "systemd status and journal logs show dependency, ordering, permission, and startup failures.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Memory",
+    "difficulty": "Hard",
+    "question": "A server has free memory but swap usage is high and application latency is increasing. What should be checked?",
+    "options": [
+      "Memory pressure, swap activity, and the processes causing sustained memory use",
+      "Only filesystem inode usage",
+      "The DNS zone transfer",
+      "The SSH MOTD"
+    ],
+    "correct": 0,
+    "explanation": "Free memory alone does not rule out memory pressure; swap-in/out activity and process memory behavior are important.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "You suspect an unauthorized SSH key was added to a user account. Which artifact should be checked first?",
+    "options": [
+      "The user’s authorized_keys file and relevant authentication logs",
+      "The system hostname only",
+      "The package cache",
+      "The bootloader splash screen"
+    ],
+    "correct": 0,
+    "explanation": "authorized_keys shows permitted public keys, while authentication logs can establish when and from where a key was used.",
+    "status": "active"
+  },
+  {
+    "subject": "Linux",
+    "topic": "Kernel",
+    "difficulty": "Hard",
+    "question": "After a kernel update, the server is still running the previous kernel. What should you verify before rebooting again?",
+    "options": [
+      "Installed kernels, bootloader configuration, and the currently running kernel",
+      "Only the current working directory",
+      "The DNS search suffix",
+      "The shell prompt"
+    ],
+    "correct": 0,
+    "explanation": "Checking uname -r, installed kernels, and bootloader entries determines whether the expected kernel is installed and selected.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Snapshots",
+    "difficulty": "Hard",
+    "question": "A VM snapshot has grown several terabytes and the datastore is nearly full. What is the safest immediate approach?",
+    "options": [
+      "Assess snapshot chain, free datastore capacity, and backup activity before consolidation",
+      "Delete the snapshot file directly from the datastore browser",
+      "Power off every VM in vCenter",
+      "Restart vCenter Server"
+    ],
+    "correct": 0,
+    "explanation": "Snapshot consolidation can require additional space. Direct file deletion can corrupt the VM; capacity and backup activity must be assessed first.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "vMotion",
+    "difficulty": "Medium",
+    "question": "vMotion fails for one VM while other VMs migrate between the same hosts. What should you compare first?",
+    "options": [
+      "VM-specific compatibility, CPU/EVC settings, networks, and attached devices",
+      "The vCenter logo",
+      "The browser cache",
+      "The ESXi host wallpaper"
+    ],
+    "correct": 0,
+    "explanation": "A VM-specific failure points to configuration differences such as CPU compatibility, devices, or networking.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "HA",
+    "difficulty": "Medium",
+    "question": "A host fails and HA restarts some VMs but not another. What should be checked for the VM that did not restart?",
+    "options": [
+      "HA admission/configuration, VM restart priority, and host compatibility",
+      "The VM desktop background",
+      "The browser history",
+      "The DNS MX record"
+    ],
+    "correct": 0,
+    "explanation": "HA restart behavior depends on cluster policy, VM settings, and whether another compatible host can run the VM.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "Only one VM on an ESXi host loses network connectivity while other VMs on the same port group work. What is a useful first comparison?",
+    "options": [
+      "The VM virtual NIC, connected port group, VLAN, and guest network configuration",
+      "The ESXi license expiry date",
+      "The vCenter theme",
+      "The host BIOS password"
+    ],
+    "correct": 0,
+    "explanation": "A single-VM network issue is best isolated by comparing its virtual NIC, port group, VLAN, and guest configuration.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Datastore",
+    "difficulty": "Hard",
+    "question": "A datastore shows low free space even though visible VM folders do not explain the usage. What should be investigated?",
+    "options": [
+      "Snapshots, swap files, orphaned files, and other datastore contents",
+      "The vCenter favicon",
+      "The keyboard language",
+      "The VM console font"
+    ],
+    "correct": 0,
+    "explanation": "Datastore usage can include snapshots, VM swap files, ISO files, logs, and orphaned artifacts.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "ESXi",
+    "difficulty": "Medium",
+    "question": "An ESXi host reports a hardware sensor warning. What should be correlated before deciding on remediation?",
+    "options": [
+      "vCenter alarms, ESXi hardware health, and out-of-band management such as iDRAC/iLO",
+      "Only the VM guest OS version",
+      "The vCenter browser zoom",
+      "The DNS TXT record"
+    ],
+    "correct": 0,
+    "explanation": "Correlating vCenter, ESXi, and hardware-management telemetry helps distinguish a real hardware condition from a monitoring anomaly.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Resource Management",
+    "difficulty": "Medium",
+    "question": "A VM is ready but experiences CPU ready time during peak periods. What does this indicate?",
+    "options": [
+      "The VM is waiting for physical CPU resources to be scheduled",
+      "The VM has excessive disk capacity",
+      "The guest DNS server is unavailable",
+      "The VM has too much memory installed"
+    ],
+    "correct": 0,
+    "explanation": "CPU Ready measures time a vCPU is ready to run but waiting for physical CPU scheduling.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Storage",
+    "difficulty": "Medium",
+    "question": "A VM reports high storage latency while other VMs on the same datastore are also affected. What should be investigated?",
+    "options": [
+      "Datastore and underlying storage performance, paths, and contention",
+      "Only the affected VM’s hostname",
+      "The guest wallpaper",
+      "The browser version"
+    ],
+    "correct": 0,
+    "explanation": "Multiple VMs experiencing latency points toward shared storage or path contention rather than one guest alone.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Maintenance",
+    "difficulty": "Medium",
+    "question": "Before putting an ESXi host into maintenance mode, what should you verify?",
+    "options": [
+      "VM placement/migration, DRS/HA behavior, and any workloads that cannot migrate",
+      "Only the host time zone",
+      "The vCenter login page title",
+      "The VM desktop resolution"
+    ],
+    "correct": 0,
+    "explanation": "Maintenance mode requires ensuring workloads can be migrated or otherwise safely handled.",
+    "status": "active"
+  },
+  {
+    "subject": "VMware",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "A vCenter account shows an unexpected administrative login. What should be preserved first?",
+    "options": [
+      "vCenter authentication/audit logs and the source IP and timestamp",
+      "The browser bookmarks",
+      "The ESXi console wallpaper",
+      "The VM clipboard"
+    ],
+    "correct": 0,
+    "explanation": "Authentication and audit records provide the primary evidence for tracing an unexpected administrative action.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Virtual Switches",
+    "difficulty": "Medium",
+    "question": "A Hyper-V VM can reach other VMs on the same host but cannot reach the corporate network. What should be checked first?",
+    "options": [
+      "The virtual switch type, VLAN configuration, and physical uplink",
+      "The VM screenshot folder",
+      "The host recycle bin",
+      "The guest wallpaper"
+    ],
+    "correct": 0,
+    "explanation": "External connectivity depends on the switch type, VLAN settings, and physical network uplink.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Checkpoints",
+    "difficulty": "Hard",
+    "question": "A production VM has an old checkpoint that has grown significantly. What should you do before deleting it?",
+    "options": [
+      "Confirm backup activity and available storage, then use supported checkpoint removal",
+      "Delete the AVHDX file manually",
+      "Rename the VHDX file",
+      "Restart the host immediately"
+    ],
+    "correct": 0,
+    "explanation": "Checkpoint removal can trigger merge activity; backup state and free space should be confirmed first.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Migration",
+    "difficulty": "Medium",
+    "question": "Live migration fails for one VM but succeeds for others between the same hosts. What should be compared?",
+    "options": [
+      "VM configuration, virtual switch mapping, storage, and processor compatibility",
+      "Only the VM display resolution",
+      "The host wallpaper",
+      "The browser cache"
+    ],
+    "correct": 0,
+    "explanation": "A VM-specific migration failure usually comes from configuration differences.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "Two Hyper-V hosts can communicate, but VMs on their external switches cannot communicate across hosts. What is a strong suspect?",
+    "options": [
+      "VLAN tagging or physical switch configuration",
+      "The VM hostname length",
+      "Windows Calculator",
+      "The host desktop theme"
+    ],
+    "correct": 0,
+    "explanation": "Cross-host VM networking commonly depends on consistent VLAN and physical switch configuration.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Storage",
+    "difficulty": "Hard",
+    "question": "A VM shows high disk latency and several VMs on the same CSV are affected. What should be checked?",
+    "options": [
+      "CSV/storage performance, paths, and contention",
+      "Only one VM application log",
+      "The host screen resolution",
+      "The guest keyboard layout"
+    ],
+    "correct": 0,
+    "explanation": "Shared latency across VMs points toward shared storage or path contention.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "PowerShell",
+    "difficulty": "Medium",
+    "question": "You need a quick inventory of running VMs and their state on a Hyper-V host. Which cmdlet is appropriate?",
+    "options": [
+      "Get-VM",
+      "Get-Service",
+      "Get-NetTCPConnection",
+      "Get-Disk"
+    ],
+    "correct": 0,
+    "explanation": "Get-VM returns Hyper-V virtual machine state and configuration information.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Administration and Troubleshooting",
+    "difficulty": "Medium",
+    "question": "A Hyper-V host has plenty of memory but a VM reports memory pressure. What should be investigated?",
+    "options": [
+      "Dynamic Memory configuration and the VM workload demand",
+      "The host DNS suffix only",
+      "The VM wallpaper",
+      "The print spooler"
+    ],
+    "correct": 0,
+    "explanation": "Dynamic Memory and actual guest demand determine whether a VM is receiving enough memory.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Architecture",
+    "difficulty": "Medium",
+    "question": "You need isolated VMs that can communicate with each other but not directly with the physical network. Which switch type fits?",
+    "options": [
+      "Private virtual switch",
+      "External virtual switch",
+      "Only an internal switch",
+      "A physical NIC"
+    ],
+    "correct": 0,
+    "explanation": "A private switch provides VM-to-VM communication without host or physical-network connectivity.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "High Availability",
+    "difficulty": "Hard",
+    "question": "A clustered VM cannot start on another node because its storage is unavailable. Which dependency is most relevant?",
+    "options": [
+      "Shared or replicated storage availability and cluster configuration",
+      "The guest browser version",
+      "The host wallpaper",
+      "The VM desktop icon"
+    ],
+    "correct": 0,
+    "explanation": "Clustered workloads require their storage dependencies to be available on the destination node.",
+    "status": "active"
+  },
+  {
+    "subject": "Hyper-V",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "A Hyper-V host is being hardened. Which action reduces exposure without affecting required VM networking?",
+    "options": [
+      "Restrict management access and disable unused host services/protocols",
+      "Expose WinRM to the entire internet",
+      "Disable all host firewall rules",
+      "Share the host administrator password"
+    ],
+    "correct": 0,
+    "explanation": "Hardening should reduce unnecessary management exposure while preserving required functionality.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Identity",
+    "difficulty": "Medium",
+    "question": "A user needs access to one Azure Storage account but should not manage subscriptions or other resources. What should be used?",
+    "options": [
+      "A least-privilege Azure RBAC role scoped to the storage account",
+      "Owner at the management group",
+      "Global Administrator for every user",
+      "Contributor on all subscriptions"
+    ],
+    "correct": 0,
+    "explanation": "RBAC should be scoped to the smallest resource and permissions needed.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Compute",
+    "difficulty": "Medium",
+    "question": "An Azure VM is unreachable over RDP, but Azure reports the VM as running. What should be checked first?",
+    "options": [
+      "NSG rules, effective routes, and whether the guest service is listening",
+      "The VM wallpaper",
+      "The Azure portal theme",
+      "The subscription display name"
+    ],
+    "correct": 0,
+    "explanation": "A running VM can still be unreachable because of network security rules, routing, or guest configuration.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Storage",
+    "difficulty": "Hard",
+    "question": "A storage account must survive a regional outage with minimal data loss. Which design consideration is most relevant?",
+    "options": [
+      "Appropriate redundancy such as geo-redundant storage and recovery requirements",
+      "Changing the storage account name",
+      "Disabling encryption",
+      "Using a smaller disk"
+    ],
+    "correct": 0,
+    "explanation": "Redundancy choice should match regional failure and recovery objectives.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "A private Azure VM should access a PaaS service without traversing the public internet. Which feature is designed for this?",
+    "options": [
+      "Private Endpoint",
+      "Public IP on the VM",
+      "Internet-facing load balancer only",
+      "DNS round robin on a public domain"
+    ],
+    "correct": 0,
+    "explanation": "Private Endpoint maps the service to a private IP in a virtual network.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Governance",
+    "difficulty": "Medium",
+    "question": "You need to ensure resources are tagged with cost-center information across subscriptions. Which Azure capability is relevant?",
+    "options": [
+      "Azure Policy",
+      "Azure DNS",
+      "Azure Bastion only",
+      "Azure Load Balancer"
+    ],
+    "correct": 0,
+    "explanation": "Azure Policy can audit or enforce organizational standards such as required tags.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Monitoring",
+    "difficulty": "Medium",
+    "question": "A VM intermittently shows high CPU. Which Azure service is most appropriate for collecting metrics and creating alerts?",
+    "options": [
+      "Azure Monitor",
+      "Azure DNS",
+      "Azure Key Vault only",
+      "Azure DevTest Labs only"
+    ],
+    "correct": 0,
+    "explanation": "Azure Monitor collects metrics and supports alerting and analysis.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "A secret used by an application should not be stored in source code or VM configuration files. What is the appropriate Azure service?",
+    "options": [
+      "Azure Key Vault",
+      "Azure Storage public container",
+      "Azure DNS",
+      "Azure Load Balancer"
+    ],
+    "correct": 0,
+    "explanation": "Key Vault is designed to securely store secrets, keys, and certificates.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Administration and Troubleshooting",
+    "difficulty": "Medium",
+    "question": "A deployment works in one region but fails in another because the selected VM size is unavailable. What should you check?",
+    "options": [
+      "Regional SKU availability and quotas",
+      "The VM desktop theme",
+      "The DNS MX record",
+      "The browser cache"
+    ],
+    "correct": 0,
+    "explanation": "VM sizes and quotas can vary by region, so regional availability must be checked.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Backup",
+    "difficulty": "Hard",
+    "question": "You need point-in-time recovery for an Azure VM. What should be verified?",
+    "options": [
+      "Azure Backup configuration, recovery points, and retention",
+      "Only the VM name",
+      "The public DNS record",
+      "The browser history"
+    ],
+    "correct": 0,
+    "explanation": "Recovery depends on valid backup configuration, available recovery points, and retention.",
+    "status": "active"
+  },
+  {
+    "subject": "Azure",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "A subnet has available IP addresses but a new VM cannot be deployed because of subnet policy. What should be examined?",
+    "options": [
+      "Subnet NSG, route table, delegation, and policy constraints",
+      "The VM wallpaper",
+      "The subscription logo",
+      "The keyboard layout"
+    ],
+    "correct": 0,
+    "explanation": "Subnet policies, delegations, routes, and governance controls can affect deployment and connectivity.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "IAM",
+    "difficulty": "Medium",
+    "question": "An application on EC2 needs read access to one S3 bucket without storing long-lived access keys. What should be used?",
+    "options": [
+      "An IAM role attached to the instance",
+      "A hard-coded root access key",
+      "A public bucket policy",
+      "A shared administrator password"
+    ],
+    "correct": 0,
+    "explanation": "IAM roles provide temporary credentials to workloads without embedding long-lived keys.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "EC2",
+    "difficulty": "Medium",
+    "question": "An EC2 instance is running but cannot be reached on TCP 443. Which controls should be checked together?",
+    "options": [
+      "Security group, network ACL, route table, and application listener",
+      "Only the instance hostname",
+      "The AWS console theme",
+      "The browser cache"
+    ],
+    "correct": 0,
+    "explanation": "AWS connectivity depends on multiple network layers plus whether the application is listening.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "S3",
+    "difficulty": "Medium",
+    "question": "An S3 bucket should be accessible only to a specific application role. What is the key security principle?",
+    "options": [
+      "Block public access and use least-privilege IAM/bucket policies",
+      "Make the bucket public",
+      "Share the root credentials",
+      "Disable encryption"
+    ],
+    "correct": 0,
+    "explanation": "Private access with least-privilege policies limits exposure.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "VPC",
+    "difficulty": "Hard",
+    "question": "Two VPCs need private connectivity without sending traffic over the public internet. Which service can provide a direct connection between them?",
+    "options": [
+      "VPC peering",
+      "Public DNS",
+      "S3 website hosting",
+      "CloudFront only"
+    ],
+    "correct": 0,
+    "explanation": "VPC peering provides private connectivity between VPCs using AWS networking.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Monitoring",
+    "difficulty": "Medium",
+    "question": "You need an alert when an EC2 instance consistently exceeds a CPU threshold. Which service is appropriate?",
+    "options": [
+      "Amazon CloudWatch",
+      "Amazon Route 53 only",
+      "AWS IAM",
+      "AWS KMS only"
+    ],
+    "correct": 0,
+    "explanation": "CloudWatch collects metrics and supports alarms.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "An AWS account shows an unexpected API call by a privileged identity. Which service provides the API activity trail?",
+    "options": [
+      "AWS CloudTrail",
+      "Amazon Route 53",
+      "AWS Elastic Beanstalk only",
+      "Amazon S3 Transfer Acceleration"
+    ],
+    "correct": 0,
+    "explanation": "CloudTrail records AWS API activity for auditing and investigation.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Architecture",
+    "difficulty": "Hard",
+    "question": "A web application should continue serving if one Availability Zone becomes unavailable. What design is appropriate?",
+    "options": [
+      "Deploy redundant application capacity across multiple Availability Zones",
+      "Use one large instance in one AZ",
+      "Put the database password in HTML",
+      "Disable health checks"
+    ],
+    "correct": 0,
+    "explanation": "Multi-AZ architecture reduces dependency on a single Availability Zone.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Storage",
+    "difficulty": "Medium",
+    "question": "An S3 object was deleted accidentally and versioning was enabled beforehand. What should be checked?",
+    "options": [
+      "Object versions and delete markers",
+      "The EC2 CPU graph",
+      "The VPC DNS hostname",
+      "The IAM console theme"
+    ],
+    "correct": 0,
+    "explanation": "S3 versioning preserves previous versions and uses delete markers for logical deletion.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Cost Management",
+    "difficulty": "Medium",
+    "question": "A development EC2 instance is left running overnight unnecessarily. Which simple control can reduce this waste?",
+    "options": [
+      "Automated schedules or instance stop policies for non-production workloads",
+      "Make the instance public",
+      "Disable CloudWatch",
+      "Increase the instance size"
+    ],
+    "correct": 0,
+    "explanation": "Scheduling non-production resources can reduce unnecessary runtime cost.",
+    "status": "active"
+  },
+  {
+    "subject": "AWS",
+    "topic": "Networking",
+    "difficulty": "Hard",
+    "question": "A private subnet instance needs outbound internet access for updates but must not accept inbound internet connections. Which pattern is appropriate?",
+    "options": [
+      "Route outbound traffic through a NAT gateway in a public subnet",
+      "Assign a public IP and open all ports",
+      "Use an internet gateway directly from the private subnet",
+      "Disable route tables"
+    ],
+    "correct": 0,
+    "explanation": "A NAT gateway enables outbound internet access for private instances without direct inbound internet exposure.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Incident Response",
+    "difficulty": "Hard",
+    "question": "A workstation is suspected of communicating with a malicious IP. What should happen before deleting evidence from the system?",
+    "options": [
+      "Preserve relevant logs and evidence while following the incident response process",
+      "Immediately wipe the disk",
+      "Delete all event logs",
+      "Disable every monitoring agent"
+    ],
+    "correct": 0,
+    "explanation": "Evidence preservation supports investigation and avoids destroying useful forensic information.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "SIEM",
+    "difficulty": "Medium",
+    "question": "A SIEM receives thousands of failed login events from one source. What is useful before declaring an incident?",
+    "options": [
+      "Correlate source, time window, target accounts, successful logins, and context",
+      "Count only the total events",
+      "Ignore successful logins",
+      "Delete duplicate logs"
+    ],
+    "correct": 0,
+    "explanation": "Correlation helps distinguish password spraying, brute force, misconfiguration, or benign activity.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Endpoint Security",
+    "difficulty": "Medium",
+    "question": "An endpoint security alert identifies a suspicious executable. What is a useful next step?",
+    "options": [
+      "Review process lineage, hash, command line, and related telemetry",
+      "Immediately trust the file because it has a common name",
+      "Disable endpoint protection",
+      "Delete all security logs"
+    ],
+    "correct": 0,
+    "explanation": "Process lineage and telemetry help establish whether the executable is malicious and how it arrived.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Access Control",
+    "difficulty": "Medium",
+    "question": "A contractor needs access to one application for two weeks. What principle should guide the access design?",
+    "options": [
+      "Least privilege and time-bound access",
+      "Permanent administrator access",
+      "Shared credentials",
+      "Access to every application"
+    ],
+    "correct": 0,
+    "explanation": "Access should be limited to the required resource and duration.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Vulnerability Management",
+    "difficulty": "Medium",
+    "question": "A critical vulnerability is detected on an internet-facing server. What should influence remediation priority?",
+    "options": [
+      "Exploitability, exposure, asset criticality, and available mitigation",
+      "Only the software vendor name",
+      "The server wallpaper",
+      "The number of desktop icons"
+    ],
+    "correct": 0,
+    "explanation": "Risk-based prioritization considers both technical severity and business exposure.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Network Security",
+    "difficulty": "Hard",
+    "question": "A firewall rule allows any source to any destination on a sensitive server subnet. What is the primary concern?",
+    "options": [
+      "Excessive network exposure and lack of least-privilege filtering",
+      "The subnet has too many DNS records",
+      "The firewall is using Ethernet",
+      "The server has a static IP"
+    ],
+    "correct": 0,
+    "explanation": "Broad any-to-any rules increase attack surface and should be constrained where possible.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Authentication",
+    "difficulty": "Medium",
+    "question": "MFA is enabled, but an attacker obtains a valid session token. Which control can help reduce the impact?",
+    "options": [
+      "Shorter session lifetime and risk-based/session controls",
+      "Disabling all logging",
+      "Sharing tokens between users",
+      "Removing account lockout"
+    ],
+    "correct": 0,
+    "explanation": "Session controls can limit the lifetime and reuse of compromised tokens.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Security Operations",
+    "difficulty": "Hard",
+    "question": "An alert indicates an account authenticated from two distant locations within an impossible travel window. What should an analyst check?",
+    "options": [
+      "Authentication logs, device/session details, VPN/proxy use, and recent credential changes",
+      "Only the account display name",
+      "The desktop wallpaper",
+      "The user’s browser bookmarks"
+    ],
+    "correct": 0,
+    "explanation": "Impossible travel can have legitimate explanations, so surrounding authentication and network context should be examined.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Cryptography",
+    "difficulty": "Medium",
+    "question": "A website uses HTTPS with a valid certificate. What security property does TLS primarily provide in transit?",
+    "options": [
+      "Confidentiality and integrity, with server authentication when certificate validation succeeds",
+      "Guaranteed protection from every endpoint compromise",
+      "Permanent data deletion",
+      "Application authorization"
+    ],
+    "correct": 0,
+    "explanation": "TLS protects data in transit and authenticates the server when certificate validation is successful.",
+    "status": "active"
+  },
+  {
+    "subject": "Security",
+    "topic": "Email Security",
+    "difficulty": "Hard",
+    "question": "A user receives a message impersonating a trusted vendor with a link to a fake login page. Which control helps reduce this attack?",
+    "options": [
+      "Phishing-resistant MFA plus email authentication/filtering and user reporting",
+      "Disabling DNS on the endpoint",
+      "Allowing all macros",
+      "Sharing passwords by email"
+    ],
+    "correct": 0,
+    "explanation": "Layered email defenses and phishing-resistant authentication reduce credential theft risk.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Troubleshooting",
+    "difficulty": "Medium",
+    "question": "A host can reach its default gateway but cannot reach a remote subnet. What should be checked next?",
+    "options": [
+      "Routing table and the next-hop path",
+      "The monitor resolution",
+      "The keyboard layout",
+      "The DNS MX record"
+    ],
+    "correct": 0,
+    "explanation": "Gateway reachability does not prove a valid route to the remote subnet.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "DNS",
+    "difficulty": "Medium",
+    "question": "Users can resolve a hostname to an old IP after a server migration. What should be checked?",
+    "options": [
+      "DNS record, TTL, caching, and authoritative DNS configuration",
+      "The DHCP lease duration only",
+      "The switch hostname",
+      "The browser font"
+    ],
+    "correct": 0,
+    "explanation": "Stale DNS can result from records or caches retaining the previous address until TTLs expire.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "DHCP",
+    "difficulty": "Medium",
+    "question": "Only clients in one VLAN fail to obtain DHCP leases. What is a likely network-side dependency?",
+    "options": [
+      "DHCP relay/helper configuration for that VLAN",
+      "The DNS MX record",
+      "The web server certificate",
+      "The router hostname length"
+    ],
+    "correct": 0,
+    "explanation": "DHCP relay configuration is required when the DHCP server is on a different subnet.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "TCP/IP",
+    "difficulty": "Medium",
+    "question": "A TCP connection is established but the application is still unusable. What does this tell you?",
+    "options": [
+      "Basic TCP connectivity exists, but the application layer may still be failing",
+      "DNS is definitely broken",
+      "The server must be powered off",
+      "The firewall is definitely disabled"
+    ],
+    "correct": 0,
+    "explanation": "A successful TCP handshake confirms transport connectivity but not application correctness.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Routing",
+    "difficulty": "Hard",
+    "question": "Two routers advertise overlapping routes and traffic takes an unexpected path. What should be reviewed?",
+    "options": [
+      "Routing table, route preference/metrics, and advertisements",
+      "Only DNS records",
+      "The server wallpaper",
+      "The switch LED color"
+    ],
+    "correct": 0,
+    "explanation": "Route selection depends on the available routes and their preference/metrics.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "OSI",
+    "difficulty": "Medium",
+    "question": "A switch port shows excessive CRC errors. Which layer and area should be investigated first?",
+    "options": [
+      "Physical/Data Link cabling, interface, duplex/speed, and hardware",
+      "Application-layer DNS records only",
+      "The browser cache",
+      "The email signature"
+    ],
+    "correct": 0,
+    "explanation": "CRC errors commonly indicate physical or Layer 2 issues such as cabling or interface problems.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Ports",
+    "difficulty": "Easy",
+    "question": "A service listens on TCP 443. What does that port normally indicate?",
+    "options": [
+      "HTTPS",
+      "DNS",
+      "DHCP",
+      "SSH"
+    ],
+    "correct": 0,
+    "explanation": "TCP 443 is conventionally used for HTTPS.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "ARP",
+    "difficulty": "Medium",
+    "question": "A host cannot reach its local gateway even though the IP configuration is correct. What is useful to inspect?",
+    "options": [
+      "ARP cache and whether the gateway MAC address is learned",
+      "The DNS MX record",
+      "The HTTP response code",
+      "The browser history"
+    ],
+    "correct": 0,
+    "explanation": "Local gateway communication depends on resolving the gateway IP to a MAC address.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Load Balancing",
+    "difficulty": "Hard",
+    "question": "A load-balanced service is healthy on two nodes but users intermittently fail to connect. What should be correlated?",
+    "options": [
+      "Load balancer health, backend connection errors, persistence, and client/network telemetry",
+      "Only the backend server names",
+      "The desktop wallpaper",
+      "The DNS registrar name"
+    ],
+    "correct": 0,
+    "explanation": "Intermittent load-balanced failures require correlation across the load balancer, backends, and client path.",
+    "status": "active"
+  },
+  {
+    "subject": "Networking",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "A firewall logs repeated denied connections from an internal host to an unusual external port. What is the most useful next step?",
+    "options": [
+      "Identify the source process/host owner and correlate endpoint and firewall telemetry",
+      "Allow the traffic immediately",
+      "Delete the firewall logs",
+      "Ignore it because the source is internal"
+    ],
+    "correct": 0,
+    "explanation": "Internal sources can be compromised; endpoint and network telemetry should be correlated before deciding on action.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Operating Systems",
+    "difficulty": "Medium",
+    "question": "A process is waiting for an I/O operation and is not using CPU. Which state best describes it?",
+    "options": [
+      "Blocked/waiting",
+      "Running",
+      "Terminated",
+      "Ready only"
+    ],
+    "correct": 0,
+    "explanation": "A process waiting for I/O is blocked until the required event completes.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Memory",
+    "difficulty": "Medium",
+    "question": "A program accesses memory outside its allocated address space. What mechanism normally helps prevent this?",
+    "options": [
+      "Memory protection provided by the OS and hardware",
+      "DNS",
+      "ARP",
+      "A file extension"
+    ],
+    "correct": 0,
+    "explanation": "Memory protection mechanisms prevent processes from arbitrarily accessing protected address spaces.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Databases",
+    "difficulty": "Medium",
+    "question": "Two transactions modify the same data and one reads an intermediate value that the other later rolls back. Which problem is illustrated?",
+    "options": [
+      "Dirty read",
+      "Deadlock only",
+      "Compilation error",
+      "Cache miss"
+    ],
+    "correct": 0,
+    "explanation": "A dirty read occurs when a transaction reads data written by another uncommitted transaction.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Computer Architecture",
+    "difficulty": "Medium",
+    "question": "A CPU cache is much faster than main memory but smaller. What is the main reason for using it?",
+    "options": [
+      "Keep frequently or recently used data close to the CPU",
+      "Provide DNS resolution",
+      "Store every file permanently",
+      "Replace the operating system"
+    ],
+    "correct": 0,
+    "explanation": "Caches exploit locality to reduce average memory access time.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Networking",
+    "difficulty": "Medium",
+    "question": "A packet needs to travel through multiple routers. Which device primarily makes the Layer 3 forwarding decision?",
+    "options": [
+      "Router",
+      "Keyboard",
+      "Monitor",
+      "Printer"
+    ],
+    "correct": 0,
+    "explanation": "Routers forward IP packets based on Layer 3 routing information.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Security",
+    "difficulty": "Hard",
+    "question": "A system stores passwords as salted cryptographic hashes rather than reversible encryption. What is the main benefit?",
+    "options": [
+      "The original password is not directly recoverable from the stored value",
+      "The database becomes impossible to compromise",
+      "Users no longer need authentication",
+      "Passwords can be displayed in plain text"
+    ],
+    "correct": 0,
+    "explanation": "Password hashing is designed to make recovering the original password computationally difficult.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Concurrency",
+    "difficulty": "Hard",
+    "question": "Two threads access shared data and the final result varies depending on execution order. What is this commonly called?",
+    "options": [
+      "Race condition",
+      "Syntax error",
+      "DNS failure",
+      "Memory leak only"
+    ],
+    "correct": 0,
+    "explanation": "A race condition occurs when concurrent execution order affects the result of shared-state operations.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Algorithms",
+    "difficulty": "Medium",
+    "question": "An algorithm repeatedly halves the remaining search space in a sorted array. What is its typical time complexity?",
+    "options": [
+      "O(log n)",
+      "O(n)",
+      "O(n²)",
+      "O(2^n)"
+    ],
+    "correct": 0,
+    "explanation": "Binary search halves the search space on each comparison, giving logarithmic complexity.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Storage",
+    "difficulty": "Medium",
+    "question": "A system must retain data after power is removed. Which storage property is required?",
+    "options": [
+      "Non-volatile storage",
+      "CPU cache only",
+      "Register storage only",
+      "Volatile RAM only"
+    ],
+    "correct": 0,
+    "explanation": "Non-volatile storage retains information without power.",
+    "status": "active"
+  },
+  {
+    "subject": "Computer Science Fundamentals",
+    "topic": "Operating Systems",
+    "difficulty": "Hard",
+    "question": "A system has many runnable processes but limited CPU cores. What does the scheduler primarily decide?",
+    "options": [
+      "Which runnable process/thread receives CPU time next",
+      "Which DNS server resolves names",
+      "Which disk stores the BIOS",
+      "Which user gets a public IP"
+    ],
+    "correct": 0,
+    "explanation": "The scheduler allocates CPU execution time among runnable tasks.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Arrays",
+    "difficulty": "Medium",
+    "question": "You need constant-time access by index in a fixed-size contiguous array. Which property provides this?",
+    "options": [
+      "Direct address calculation from the base address and element size",
+      "Tree traversal",
+      "Hash collision resolution",
+      "Graph edge relaxation"
+    ],
+    "correct": 0,
+    "explanation": "Array indexing can calculate the target address directly using base address and element size.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Linked Lists",
+    "difficulty": "Medium",
+    "question": "Inserting a node at the beginning of a singly linked list when the head pointer is known has what typical complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n²)"
+    ],
+    "correct": 0,
+    "explanation": "The new node can point to the current head and become the new head in constant time.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Queues",
+    "difficulty": "Easy",
+    "question": "Which principle does a queue normally follow?",
+    "options": [
+      "FIFO",
+      "LIFO",
+      "Depth-first only",
+      "Sorted order"
+    ],
+    "correct": 0,
+    "explanation": "A queue is first-in, first-out.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Trees",
+    "difficulty": "Medium",
+    "question": "In a binary search tree, which traversal visits keys in sorted order when the tree satisfies the BST property?",
+    "options": [
+      "In-order traversal",
+      "Pre-order traversal",
+      "Post-order traversal",
+      "Level order only"
+    ],
+    "correct": 0,
+    "explanation": "In-order traversal visits left subtree, node, then right subtree, producing sorted keys in a BST.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Graphs",
+    "difficulty": "Hard",
+    "question": "You need the shortest path in an unweighted graph. Which approach is generally appropriate?",
+    "options": [
+      "Breadth-first search",
+      "Depth-first search only",
+      "Insertion sort",
+      "Binary search"
+    ],
+    "correct": 0,
+    "explanation": "BFS explores vertices by distance in an unweighted graph and therefore finds shortest edge-count paths.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Sorting",
+    "difficulty": "Medium",
+    "question": "A sorting algorithm repeatedly selects the smallest remaining element and places it at the next position. Which is it?",
+    "options": [
+      "Selection sort",
+      "Merge sort",
+      "Heap sort",
+      "Quickselect"
+    ],
+    "correct": 0,
+    "explanation": "Selection sort repeatedly selects the minimum remaining element.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Hashing",
+    "difficulty": "Hard",
+    "question": "Two different keys map to the same hash-table index. What is this called?",
+    "options": [
+      "Collision",
+      "Recursion",
+      "Underflow",
+      "Traversal"
+    ],
+    "correct": 0,
+    "explanation": "A collision occurs when multiple keys map to the same table position.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Dynamic Programming",
+    "difficulty": "Hard",
+    "question": "A problem can be divided into overlapping subproblems and optimal solutions reuse smaller results. Which technique fits?",
+    "options": [
+      "Dynamic programming",
+      "Linear search",
+      "Breadth-first traversal only",
+      "Binary encoding"
+    ],
+    "correct": 0,
+    "explanation": "Dynamic programming stores solutions to overlapping subproblems to avoid repeated computation.",
+    "status": "active"
+  },
+  {
+    "subject": "Data Structures & Algorithms",
+    "topic": "Complexity",
+    "difficulty": "Medium",
+    "question": "An algorithm performs three nested loops each iterating approximately n times. What is the typical upper-bound growth?",
+    "options": [
+      "O(n³)",
+      "O(n)",
+      "O(log n)",
+      "O(2n)"
+    ],
+    "correct": 0,
+    "explanation": "Three independent nested loops of n iterations produce cubic growth.",
+    "status": "active"
   }
 ]
