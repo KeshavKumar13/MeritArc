@@ -1,0 +1,27 @@
+
+.exam-page{max-width:1080px}
+.exam-hero{background:linear-gradient(120deg,#0b2141,#124277 60%,#1475ee);color:#fff;border-radius:22px;padding:38px;box-shadow:var(--shadow);margin-bottom:22px}
+.exam-hero h1{font-size:42px;line-height:1.08;margin:12px 0}
+.exam-hero p{color:#d9e9ff;line-height:1.7;max-width:860px}
+.breadcrumb{font-size:13px;color:#d9e9ff}.breadcrumb a{color:#fff}
+.exam-layout{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.exam-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
+.exam-section h2{margin:0 0 12px}.exam-section h3{margin:20px 0 7px;color:var(--navy)}
+.exam-section p,.exam-section li{line-height:1.7;color:#40516a}
+.exam-section ul{padding-left:21px}
+.exam-sidebar{position:sticky;top:90px;align-self:start}
+.exam-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.exam-actions a{display:inline-block;text-decoration:none}
+.exam-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+.exam-meta div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px}
+.exam-meta strong{display:block;font-size:14px}.exam-meta span{display:block;color:#d9e9ff;font-size:12px;margin-top:3px}
+.exam-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.exam-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:.15s}
+.exam-card:hover{transform:translateY(-2px);border-color:#9fc8fa}
+.exam-card h3{margin:0 0 7px;color:var(--navy)}
+.exam-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
+.exam-card .tag{margin-top:12px}
+.topic-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:0;list-style:none}
+.topic-list li{background:#f7faff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:#31435d}
+.disclaimer{font-size:12px;color:#738197;background:#f8fafc;border-left:3px solid #9fc8fa;padding:12px 14px;border-radius:8px}
+@media(max-width:800px){.exam-hero{padding:25px}.exam-hero h1{font-size:32px}.exam-layout{grid-template-columns:1fr}.exam-sidebar{position:static}.exam-meta{grid-template-columns:1fr}.topic-list{grid-template-columns:1fr}}
