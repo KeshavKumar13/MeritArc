@@ -174,6 +174,8 @@
 
     // Show the setup immediately. Authentication status is loaded afterward so
     // a slow/unavailable session check can never prevent the setup screen from opening.
+    // Also clear the deep-link boot overlay before showing the setup modal.
+    document.documentElement.classList.remove("assessment-boot");
     modal.classList.remove("hidden");
     modal.setAttribute("aria-hidden", "false");
     updateAssessmentSetupSummary();

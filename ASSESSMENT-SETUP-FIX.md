@@ -1,28 +1,13 @@
-# MeritArc Assessment Setup Fix
+# Assessment Setup Fix 2
 
-This patch fixes the assessment setup flow so the setup screen opens immediately before authentication/session checks finish.
+Fixes the deep-link loading overlay that could remain above the assessment setup modal at `/?subject=Linux#assessment`.
 
-It also prevents direct calls to `startAssessment()` from bypassing the setup screen.
+The setup modal now clears the boot overlay immediately and is layered above legacy overlays.
 
-## Replace these exact files
+Replace:
+- `index.html`
+- `style.css`
+- `js/app.js`
+- `backend/server.js`
 
-```text
-index.html
-style.css
-js/app.js
-backend/server.js
-```
-
-Do not place `app.js` or `server.js` in the repository root. The paths above are important.
-
-## Expected flow
-
-Click Start Practice → Assessment Setup opens → choose question count, time limit and difficulty → Start Assessment → assessment begins and timer starts.
-
-The setup screen should also appear when opening a subject through a `?subject=` URL.
-
-## Commit
-
-```text
-Fix assessment setup flow
-```
+Commit: `Fix assessment setup overlay`
