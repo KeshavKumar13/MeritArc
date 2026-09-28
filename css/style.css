@@ -182,20 +182,19 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
 .home-library-grid{grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch}
 .home-library-card{box-sizing:border-box}
 /* Card links are fully styled as cards, not underlined text links */
-.exam-card,.exam-card:hover,.exam-card:visited,.exam-card *,
-.home-library-card,.home-library-card:hover,.home-library-card:visited,.home-library-card *,
-.practice-area-item,.practice-area-item:hover,.practice-area-item:visited,.practice-area-item *,
-.quick-practice-link,.quick-practice-link:hover,.quick-practice-link:visited,.quick-practice-link *,
-.category-card,.category-card:hover,.category-card:visited,.category-card *,
-.library-suggestion,.library-suggestion:hover,.library-suggestion:visited,.library-suggestion *{
+.exam-card,.exam-card:hover,.exam-card:visited,.exam-card:focus,.exam-card:active,
+.exam-card h3,.exam-card p,.exam-card span,.exam-card .tag,
+.home-library-card,.home-library-card:hover,.home-library-card:visited,.home-library-card:focus,.home-library-card:active,
+.home-library-card h3,.home-library-card p,.home-library-card span,
+.practice-area-item,.practice-area-item *,
+.quick-practice-link,.quick-practice-link *,
+.category-card,.category-card *,
+.library-suggestion,.library-suggestion *{
   text-decoration:none!important;
   text-decoration-line:none!important;
-}
-.home-library-card h3,.home-library-card p,.home-library-card .tag,
-.home-library-card span,.exam-card h3,.exam-card p,.exam-card .tag,
-.practice-area-item strong,.practice-area-item span,.quick-practice-link span,.quick-practice-link small{
-  text-decoration:none!important;
-  text-decoration-line:none!important;
+  text-decoration-style:none!important;
+  text-decoration-thickness:0!important;
+  -webkit-text-decoration:none!important;
 }
 @media(max-width:1050px){.quick-practice-grid,.home-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.quick-practice-grid,.home-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -209,3 +208,13 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
 
 .home-readable-content{margin:38px 0 18px;padding:26px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.home-readable-intro{max-width:900px}.home-readable-content h2{margin:0 0 9px;color:var(--navy)}.home-readable-content h3{margin:0 0 8px;color:var(--navy);font-size:17px}.home-readable-content p{margin:0;color:#40516a;line-height:1.75;font-size:14px}.home-readable-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}.home-readable-grid article{padding:17px;border:1px solid var(--line);border-radius:14px;background:#f8fbff}.home-readable-note{margin-top:16px;padding:18px;border-left:3px solid #9fc8fa;background:#f7faff;border-radius:10px}.home-readable-note h3{margin-bottom:7px}@media(max-width:800px){.home-readable-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.home-readable-content{padding:20px}.home-readable-grid{grid-template-columns:1fr}}
 .site-loading-overlay{background:rgba(255,255,255,.62)}.site-loading-card{padding:10px 14px;border-radius:11px;gap:8px;font-size:12px;box-shadow:0 7px 24px rgba(15,39,71,.12)}.site-spinner{width:16px;height:16px;border-width:2px}
+
+/* Assessment timer */
+.quiz-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.assessment-timer{display:flex;align-items:center;gap:8px}
+.assessment-timer label{font-size:13px;color:var(--muted);font-weight:700}
+.assessment-timer select{min-width:130px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font:inherit}
+.timer-display{display:inline-flex;align-items:center;justify-content:center;min-width:76px;padding:7px 10px;border-radius:9px;background:#edf6ff;color:var(--navy);font-weight:800;font-variant-numeric:tabular-nums}
+.timer-display.warning{background:#fff4df;color:#8a5a00}
+.timer-display.expired{background:#ffe9e9;color:#a52b2b}
+@media(max-width:600px){.assessment-timer{width:100%}.assessment-timer select{flex:1}.timer-display{margin-left:auto}}

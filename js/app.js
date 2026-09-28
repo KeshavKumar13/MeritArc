@@ -9,7 +9,10 @@
     checked: {},
     attemptId: null,
     serverMode: false,
-    serverUser: null
+    serverUser: null,
+    timerSeconds: 0,
+    timerInterval: null,
+    timerStarted: false
   };
 
   const $ = id => document.getElementById(id);
@@ -94,6 +97,49 @@
     if (subjectCount) subjectCount.textContent = Object.keys(DATA).length;
   }
 
+  function clearAssessmentTimer() {
+    if (state.timerInterval) {
+      clearInterval(state.timerInterval);
+      state.timerInterval = null;
+    }
+  }
+
+  function updateTimerDisplay() {
+    const display = $("timerDisplay");
+    if (!display) return;
+    if (!state.timerSeconds) {
+      display.textContent = "No timer";
+      display.classList.remove("warning", "expired");
+      return;
+    }
+    const minutes = Math.floor(state.timerSeconds / 60);
+    const seconds = state.timerSeconds % 60;
+    display.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
+    display.classList.toggle("warning", state.timerSeconds <= 60 && state.timerSeconds > 0);
+    display.classList.remove("expired");
+  }
+
+  function startAssessmentTimer(seconds) {
+    clearAssessmentTimer();
+    state.timerSeconds = Number(seconds) || 0;
+    state.timerStarted = state.timerSeconds > 0;
+    const select = $("assessmentTimer");
+    if (select) select.disabled = state.timerStarted;
+    updateTimerDisplay();
+    if (!state.timerStarted) return;
+    state.timerInterval = setInterval(async () => {
+      state.timerSeconds -= 1;
+      updateTimerDisplay();
+      if (state.timerSeconds <= 0) {
+        clearAssessmentTimer();
+        const display = $("timerDisplay");
+        if (display) { display.textContent = "Time up"; display.classList.remove("warning"); display.classList.add("expired"); }
+        alert("Time is up. Your assessment will be submitted.");
+        await submitAssessment(true);
+      }
+    }, 1000);
+  }
+
   async function startAssessment(subject) {
     window.MeritArc?.showLoading?.("Starting assessment…");
     const user = await getCurrentUser();
@@ -105,6 +151,12 @@
     state.attemptId = null;
     state.serverMode = false;
     state.serverUser = user;
+    clearAssessmentTimer();
+    state.timerSeconds = 0;
+    state.timerStarted = false;
+    const timerSelect = $("assessmentTimer");
+    if (timerSelect) { timerSelect.value = "0"; timerSelect.disabled = false; }
+    updateTimerDisplay();
 
     if (user) {
       try {
@@ -298,12 +350,13 @@
     }
   }
 
-  async function submitAssessment() {
+  async function submitAssessment(timedOut = false) {
     if (!state.subject || !state.questions.length) return;
+    clearAssessmentTimer();
 
     if (state.serverMode) {
       const unanswered = state.answers.filter(value => value === null).length;
-      if (unanswered > 0 && !confirm(`${unanswered} question(s) are unanswered. Submit anyway?`)) {
+      if (!timedOut && unanswered > 0 && !confirm(`${unanswered} question(s) are unanswered. Submit anyway?`)) {
         return;
       }
 
@@ -550,8 +603,6 @@
   let resultsLoading = false;
 
   async function showResults() {
-    if (resultsLoading) return;
-    resultsLoading = true;
     hideViews();
     $("resultsView").classList.remove("hidden");
 
@@ -640,6 +691,7 @@
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
+    resultsLoading = false;
   }
 
   function escapeHtml(value) {
@@ -934,6 +986,10 @@
     const nav = $("siteNav");
     const button = $("mobileMenuButton");
     if (nav?.classList.contains("open") && !nav.contains(event.target) && !button?.contains(event.target)) closeMobileMenu();
+  });
+
+  $("assessmentTimer")?.addEventListener("change", event => {
+    startAssessmentTimer(event.target.value);
   });
 
   window.MeritArc = {

@@ -50,7 +50,7 @@
     <img src="assets/logo.svg" alt="MeritArc">
   </a>
   <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
-  <nav class="nav" id="siteNav"><button onclick="MeritArc.showHome();closeSiteNav();">Home</button><button onclick="MeritArc.showAssessments();closeSiteNav();">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="MeritArc.showResults();closeSiteNav();">Results</button><button onclick="location.href='/support.html'">Contact</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
+  <nav class="nav" id="siteNav"><button onclick="MeritArc.showHome();closeSiteNav();">Home</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="MeritArc.showResults();closeSiteNav();">Results</button><button onclick="location.href='/support.html'">Contact</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
 </header>
 
 <main class="container">
@@ -133,9 +133,21 @@
   </section>
 
   <section id="quizView" class="hidden">
-    <div class="toolbar">
-      <button class="secondary" onclick="MeritArc.showAssessments()">← Assessments</button>
+    <div class="toolbar quiz-toolbar">
+      <button class="secondary" onclick="MeritArc.showAssessments()">← Practice Areas</button>
       <strong id="quizTitle"></strong>
+      <div class="assessment-timer">
+        <label for="assessmentTimer">Time limit</label>
+        <select id="assessmentTimer" aria-label="Assessment time limit">
+          <option value="0">No timer</option>
+          <option value="300">5 minutes</option>
+          <option value="600">10 minutes</option>
+          <option value="900">15 minutes</option>
+          <option value="1200">20 minutes</option>
+          <option value="1800">30 minutes</option>
+        </select>
+        <span id="timerDisplay" class="timer-display" aria-live="polite">No timer</span>
+      </div>
       <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
     </div>
 
@@ -166,7 +178,7 @@
 
   <section id="reportView" class="hidden">
     <div class="toolbar">
-      <button class="secondary" onclick="MeritArc.showHome()">← Assessments</button>
+      <button class="secondary" onclick="MeritArc.showHome()">← Practice Areas</button>
       <h2>Assessment Report</h2>
     </div>
     <div id="reportContent"></div>
@@ -174,7 +186,7 @@
 
   <section id="resultsView" class="hidden">
     <div class="toolbar">
-      <button class="secondary" onclick="MeritArc.showHome()">← Assessments</button>
+      <button class="secondary" onclick="MeritArc.showHome()">← Practice Areas</button>
       <h2>Previous Results</h2>
     </div>
     <div class="card" id="historyContent"></div>
