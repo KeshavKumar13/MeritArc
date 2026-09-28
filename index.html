@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-03Y9SHVQ1C"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JSSJ1RE5MS"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-03Y9SHVQ1C');
+  gtag('config', 'G-JSSJ1RE5MS');
 </script>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1741589992062370" crossorigin="anonymous"></script>
@@ -52,7 +52,7 @@
   <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
   <nav class="nav" id="siteNav">
     <button onclick="MeritArc.showHome();MeritArc.closeMobileMenu()">Home</button>
-    <button onclick="MeritArc.showAssessments();MeritArc.closeMobileMenu()">Assessments</button>
+    <button onclick="MeritArc.showAssessments();MeritArc.closeMobileMenu()">Assessments</button><button onclick="location.href='/exams.html';MeritArc.closeMobileMenu()">Exam Library</button>
     <button onclick="MeritArc.showResults();MeritArc.closeMobileMenu()">Results</button>
     <button onclick="location.href='support.html';MeritArc.closeMobileMenu()">Support</button><button id="authButton" onclick="MeritArc.openAuth();MeritArc.closeMobileMenu()">Sign In</button>
   </nav>
@@ -98,10 +98,27 @@
       </div>
     </div>
 
+    <section class="home-library-section" aria-labelledby="examLibraryHeading">
+      <div class="section-head home-library-head">
+        <div>
+          <h2 id="examLibraryHeading">Explore Exam Library</h2>
+          <div class="muted">Prepare for banking, SSC, teaching, railway, government and defence exams with dedicated preparation pages.</div>
+        </div>
+        <a class="secondary home-library-link" href="/exams.html">View Exam Library →</a>
+      </div>
+      <div class="home-library-grid">
+        <a class="card home-library-card" href="/banking.html"><span class="home-library-icon">₹</span><div><h3>Banking Exams</h3><p>IBPS, SBI, RBI and other banking exams.</p></div><span class="tag">Open →</span></a>
+        <a class="card home-library-card" href="/ssc.html"><span class="home-library-icon">▤</span><div><h3>SSC Exams</h3><p>CGL, CHSL, CPO, MTS, GD and Stenographer.</p></div><span class="tag">Open →</span></a>
+        <a class="card home-library-card" href="/teaching.html"><span class="home-library-icon">✎</span><div><h3>Teaching Exams</h3><p>DSSSB, CTET, KVS and NVS preparation.</p></div><span class="tag">Open →</span></a>
+        <a class="card home-library-card" href="/railways.html"><span class="home-library-icon">▰</span><div><h3>Railway Exams</h3><p>RRB NTPC and Group D preparation.</p></div><span class="tag">Open →</span></a>
+        <a class="card home-library-card" href="/government.html"><span class="home-library-icon">★</span><div><h3>Government & Defence</h3><p>UPSC Civil Services, CDS and AFCAT.</p></div><span class="tag">Open →</span></a>
+      </div>
+    </section>
+
     <div id="assessmentResults" class="section-head">
       <div>
-        <h2>Assessments</h2>
-        <div class="muted">Choose a subject from a category. Every attempt selects a fresh random set of questions.</div>
+        <h2>Quick Practice</h2>
+        <div class="muted">Practice technical, computer science and aptitude subjects. Choose a topic below to start with a fresh question set.</div>
       </div>
     </div>
     <div id="subjectGrid" class="grid"></div>
@@ -218,7 +235,7 @@
 </div>
 </main>
 
-<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="support.html">Support & Contact</a></footer>
+<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="/exams.html">Exam Library</a><a href="support.html">Support & Contact</a></footer>
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>

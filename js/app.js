@@ -52,12 +52,25 @@
 
     if (!filter) {
       $("subjectGrid").innerHTML = groupOrder.filter(group => groups[group]).map(group => `
-        <a class="card category-card" href="${categorySlug(group)}">
-          <div class="category-card-icon">${group === "Technical & Infrastructure" ? "⚙" : group === "Computer Science & Programming" ? "⌘" : "∑"}</div>
-          <h3>${escapeHtml(group)}</h3>
-          <div class="muted">${groups[group].length} assessments covering ${groups[group].slice(0,3).map(([name]) => escapeHtml(name)).join(", ")}${groups[group].length > 3 ? ", and more" : ""}.</div>
-          <span class="tag">Explore category →</span>
-        </a>`).join("");
+        <section class="quick-practice-group">
+          <div class="quick-practice-group-head">
+            <div>
+              <h3>${escapeHtml(group)}</h3>
+              <span class="muted">${groups[group].length} subjects</span>
+            </div>
+            <a class="tag quick-practice-category" href="${categorySlug(group)}">View category →</a>
+          </div>
+          <div class="quick-practice-grid">
+            ${groups[group].map(([name, item]) => `
+              <div class="card subject quick-practice-card" data-subject="${escapeHtml(name)}">
+                <div class="subject-icon">${escapeHtml(item.icon)}</div>
+                <h4>${escapeHtml(name)}</h4>
+                <div class="muted">${escapeHtml(item.desc)}</div>
+                <span class="tag">10 questions</span>
+              </div>`).join("")}
+          </div>
+        </section>`).join("");
+      document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
     } else {
       const matches = Object.entries(DATA).filter(([name, item]) =>
         `${name} ${item.desc} ${item.group || ""}`.toLowerCase().includes(filter)
