@@ -42,7 +42,7 @@
   </script>
   <link rel="stylesheet" href="css/style.css">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<script src="/js/site.js"></script></head>
+<script src="/js/site.js"></script><script>function closeSiteNav(){document.getElementById("siteNav")?.classList.remove("open");document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded","false");}</script></head>
 <body>
 <div id="assessmentBootLoader" class="assessment-boot-loader">Opening assessment…</div>
 <header class="site-header">
@@ -50,7 +50,7 @@
     <img src="assets/logo.svg" alt="MeritArc">
   </a>
   <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
-  <nav class="nav" id="siteNav"><button onclick="location.href='/'">Home</button><button onclick="location.href='/#assessment'">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="location.href='/#results'">Results</button><button onclick="location.href='/support.html'">Contact</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
+  <nav class="nav" id="siteNav"><button onclick="MeritArc.showHome();closeSiteNav();">Home</button><button onclick="MeritArc.showAssessments();closeSiteNav();">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="MeritArc.showResults();closeSiteNav();">Results</button><button onclick="location.href='/support.html'">Contact</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
 </header>
 
 <main class="container">

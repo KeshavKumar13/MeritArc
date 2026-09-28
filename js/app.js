@@ -13,6 +13,7 @@
   };
 
   const $ = id => document.getElementById(id);
+  const displayText = value => String(value ?? "").replaceAll("_", " " );
 
   function hideViews() {
     ["homeView", "quizView", "reportView", "resultsView"]
@@ -68,8 +69,8 @@
             ${groups[group].map(([name, item]) => `
               <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
                 <span class="subject-icon">${escapeHtml(item.icon)}</span>
-                <h4>${escapeHtml(name).replaceAll('_',' ')}</h4>
-                <span class="muted">${escapeHtml(item.desc || 'Practice questions and explanations.')}</span>
+                <h4>${escapeHtml(displayText(name))}</h4>
+                <span class="muted">${escapeHtml(displayText(item.desc || 'Practice questions and explanations.'))}</span>
                 <span class="tag">Start Practice →</span>
               </button>`).join("")}
           </div>
@@ -83,8 +84,8 @@
           <div class="practice-area-home-head"><div><h3>Matching Subjects</h3><span class="muted">${matches.length} result${matches.length===1?'':'s'}</span></div></div>
           <div class="practice-area-home-cards">${matches.map(([name, item]) => `
             <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
-              <span class="subject-icon">${escapeHtml(item.icon)}</span><h4>${escapeHtml(name).replaceAll('_',' ')}</h4>
-              <span class="muted">${escapeHtml(item.desc || '')}</span><span class="tag">Start Practice →</span>
+              <span class="subject-icon">${escapeHtml(item.icon)}</span><h4>${escapeHtml(displayText(name))}</h4>
+              <span class="muted">${escapeHtml(displayText(item.desc || ''))}</span><span class="tag">Start Practice →</span>
             </button>`).join("")}</div>
         </section>` : `<div class="card search-empty"><h3>No subjects found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
     }
@@ -171,7 +172,7 @@
     const q = state.questions[state.index];
     const selected = state.answers[state.index];
 
-    $("quizTitle").textContent = String(state.subject).replaceAll("_", " ");
+    $("quizTitle").textContent = displayText(state.subject);
     $("questionCount").textContent =
       `Question ${state.index + 1} of ${state.questions.length}`;
     $("answeredCount").textContent =
@@ -437,7 +438,7 @@
     $("homeView").classList.remove("hidden");
     renderSubjects();
     requestAnimationFrame(() => {
-      $("assessmentResults").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("practiceAreasHeading")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
@@ -546,7 +547,11 @@
     };
   }
 
+  let resultsLoading = false;
+
   async function showResults() {
+    if (resultsLoading) return;
+    resultsLoading = true;
     hideViews();
     $("resultsView").classList.remove("hidden");
 
@@ -573,7 +578,7 @@
                 <tbody>
                   ${completed.map(item => `
                     <tr>
-                      <td>${escapeHtml(String(item.subject).replaceAll("_", " "))}</td>
+                      <td>${escapeHtml(displayText(item.subject))}</td>
                       <td>${item.score === null ? "—" : `${item.score}/${item.total}`}</td>
                       <td>${item.percentage === null ? "—" : `${item.percentage}%`}</td>
                       <td>${escapeHtml(prettyStatus(item.status))}</td>
@@ -616,7 +621,7 @@
               <tbody>
                 ${history.map(item => `
                   <tr>
-                    <td>${escapeHtml(String(item.subject).replaceAll("_", " "))}</td>
+                    <td>${escapeHtml(displayText(item.subject))}</td>
                     <td>${item.score}/${item.total}</td>
                     <td>${item.percentage}%</td>
                     <td>${escapeHtml(item.date)}</td>
@@ -678,7 +683,7 @@
       <button class="search-suggestion" type="button" data-suggestion="${escapeHtml(name)}">
         <span class="search-suggestion-icon">${escapeHtml(item.icon)}</span>
         <span>
-          <strong>${escapeHtml(String(name).replaceAll("_", " "))}</strong><br>
+          <strong>${escapeHtml(displayText(name))}</strong><br>
           <small style="color:#6c7a90">${escapeHtml(item.desc)}</small>
         </span>
       </button>
@@ -691,7 +696,7 @@
         input.value = button.dataset.suggestion;
         box.classList.add("hidden");
         renderSubjects();
-        document.getElementById("assessmentResults").scrollIntoView({
+        document.getElementById("practiceAreasHeading")?.scrollIntoView({
           behavior: "smooth",
           block: "start"
         });
@@ -703,7 +708,7 @@
     $("searchSuggestions").classList.add("hidden");
     renderSubjects();
 
-    document.getElementById("assessmentResults").scrollIntoView({
+    document.getElementById("practiceAreasHeading")?.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
@@ -959,8 +964,9 @@
   } else if (params.get("auth") === "1") {
     requestAnimationFrame(() => openAuth());
   } else if (window.location.hash === "#assessment") {
-    requestAnimationFrame(() => $("assessmentResults")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    window.MeritArc?.hideLoading?.();
+    requestAnimationFrame(() => $("practiceAreasHeading")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   } else if (window.location.hash === "#results") {
-    requestAnimationFrame(() => showResults());
+    requestAnimationFrame(() => { window.MeritArc?.hideLoading?.(); showResults(); });
   }
 })();
