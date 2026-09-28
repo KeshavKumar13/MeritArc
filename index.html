@@ -50,12 +50,7 @@
     <img src="assets/logo.svg" alt="MeritArc">
   </a>
   <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
-  <nav class="nav" id="siteNav">
-    <button onclick="MeritArc.showHome();MeritArc.closeMobileMenu()">Home</button>
-    <button onclick="MeritArc.showAssessments();MeritArc.closeMobileMenu()">Assessments</button><button onclick="location.href='/exams.html';MeritArc.closeMobileMenu()">Exam Library</button>
-    <button onclick="MeritArc.showResults();MeritArc.closeMobileMenu()">Results</button>
-    <button onclick="location.href='support.html';MeritArc.closeMobileMenu()">Support</button><button id="authButton" onclick="MeritArc.openAuth();MeritArc.closeMobileMenu()">Sign In</button>
-  </nav>
+  <nav class="nav" id="siteNav"><button onclick="location.href='/'">Home</button><button onclick="location.href='/#assessment'">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="location.href='/#results'">Results</button><button onclick="location.href='/support.html'">Support</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
 </header>
 
 <main class="container">
@@ -75,10 +70,10 @@
         </div>
         <div class="search-hint">Try Windows, Linux, VMware, Quantitative Aptitude, English, Data Structures or DBMS.</div>
         <div class="stats">
-          <div><strong id="questionBankStat">170+</strong><small>Question bank</small></div>
-          <div><strong id="subjectCountStat">18</strong><small>Subjects</small></div>
-          <div><strong>Fresh</strong><small>Every attempt</small></div>
-          <div><strong>Detailed</strong><small>Explanations</small></div>
+          <div><strong id="questionBankStat">170+</strong><small>Practice Questions</small></div>
+          <div><strong id="subjectCountStat">17</strong><small>Subjects</small></div>
+          <div><strong>25</strong><small>Exam Pages</small></div>
+          <div><strong>Fresh</strong><small>Questions Every Attempt</small></div>
         </div>
       </div>
       <div class="hero-art">
@@ -102,23 +97,23 @@
       <div class="section-head home-library-head">
         <div>
           <h2 id="examLibraryHeading">Explore Exam Library</h2>
-          <div class="muted">Prepare for banking, SSC, teaching, railway, government and defence exams with dedicated preparation pages.</div>
+          <div class="muted">Search exams, subjects and preparation areas from one place. Banking, SSC, teaching, railway, government and technical practice are all connected through the Exam Library.</div>
         </div>
         <a class="secondary home-library-link" href="/exams.html">View Exam Library →</a>
       </div>
       <div class="home-library-grid">
-        <a class="card home-library-card" href="/banking.html"><span class="home-library-icon">₹</span><div><h3>Banking Exams</h3><p>IBPS, SBI, RBI and other banking exams.</p></div><span class="tag">Open →</span></a>
-        <a class="card home-library-card" href="/ssc.html"><span class="home-library-icon">▤</span><div><h3>SSC Exams</h3><p>CGL, CHSL, CPO, MTS, GD and Stenographer.</p></div><span class="tag">Open →</span></a>
-        <a class="card home-library-card" href="/teaching.html"><span class="home-library-icon">✎</span><div><h3>Teaching Exams</h3><p>DSSSB, CTET, KVS and NVS preparation.</p></div><span class="tag">Open →</span></a>
-        <a class="card home-library-card" href="/railways.html"><span class="home-library-icon">▰</span><div><h3>Railway Exams</h3><p>RRB NTPC and Group D preparation.</p></div><span class="tag">Open →</span></a>
-        <a class="card home-library-card" href="/government.html"><span class="home-library-icon">★</span><div><h3>Government & Defence</h3><p>UPSC Civil Services, CDS and AFCAT.</p></div><span class="tag">Open →</span></a>
+        <a class="card home-library-card" href="/exams.html#banking"><span class="home-library-icon">₹</span><div><h3>Banking</h3><p>IBPS, SBI, RBI and other banking exams.</p></div><span class="tag">Explore →</span></a>
+        <a class="card home-library-card" href="/exams.html#ssc"><span class="home-library-icon">▤</span><div><h3>SSC</h3><p>CGL, CHSL, CPO, MTS, GD and Stenographer.</p></div><span class="tag">Explore →</span></a>
+        <a class="card home-library-card" href="/exams.html#teaching"><span class="home-library-icon">✎</span><div><h3>Teaching</h3><p>DSSSB, CTET, KVS and NVS preparation.</p></div><span class="tag">Explore →</span></a>
+        <a class="card home-library-card" href="/exams.html#railways"><span class="home-library-icon">▰</span><div><h3>Railways</h3><p>RRB NTPC and Group D preparation.</p></div><span class="tag">Explore →</span></a>
+        <a class="card home-library-card" href="/exams.html#government"><span class="home-library-icon">★</span><div><h3>Government & Defence</h3><p>UPSC Civil Services, CDS and AFCAT.</p></div><span class="tag">Explore →</span></a>
       </div>
     </section>
 
     <div id="assessmentResults" class="section-head">
       <div>
         <h2>Quick Practice</h2>
-        <div class="muted">Practice technical, computer science and aptitude subjects. Choose a topic below to start with a fresh question set.</div>
+        <div class="muted">Practice all 17 current subject areas from one clean, searchable section. Choose a subject to start a fresh question set.</div>
       </div>
     </div>
     <div id="subjectGrid" class="grid"></div>

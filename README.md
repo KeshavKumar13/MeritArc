@@ -1,17 +1,13 @@
-MeritArc navigation + homepage integration patch
+# MeritArc unified Exam Library integration
 
 Changes:
-1. Adds Exam Library to the navigation on the existing public pages.
-2. Adds an Explore Exam Library section to the homepage.
-3. Changes the homepage Assessments area to Quick Practice.
-4. Displays the existing technical/CS/aptitude subjects in clean grouped grids instead of a single compressed list.
-5. Preserves the current GA4 Measurement ID G-JSSJ1RE5MS and correct AdSense publisher ID pub-1741589992062370.
+- Unified navigation order across old and new pages: Home, Assessments, Exam Library, Results, Support, Sign In.
+- Reworked Explore Exam Library into one searchable library.
+- Removed duplicate top-level Technical, Computer Science and Aptitude cards from the homepage library section; their subjects are included under Practice Areas inside the Exam Library.
+- Added working Exam Library search across exam pages and practice subjects.
+- Cleaned homepage Quick Practice cards to prevent cramped/massed layout.
+- Updated homepage stats to 170+ practice questions, 17 subjects, 25 exam pages and fresh questions every attempt.
+- Updated sitemap to make the unified Exam Library the main discovery page while keeping individual exam pages indexable.
+- Preserved GA4 G-JSSJ1RE5MS and AdSense pub-1741589992062370.
 
-Apply these files to the current repository:
-- index.html
-- technical.html
-- computer-science.html
-- aptitude.html
-- support.html
-- js/app.js
-- css/style.css
+Commit comment: `Unify Exam Library, navigation and Quick Practice`

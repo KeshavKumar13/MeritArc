@@ -58,16 +58,15 @@
               <h3>${escapeHtml(group)}</h3>
               <span class="muted">${groups[group].length} subjects</span>
             </div>
-            <a class="tag quick-practice-category" href="${categorySlug(group)}">View category →</a>
           </div>
           <div class="quick-practice-grid">
             ${groups[group].map(([name, item]) => `
-              <div class="card subject quick-practice-card" data-subject="${escapeHtml(name)}">
-                <div class="subject-icon">${escapeHtml(item.icon)}</div>
-                <h4>${escapeHtml(name)}</h4>
-                <div class="muted">${escapeHtml(item.desc)}</div>
-                <span class="tag">10 questions</span>
-              </div>`).join("")}
+              <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
+                <span class="subject-icon">${escapeHtml(item.icon)}</span>
+                <h4>${escapeHtml(name).replaceAll('_',' ')}</h4>
+                <span class="muted">${escapeHtml(item.desc || 'Practice questions and explanations.')}</span>
+                <span class="tag">Start Practice →</span>
+              </button>`).join("")}
           </div>
         </section>`).join("");
       document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
@@ -76,15 +75,13 @@
         `${name} ${item.desc} ${item.group || ""}`.toLowerCase().includes(filter)
       );
       $("subjectGrid").innerHTML = matches.length ? matches.map(([name, item]) => `
-        <div class="card subject" data-subject="${escapeHtml(name)}">
-          <div class="subject-icon">${escapeHtml(item.icon)}</div><h3>${escapeHtml(name)}</h3>
-          <div class="muted">${escapeHtml(item.desc)}</div><span class="tag">10 questions per attempt</span>
-        </div>`).join("") : `<div class="card search-empty"><h3>No assessments found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
+        <button class="card subject" type="button" data-subject="${escapeHtml(name)}">
+          <span class="subject-icon">${escapeHtml(item.icon)}</span><h3>${escapeHtml(name).replaceAll('_',' ')}</h3>
+          <span class="muted">${escapeHtml(item.desc || '')}</span><span class="tag">Start Practice</span>
+        </button>`).join("") : `<div class="card search-empty"><h3>No assessments found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
       document.querySelectorAll(".subject").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
     }
 
-    const total = Object.values(DATA).reduce((sum, item) => sum + item.questions.length, 0);
-    $("questionBankStat").textContent = `${total}+`;
     const subjectCount = $("subjectCountStat");
     if (subjectCount) subjectCount.textContent = Object.keys(DATA).length;
   }

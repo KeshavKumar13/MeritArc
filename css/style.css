@@ -170,3 +170,17 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
 @media(max-width:1050px){.home-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.quick-practice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.home-library-grid,.quick-practice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-library-head{align-items:flex-start}.home-library-link{font-size:12px}.quick-practice-group-head{align-items:flex-start}.quick-practice-card{min-height:155px}}
 @media(max-width:500px){.home-library-grid,.quick-practice-grid{grid-template-columns:1fr}.home-library-card,.quick-practice-card{min-height:0}.home-library-head{display:block}.home-library-link{display:inline-block;margin-top:10px}.quick-practice-group-head{display:block}.quick-practice-category{display:inline-block;margin-top:8px}}
+
+/* MeritArc clean Quick Practice */
+.quick-practice-grid{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
+.quick-practice-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;box-sizing:border-box;border:1px solid var(--line);background:#fff;padding:18px;border-radius:14px;color:inherit;font:inherit}
+.quick-practice-card .subject-icon{flex:0 0 auto}
+.quick-practice-card h4{width:100%;word-break:normal;overflow-wrap:anywhere}
+.quick-practice-card .muted{width:100%;min-height:36px}
+.quick-practice-card .tag{margin-top:auto}
+.subject{box-sizing:border-box}
+.home-library-grid{grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch}
+.home-library-card{box-sizing:border-box}
+@media(max-width:1050px){.quick-practice-grid,.home-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.quick-practice-grid,.home-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.quick-practice-grid,.home-library-grid{grid-template-columns:1fr}}
