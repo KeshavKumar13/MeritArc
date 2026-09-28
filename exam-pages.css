@@ -25,3 +25,19 @@
 .topic-list li{background:#f7faff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:#31435d}
 .disclaimer{font-size:12px;color:#738197;background:#f8fafc;border-left:3px solid #9fc8fa;padding:12px 14px;border-radius:8px}
 @media(max-width:800px){.exam-hero{padding:25px}.exam-hero h1{font-size:32px}.exam-layout{grid-template-columns:1fr}.exam-sidebar{position:static}.exam-meta{grid-template-columns:1fr}.topic-list{grid-template-columns:1fr}}
+
+
+/* Exam Library cards should never look like underlined text links. */
+.exam-library-grid a.exam-card,
+.exam-library-grid a.exam-card *,
+.practice-library-groups a.exam-card,
+.practice-library-groups a.exam-card *,
+.library-section a.exam-card,
+.library-section a.exam-card * {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-style: none !important;
+  text-decoration-thickness: 0 !important;
+  -webkit-text-decoration-line: none !important;
+  -webkit-text-decoration-style: none !important;
+}
