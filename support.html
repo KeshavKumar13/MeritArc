@@ -30,12 +30,12 @@
   </script>
   <link rel="stylesheet" href="css/style.css">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-</head>
+<script src="/js/site.js"></script></head>
 <body>
 <header class="site-header">
   <a class="brand" href="/" aria-label="MeritArc Home"><img src="assets/logo.svg" alt="MeritArc"></a>
   <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
-  <nav class="nav" id="siteNav"><button onclick="location.href='/'">Home</button><button onclick="location.href='/#assessment'">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="location.href='/#results'">Results</button><button onclick="location.href='/support.html'">Support</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
+  <nav class="nav" id="siteNav"><button onclick="location.href='/'">Home</button><button onclick="location.href='/#assessment'">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="location.href='/#results'">Results</button><button onclick="location.href='/support.html'">Contact</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
 </header>
 <main class="container support-page">
   <section class="support-hero">
@@ -62,7 +62,7 @@
     </div>
   </section>
 </main>
-<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="/exams.html">Exam Library</a><a href="support.html">Support & Contact</a></footer>
+<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="/exams.html">Exam Library</a><a href="/contact.html">Contact</a></footer>
 <script>
 const menu=document.getElementById('siteNav'),menuBtn=document.getElementById('mobileMenuButton');
 menuBtn.addEventListener('click',e=>{e.stopPropagation();const o=menu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(o));});

@@ -36,7 +36,7 @@
 
   function renderSubjects() {
     const raw = ($("subjectSearch")?.value || "").trim();
-    const filter = raw.toLowerCase();
+    const filter = raw.toLowerCase().replaceAll("_", " ");
     const groups = {};
     for (const [name, item] of Object.entries(DATA)) {
       const group = item.group || "Other";
@@ -49,17 +49,22 @@
       "Computer Science & Programming",
       "Aptitude & Competitive Exams"
     ];
+    const groupLabels = {
+      "Technical & Infrastructure": "IT & Infrastructure",
+      "Computer Science & Programming": "Computer Science",
+      "Aptitude & Competitive Exams": "Aptitude & Competitive"
+    };
+    const grid = $("practiceAreasGrid");
+    if (!grid) return;
 
     if (!filter) {
-      $("subjectGrid").innerHTML = groupOrder.filter(group => groups[group]).map(group => `
-        <section class="quick-practice-group">
-          <div class="quick-practice-group-head">
-            <div>
-              <h3>${escapeHtml(group)}</h3>
-              <span class="muted">${groups[group].length} subjects</span>
-            </div>
+      grid.innerHTML = groupOrder.filter(group => groups[group]).map(group => `
+        <section class="practice-area-home-group">
+          <div class="practice-area-home-head">
+            <div><h3>${escapeHtml(groupLabels[group] || group)}</h3><span class="muted">${groups[group].length} subjects</span></div>
+            <a class="secondary" href="/exams.html#${group === "Technical & Infrastructure" ? "it-infrastructure" : group === "Computer Science & Programming" ? "computer-science" : "aptitude"}">Explore all →</a>
           </div>
-          <div class="quick-practice-grid">
+          <div class="practice-area-home-cards">
             ${groups[group].map(([name, item]) => `
               <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
                 <span class="subject-icon">${escapeHtml(item.icon)}</span>
@@ -69,24 +74,27 @@
               </button>`).join("")}
           </div>
         </section>`).join("");
-      document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
     } else {
       const matches = Object.entries(DATA).filter(([name, item]) =>
-        `${name} ${item.desc} ${item.group || ""}`.toLowerCase().includes(filter)
+        `${name} ${item.desc || ""} ${item.group || ""}`.toLowerCase().replaceAll("_", " ").includes(filter)
       );
-      $("subjectGrid").innerHTML = matches.length ? matches.map(([name, item]) => `
-        <button class="card subject" type="button" data-subject="${escapeHtml(name)}">
-          <span class="subject-icon">${escapeHtml(item.icon)}</span><h3>${escapeHtml(name).replaceAll('_',' ')}</h3>
-          <span class="muted">${escapeHtml(item.desc || '')}</span><span class="tag">Start Practice</span>
-        </button>`).join("") : `<div class="card search-empty"><h3>No assessments found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
-      document.querySelectorAll(".subject").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
+      grid.innerHTML = matches.length ? `
+        <section class="practice-area-home-group">
+          <div class="practice-area-home-head"><div><h3>Matching Subjects</h3><span class="muted">${matches.length} result${matches.length===1?'':'s'}</span></div></div>
+          <div class="practice-area-home-cards">${matches.map(([name, item]) => `
+            <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
+              <span class="subject-icon">${escapeHtml(item.icon)}</span><h4>${escapeHtml(name).replaceAll('_',' ')}</h4>
+              <span class="muted">${escapeHtml(item.desc || '')}</span><span class="tag">Start Practice →</span>
+            </button>`).join("")}</div>
+        </section>` : `<div class="card search-empty"><h3>No subjects found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
     }
-
+    document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
     const subjectCount = $("subjectCountStat");
     if (subjectCount) subjectCount.textContent = Object.keys(DATA).length;
   }
 
   async function startAssessment(subject) {
+    window.MeritArc?.showLoading?.("Starting assessment…");
     const user = await getCurrentUser();
 
     state.subject = subject;
@@ -124,6 +132,7 @@
         console.error("Assessment API error:", error);
         document.documentElement.classList.remove("assessment-boot");
         showHome();
+        window.MeritArc?.hideLoading?.();
         alert(error.message || "Unable to start the assessment.");
         return;
       }
@@ -154,6 +163,7 @@
     $("quizView").classList.remove("hidden");
     document.documentElement.classList.remove("assessment-boot");
     renderQuestion();
+    window.MeritArc?.hideLoading?.();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -932,7 +942,9 @@
     showLogin,
     showRegister,
     logout,
-    closeMobileMenu
+    closeMobileMenu,
+    showLoading: message => window.showSiteLoading?.(message),
+    hideLoading: () => window.hideSiteLoading?.()
   };
 
   renderSubjects();

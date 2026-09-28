@@ -42,7 +42,7 @@
   </script>
   <link rel="stylesheet" href="css/style.css">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-</head>
+<script src="/js/site.js"></script></head>
 <body>
 <div id="assessmentBootLoader" class="assessment-boot-loader">Opening assessment…</div>
 <header class="site-header">
@@ -50,7 +50,7 @@
     <img src="assets/logo.svg" alt="MeritArc">
   </a>
   <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
-  <nav class="nav" id="siteNav"><button onclick="location.href='/'">Home</button><button onclick="location.href='/#assessment'">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="location.href='/#results'">Results</button><button onclick="location.href='/support.html'">Support</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
+  <nav class="nav" id="siteNav"><button onclick="location.href='/'">Home</button><button onclick="location.href='/#assessment'">Assessments</button><button onclick="location.href='/exams.html'">Exam Library</button><button onclick="location.href='/#results'">Results</button><button onclick="location.href='/support.html'">Contact</button><button onclick="location.href='/?auth=1'">Sign In</button></nav>
 </header>
 
 <main class="container">
@@ -71,8 +71,8 @@
         <div class="search-hint">Try Windows, Linux, VMware, Quantitative Aptitude, English, Data Structures or DBMS.</div>
         <div class="stats">
           <div><strong id="questionBankStat">170+</strong><small>Practice Questions</small></div>
-          <div><strong id="subjectCountStat">17</strong><small>Subjects</small></div>
-          <div><strong>25</strong><small>Exam Pages</small></div>
+          <div><strong id="subjectCountStat">17</strong><small>Practice Subjects</small></div>
+          <div><strong>25</strong><small>Exam Guides</small></div>
           <div><strong>Fresh</strong><small>Questions Every Attempt</small></div>
         </div>
       </div>
@@ -110,13 +110,13 @@
       </div>
     </section>
 
-    <div id="assessmentResults" class="section-head">
+    <div id="practiceAreasHeading" class="section-head">
       <div>
-        <h2>Quick Practice</h2>
-        <div class="muted">Practice all 17 current subject areas from one clean, searchable section. Choose a subject to start a fresh question set.</div>
+        <h2>Practice by Area</h2>
+        <div class="muted">Choose a subject area and start a fresh practice set. All current MeritArc subjects are grouped below.</div>
       </div>
     </div>
-    <div id="subjectGrid" class="grid"></div>
+    <div id="practiceAreasGrid" class="practice-areas-home-grid"></div>
   </section>
 
   <section id="quizView" class="hidden">
@@ -230,7 +230,7 @@
 </div>
 </main>
 
-<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="/exams.html">Exam Library</a><a href="support.html">Support & Contact</a></footer>
+<footer class="site-footer"><strong>MeritArc</strong><span>Practice smarter. Build skills. Track progress.</span><a href="/exams.html">Exam Library</a><a href="/contact.html">Contact</a></footer>
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
