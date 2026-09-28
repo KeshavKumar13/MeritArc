@@ -277,3 +277,17 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
     max-width: none;
   }
 }
+
+
+/* Assessment setup modal */
+.assessment-setup-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:20px}
+.assessment-setup-modal.hidden{display:none}
+.assessment-setup-backdrop{position:absolute;inset:0;background:rgba(10,28,51,.58);backdrop-filter:blur(3px)}
+.assessment-setup-card{position:relative;z-index:1;width:min(560px,100%);max-height:min(760px,calc(100vh - 40px));overflow:auto;background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:30px;box-shadow:0 24px 70px rgba(16,24,40,.24)}
+.assessment-setup-header{padding-right:28px;margin-bottom:22px}.assessment-setup-header h2{margin:5px 0 8px;color:var(--navy)}
+.setup-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;color:#1475ee}.assessment-setup-form{display:grid;gap:18px}.assessment-setup-form label{display:grid;gap:7px;font-weight:700;color:var(--navy)}
+.assessment-setup-form select{width:100%;padding:12px 13px;border:1px solid #cfd7e3;border-radius:10px;background:#fff;color:var(--navy);font:inherit}.assessment-setup-form select:focus{outline:2px solid rgba(20,117,238,.18);border-color:#1475ee}
+.setup-hint{font-size:12px;font-weight:400;color:var(--muted)}
+.assessment-setup-summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;background:#f4f8fd;border:1px solid #dce9f7;border-radius:12px;color:var(--navy)}.assessment-setup-summary strong{font-size:14px}.assessment-setup-summary span{font-size:13px;color:var(--muted);text-align:right}
+.assessment-setup-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:2px}.assessment-setup-actions button{min-width:120px}
+@media (max-width:600px){.assessment-setup-modal{padding:12px}.assessment-setup-card{padding:22px;max-height:calc(100vh - 24px)}.assessment-setup-summary{align-items:flex-start;flex-direction:column}.assessment-setup-summary span{text-align:left}.assessment-setup-actions{display:grid;grid-template-columns:1fr 1fr}.assessment-setup-actions button{width:100%;min-width:0}}

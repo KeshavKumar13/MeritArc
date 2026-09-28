@@ -140,15 +140,7 @@
       <button class="secondary" onclick="MeritArc.showAssessments()">← Practice Areas</button>
       <strong id="quizTitle"></strong>
       <div class="assessment-timer">
-        <label for="assessmentTimer">Time limit</label>
-        <select id="assessmentTimer" aria-label="Assessment time limit">
-          <option value="0">No timer</option>
-          <option value="300">5 minutes</option>
-          <option value="600">10 minutes</option>
-          <option value="900">15 minutes</option>
-          <option value="1200">20 minutes</option>
-          <option value="1800">30 minutes</option>
-        </select>
+        <span class="muted">Time</span>
         <span id="timerDisplay" class="timer-display" aria-live="polite">No timer</span>
       </div>
       <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
@@ -175,7 +167,7 @@
     </div>
 
     <div class="muted" style="margin-top:12px">
-      10 questions are randomly selected from the subject bank. Retaking gives a new set.
+      Your assessment is built from the selected question count, difficulty and available topics. Retaking gives a fresh set.
     </div>
   </section>
 
@@ -194,6 +186,57 @@
     </div>
     <div class="card" id="historyContent"></div>
   </section>
+
+<div id="assessmentSetupModal" class="assessment-setup-modal hidden" aria-hidden="true">
+  <div class="assessment-setup-backdrop" onclick="MeritArc.closeAssessmentSetup()"></div>
+  <div class="assessment-setup-card" role="dialog" aria-modal="true" aria-labelledby="assessmentSetupTitle">
+    <button class="auth-close" onclick="MeritArc.closeAssessmentSetup()" aria-label="Close">×</button>
+    <div class="assessment-setup-header">
+      <span class="setup-kicker">ASSESSMENT SETUP</span>
+      <h2 id="assessmentSetupTitle">Prepare your practice session</h2>
+      <p class="muted">Choose how you want to practice before the questions begin. You can review your answers and results after submitting.</p>
+    </div>
+    <form id="assessmentSetupForm" class="assessment-setup-form">
+      <label>Number of questions
+        <select id="assessmentQuestionCount" required>
+          <option value="5">5 questions</option>
+          <option value="10" selected>10 questions</option>
+          <option value="20">20 questions</option>
+          <option value="30">30 questions</option>
+          <option value="50">50 questions</option>
+        </select>
+        <span id="assessmentQuestionHint" class="setup-hint">A balanced practice set across available topics.</span>
+      </label>
+      <label>Time limit
+        <select id="assessmentTimeLimit" required>
+          <option value="0">No timer</option>
+          <option value="300">5 minutes</option>
+          <option value="600" selected>10 minutes</option>
+          <option value="900">15 minutes</option>
+          <option value="1200">20 minutes</option>
+          <option value="1800">30 minutes</option>
+          <option value="3600">60 minutes</option>
+        </select>
+        <span class="setup-hint">The timer starts only after you begin the assessment.</span>
+      </label>
+      <label>Difficulty
+        <select id="assessmentDifficulty" required>
+          <option value="Mixed" selected>Mixed · recommended</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+        <span class="setup-hint">Mixed balances Easy, Medium and Hard questions when available.</span>
+      </label>
+      <div class="assessment-setup-summary" id="assessmentSetupSummary"></div>
+      <div class="assessment-setup-actions">
+        <button class="secondary" type="button" onclick="MeritArc.closeAssessmentSetup()">Cancel</button>
+        <button class="primary" type="submit">Start Assessment →</button>
+      </div>
+      <div id="assessmentSetupMessage" class="auth-message hidden"></div>
+    </form>
+  </div>
+</div>
 
 <div id="authModal" class="auth-modal hidden" aria-hidden="true">
   <div class="auth-backdrop" onclick="MeritArc.closeAuth()"></div>

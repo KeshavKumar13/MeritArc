@@ -1,0 +1,1097 @@
+
+(() => {
+  const DATA = window.MERITARC_DATA;
+  const state = {
+    subject: null,
+    questions: [],
+    index: 0,
+    answers: [],
+    checked: {},
+    attemptId: null,
+    serverMode: false,
+    serverUser: null,
+    timerSeconds: 0,
+    timerInterval: null,
+    timerStarted: false
+  };
+
+  const $ = id => document.getElementById(id);
+  const displayText = value => String(value ?? "").replaceAll("_", " " );
+
+  function hideViews() {
+    ["homeView", "quizView", "reportView", "resultsView"]
+      .forEach(id => $(id).classList.add("hidden"));
+  }
+
+  function shuffle(items) {
+    const copy = [...items];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function categorySlug(group) {
+    return group === "Technical & Infrastructure" ? "technical.html" :
+      group === "Computer Science & Programming" ? "computer-science.html" :
+      group === "Aptitude & Competitive Exams" ? "aptitude.html" : "category.html";
+  }
+
+  function renderSubjects() {
+    const raw = ($("subjectSearch")?.value || "").trim();
+    const filter = raw.toLowerCase().replaceAll("_", " ");
+    const groups = {};
+    for (const [name, item] of Object.entries(DATA)) {
+      const group = item.group || "Other";
+      if (!groups[group]) groups[group] = [];
+      groups[group].push([name, item]);
+    }
+
+    const groupOrder = [
+      "Technical & Infrastructure",
+      "Computer Science & Programming",
+      "Aptitude & Competitive Exams"
+    ];
+    const groupLabels = {
+      "Technical & Infrastructure": "IT & Infrastructure",
+      "Computer Science & Programming": "Computer Science",
+      "Aptitude & Competitive Exams": "Aptitude & Competitive"
+    };
+    const grid = $("practiceAreasGrid");
+    if (!grid) return;
+
+    if (!filter) {
+      grid.innerHTML = groupOrder.filter(group => groups[group]).map(group => `
+        <section class="practice-area-home-group">
+          <div class="practice-area-home-head">
+            <div><h3>${escapeHtml(groupLabels[group] || group)}</h3><span class="muted">${groups[group].length} subjects</span></div>
+            <a class="secondary" href="/exams.html#${group === "Technical & Infrastructure" ? "it-infrastructure" : group === "Computer Science & Programming" ? "computer-science" : "aptitude"}">Explore all →</a>
+          </div>
+          <div class="practice-area-home-cards">
+            ${groups[group].map(([name, item]) => `
+              <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
+                <span class="subject-icon">${escapeHtml(item.icon)}</span>
+                <h4>${escapeHtml(displayText(name))}</h4>
+                <span class="muted">${escapeHtml(displayText(item.desc || 'Practice questions and explanations.'))}</span>
+                <span class="tag">Start Practice →</span>
+              </button>`).join("")}
+          </div>
+        </section>`).join("");
+    } else {
+      const matches = Object.entries(DATA).filter(([name, item]) =>
+        `${name} ${item.desc || ""} ${item.group || ""}`.toLowerCase().replaceAll("_", " ").includes(filter)
+      );
+      grid.innerHTML = matches.length ? `
+        <section class="practice-area-home-group">
+          <div class="practice-area-home-head"><div><h3>Matching Subjects</h3><span class="muted">${matches.length} result${matches.length===1?'':'s'}</span></div></div>
+          <div class="practice-area-home-cards">${matches.map(([name, item]) => `
+            <button class="card subject quick-practice-card" type="button" data-subject="${escapeHtml(name)}">
+              <span class="subject-icon">${escapeHtml(item.icon)}</span><h4>${escapeHtml(displayText(name))}</h4>
+              <span class="muted">${escapeHtml(displayText(item.desc || ''))}</span><span class="tag">Start Practice →</span>
+            </button>`).join("")}</div>
+        </section>` : `<div class="card search-empty"><h3>No subjects found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
+    }
+    document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => openAssessmentSetup(card.dataset.subject)));
+    const subjectCount = $("subjectCountStat");
+    if (subjectCount) subjectCount.textContent = Object.keys(DATA).length;
+  }
+
+  function clearAssessmentTimer() {
+    if (state.timerInterval) {
+      clearInterval(state.timerInterval);
+      state.timerInterval = null;
+    }
+  }
+
+  function updateTimerDisplay() {
+    const display = $("timerDisplay");
+    if (!display) return;
+    if (!state.timerSeconds) {
+      display.textContent = "No timer";
+      display.classList.remove("warning", "expired");
+      return;
+    }
+    const minutes = Math.floor(state.timerSeconds / 60);
+    const seconds = state.timerSeconds % 60;
+    display.textContent = `${minutes}:${String(seconds).padStart(2, "0")}`;
+    display.classList.toggle("warning", state.timerSeconds <= 60 && state.timerSeconds > 0);
+    display.classList.remove("expired");
+  }
+
+  function startAssessmentTimer(seconds) {
+    clearAssessmentTimer();
+    state.timerSeconds = Number(seconds) || 0;
+    state.timerStarted = state.timerSeconds > 0;
+    const select = $("assessmentTimer");
+    if (select) select.disabled = state.timerStarted;
+    updateTimerDisplay();
+    if (!state.timerStarted) return;
+    state.timerInterval = setInterval(async () => {
+      state.timerSeconds -= 1;
+      updateTimerDisplay();
+      if (state.timerSeconds <= 0) {
+        clearAssessmentTimer();
+        const display = $("timerDisplay");
+        if (display) { display.textContent = "Time up"; display.classList.remove("warning"); display.classList.add("expired"); }
+        alert("Time is up. Your assessment will be submitted.");
+        await submitAssessment(true);
+      }
+    }, 1000);
+  }
+
+  let assessmentSetupSubject = null;
+
+  function closeAssessmentSetup() {
+    const modal = $("assessmentSetupModal");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    assessmentSetupSubject = null;
+  }
+
+  function updateAssessmentSetupSummary() {
+    const count = Number($("assessmentQuestionCount")?.value || 10);
+    const time = Number($("assessmentTimeLimit")?.value || 0);
+    const difficulty = $("assessmentDifficulty")?.value || "Mixed";
+    const subject = assessmentSetupSubject || "this subject";
+    const timeText = time ? `${Math.round(time / 60)} minute${time === 60 ? "" : "s"}` : "no timer";
+    const summary = $("assessmentSetupSummary");
+    if (summary) {
+      summary.innerHTML = `<strong>${escapeHtml(displayText(subject))}</strong><span>${count} questions · ${escapeHtml(difficulty)} · ${timeText}</span>`;
+    }
+    const hint = $("assessmentQuestionHint");
+    if (hint) hint.textContent = `Questions will be spread across available topics. Up to ${count} will be selected.`;
+  }
+
+  async function openAssessmentSetup(subject) {
+    const modal = $("assessmentSetupModal");
+    if (!modal || !subject) return;
+    assessmentSetupSubject = subject;
+    const title = $("assessmentSetupTitle");
+    if (title) title.textContent = `Prepare your ${displayText(subject)} assessment`;
+    const user = await getCurrentUser();
+    const countSelect = $("assessmentQuestionCount");
+    if (countSelect) {
+      const max = user ? 50 : Math.min(10, DATA[subject]?.questions?.length || 10);
+      [...countSelect.options].forEach(option => {
+        option.disabled = Number(option.value) > max;
+      });
+      if (Number(countSelect.value) > max) countSelect.value = String(max >= 10 ? 10 : max);
+    }
+    const difficultySelect = $("assessmentDifficulty");
+    if (difficultySelect) {
+      difficultySelect.disabled = !user;
+      difficultySelect.title = user ? "Choose a difficulty for your assessment." : "Sign in to use difficulty-specific assessment selection.";
+      if (!user) difficultySelect.value = "Mixed";
+    }
+    const message = $("assessmentSetupMessage");
+    if (message) { message.textContent = ""; message.classList.add("hidden"); }
+    updateAssessmentSetupSummary();
+    const difficultyHint = difficultySelect?.parentElement?.querySelector(".setup-hint");
+    if (difficultyHint) difficultyHint.textContent = user ? "Mixed balances Easy, Medium and Hard questions when available." : "Sign in to enable difficulty-specific selection.";
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => $("assessmentQuestionCount")?.focus());
+  }
+
+  async function confirmAssessmentSetup(event) {
+    event.preventDefault();
+    const subject = assessmentSetupSubject;
+    if (!subject) return;
+    const count = Number($("assessmentQuestionCount")?.value || 10);
+    const timeLimit = Number($("assessmentTimeLimit")?.value || 0);
+    const difficulty = $("assessmentDifficulty")?.value || "Mixed";
+    closeAssessmentSetup();
+    await startAssessment(subject, { count, timeLimit, difficulty });
+  }
+
+  async function startAssessment(subject, config = {}) {
+    window.MeritArc?.showLoading?.("Starting assessment…");
+    const user = await getCurrentUser();
+
+    state.subject = subject;
+    state.index = 0;
+    state.answers = [];
+    state.checked = {};
+    state.attemptId = null;
+    state.serverMode = false;
+    state.serverUser = user;
+    clearAssessmentTimer();
+    state.timerSeconds = 0;
+    state.timerStarted = false;
+    updateTimerDisplay();
+
+    if (user) {
+      try {
+        const response = await fetch("/api/attempts", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ subject, count: Number(config.count || 10), difficulty: config.difficulty || "Mixed" })
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.error || "Unable to start assessment.");
+        }
+
+        const data = await response.json();
+        state.attemptId = data.attemptId;
+        state.serverMode = true;
+        state.questions = data.questions.map(q => [
+          q.question,
+          ...q.options,
+          null,
+          q.explanation,
+          q.id
+        ]);
+      } catch (error) {
+        console.error("Assessment API error:", error);
+        document.documentElement.classList.remove("assessment-boot");
+        showHome();
+        window.MeritArc?.hideLoading?.();
+        alert(error.message || "Unable to start the assessment.");
+        return;
+      }
+    } else {
+      const bank = DATA[subject].questions;
+      const guestBank = shuffle(bank);
+
+      state.questions = guestBank
+        .slice(0, Math.min(Number(config.count || 10), guestBank.length))
+        .map(question => {
+          const questionText = question[0];
+          const options = question.slice(1, 5);
+          const correctOption = options[question[5]];
+          const shuffledOptions = shuffle(options);
+
+          return [
+            questionText,
+            ...shuffledOptions,
+            shuffledOptions.indexOf(correctOption),
+            question[6],
+            null
+          ];
+        });
+    }
+
+    state.answers = Array(state.questions.length).fill(null);
+    startAssessmentTimer(config.timeLimit || 0);
+
+    hideViews();
+    $("quizView").classList.remove("hidden");
+    document.documentElement.classList.remove("assessment-boot");
+    renderQuestion();
+    window.MeritArc?.hideLoading?.();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderQuestion() {
+    const q = state.questions[state.index];
+    const selected = state.answers[state.index];
+
+    $("quizTitle").textContent = displayText(state.subject);
+    $("questionCount").textContent =
+      `Question ${state.index + 1} of ${state.questions.length}`;
+    $("answeredCount").textContent =
+      `${state.answers.filter(value => value !== null).length} answered`;
+    $("progressBar").style.width =
+      `${((state.index + 1) / state.questions.length) * 100}%`;
+
+    $("questionText").textContent = q[0];
+
+    $("options").innerHTML = q.slice(1, 5).map((option, i) => `
+      <label class="option ${selected === i ? "selected" : ""}">
+        <input type="radio" name="answer" value="${i}"
+          ${selected === i ? "checked" : ""}>
+        ${escapeHtml(option)}
+      </label>
+    `).join("");
+
+    const isChecked = state.checked[state.index] !== undefined;
+
+    document.querySelectorAll('input[name="answer"]').forEach(input => {
+      input.disabled = isChecked;
+      input.addEventListener("change", e => {
+        if (isChecked) return;
+        state.answers[state.index] = Number(e.target.value);
+        renderQuestion();
+        if (state.serverMode) {
+          saveServerAnswer(state.index).catch(error => {
+            console.error("Unable to save answer:", error);
+          });
+        }
+      });
+    });
+
+    $("feedback").className = "hidden";
+    $("feedback").innerHTML = "";
+
+    if (isChecked) {
+      showFeedback(state.checked[state.index]);
+    }
+
+    $("checkButton").disabled = selected === null || isChecked;
+  }
+
+  async function saveServerAnswer(index = state.index) {
+    if (!state.serverMode) return null;
+
+    const answer = state.answers[index];
+    if (answer === null || answer === undefined) return null;
+
+    const questionId = state.questions[index][7];
+    const response = await fetch(`/api/attempts/${state.attemptId}/answers`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        questionId,
+        selectedOption: answer
+      })
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to save the answer.");
+    }
+
+    return data;
+  }
+
+  function showFeedback(correct, explanation) {
+    const q = state.questions[state.index];
+    const feedback = $("feedback");
+
+    feedback.className = `feedback ${correct ? "correct" : "incorrect"}`;
+    feedback.innerHTML =
+      `<strong>${correct ? "✓ Correct" : "✗ Incorrect"}</strong><br>${escapeHtml(explanation ?? q[6] ?? "")}`;
+  }
+
+  async function checkAnswer() {
+    const answer = state.answers[state.index];
+    if (answer === null || answer === undefined) return;
+    if (state.checked[state.index] !== undefined) return;
+
+    if (state.serverMode) {
+      try {
+        const data = await saveServerAnswer(state.index);
+        state.checked[state.index] = data.correct;
+        showFeedback(data.correct, data.explanation);
+        renderQuestion();
+      } catch (error) {
+        alert(error.message || "Unable to connect to MeritArc.");
+      }
+
+      return;
+    }
+
+    const correct = answer === state.questions[state.index][5];
+    state.checked[state.index] = correct;
+    showFeedback(correct, state.questions[state.index][6]);
+    renderQuestion();
+  }
+
+  async function nextQuestion() {
+    try {
+      if (state.serverMode && state.answers[state.index] !== null && state.answers[state.index] !== undefined) {
+        await saveServerAnswer(state.index);
+      }
+    } catch (error) {
+      alert(error.message || "Unable to save your answer. Please try again.");
+      return;
+    }
+
+    if (state.index < state.questions.length - 1) {
+      state.index++;
+      renderQuestion();
+    } else {
+      await submitAssessment();
+    }
+  }
+
+  function previousQuestion() {
+    if (state.index > 0) {
+      state.index--;
+      renderQuestion();
+    }
+  }
+
+  async function submitAssessment(timedOut = false) {
+    if (!state.subject || !state.questions.length) return;
+    clearAssessmentTimer();
+
+    if (state.serverMode) {
+      const unanswered = state.answers.filter(value => value === null).length;
+      if (!timedOut && unanswered > 0 && !confirm(`${unanswered} question(s) are unanswered. Submit anyway?`)) {
+        return;
+      }
+
+      try {
+        if (state.answers[state.index] !== null && state.answers[state.index] !== undefined) {
+          await saveServerAnswer(state.index);
+        }
+
+        const response = await fetch(`/api/attempts/${state.attemptId}/complete`, {
+          method: "POST"
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          alert(result.error || "Unable to submit the assessment.");
+          return;
+        }
+
+        hideViews();
+        $("reportView").classList.remove("hidden");
+        renderServerReport(result);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch {
+        alert("Unable to connect to MeritArc.");
+      }
+
+      return;
+    }
+
+    const rows = state.questions.map((q, index) => ({
+      q,
+      answer: state.answers[index],
+      correct: state.answers[index] === q[5]
+    }));
+
+    const score = rows.filter(row => row.correct).length;
+    const total = rows.length;
+    const percentage = Math.round((score / total) * 100);
+
+    const history = JSON.parse(
+      localStorage.getItem("meritArcHistory") || "[]"
+    );
+
+    history.unshift({
+      subject: state.subject,
+      score,
+      total,
+      percentage,
+      date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem(
+      "meritArcHistory",
+      JSON.stringify(history.slice(0, 50))
+    );
+
+    hideViews();
+    $("reportView").classList.remove("hidden");
+
+    $("reportContent").innerHTML = `
+      <div class="card" style="text-align:center">
+        <div class="score">${percentage}%</div>
+        <h2>${score} / ${total} correct</h2>
+        <p class="muted">Retake the assessment to receive another randomized question set.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="statbox"><b>${score}</b>Correct</div>
+        <div class="statbox"><b>${total - score}</b>Incorrect / skipped</div>
+        <div class="statbox"><b>${total}</b>Total</div>
+        <div class="statbox"><b>${percentage}%</b>Score</div>
+      </div>
+      <div class="card" style="overflow:auto">
+        <h3>Question Review</h3>
+        <table><thead><tr><th>#</th><th>Question</th><th>Your answer</th><th>Correct answer</th><th>Result</th></tr></thead>
+        <tbody>
+          ${rows.map((row, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${escapeHtml(row.q[0])}</td>
+              <td>${row.answer === null ? "Not answered" : escapeHtml(row.q[row.answer + 1])}</td>
+              <td>${escapeHtml(row.q[row.q[5] + 1])}</td>
+              <td>${row.correct ? "✓ Correct" : "✗ Incorrect"}</td>
+            </tr>
+          `).join("")}
+        </tbody></table>
+      </div>
+    `;
+  }
+
+  function renderServerReport(result) {
+    $("reportContent").innerHTML = `
+      <div class="card" style="text-align:center">
+        <div class="score">${result.percentage}%</div>
+        <h2>${result.score} / ${result.total} correct</h2>
+        <p class="muted">Your result has been saved to your MeritArc account.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="statbox"><b>${result.score}</b>Correct</div>
+        <div class="statbox"><b>${result.total - result.score}</b>Incorrect / skipped</div>
+        <div class="statbox"><b>${result.total}</b>Total</div>
+        <div class="statbox"><b>${result.percentage}%</b>Score</div>
+      </div>
+      <div class="card" style="overflow:auto">
+        <h3>Question Review</h3>
+        <table>
+          <thead><tr><th>#</th><th>Question</th><th>Your answer</th><th>Correct answer</th><th>Result</th></tr></thead>
+          <tbody>
+            ${result.rows.map((row, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${escapeHtml(row.question)}</td>
+                <td>${row.answer === null ? "Not answered" : escapeHtml(row.options[row.answer])}</td>
+                <td>${escapeHtml(row.options[row.correctAnswer])}</td>
+                <td>${row.correct ? "✓ Correct" : "✗ Incorrect"}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function showHome() {
+    hideViews();
+    $("homeView").classList.remove("hidden");
+    renderSubjects();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showAssessments() {
+    hideViews();
+    $("homeView").classList.remove("hidden");
+    renderSubjects();
+    requestAnimationFrame(() => {
+      $("practiceAreasHeading")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function prettyStatus(status) {
+    return String(status || "").replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  async function reportQuestion() {
+    if (!state.serverMode || !state.questions[state.index]?.[7]) {
+      alert("Please sign in to report a question.");
+      return;
+    }
+
+    const modal = document.createElement("div");
+    modal.className = "report-modal";
+    modal.innerHTML = `
+      <div class="report-backdrop"></div>
+      <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+        <button type="button" class="auth-close report-close" aria-label="Close">×</button>
+        <h2 id="reportTitle">Report this question</h2>
+        <p class="muted">Tell us what needs attention. Your report will be reviewed by the MeritArc team.</p>
+        <form class="report-form">
+          <label>Title
+            <select id="reportType" required>
+              <option value="">Select a reason</option>
+              <option>Incorrect answer</option>
+              <option>Incorrect question</option>
+              <option>Unclear wording</option>
+              <option>Typo or formatting</option>
+              <option>Duplicate question</option>
+              <option>Outdated information</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>Description
+            <textarea id="reportDescription" rows="5" maxlength="2000" required placeholder="Describe the issue clearly..."></textarea>
+          </label>
+          <label>Attachment <span class="muted">(optional, max 1 MB)</span>
+            <input id="reportAttachment" type="file" accept="image/*,.pdf,.txt,.doc,.docx">
+          </label>
+          <div id="reportFileNote" class="muted"></div>
+          <div class="report-actions">
+            <button type="button" class="secondary" id="reportCancel">Cancel</button>
+            <button type="submit" class="primary">Submit Report</button>
+          </div>
+          <div id="reportFormMessage" class="auth-message hidden"></div>
+        </form>
+      </div>`;
+    document.body.appendChild(modal);
+    const close = () => modal.remove();
+    modal.querySelector(".report-backdrop").onclick = close;
+    modal.querySelector(".report-close").onclick = close;
+    modal.querySelector("#reportCancel").onclick = close;
+    const fileInput = modal.querySelector("#reportAttachment");
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (!file) { modal.querySelector("#reportFileNote").textContent = ""; return; }
+      if (file.size > 1024 * 1024) {
+        modal.querySelector("#reportFileNote").textContent = "This file is larger than 1 MB.";
+        fileInput.value = "";
+        return;
+      }
+      modal.querySelector("#reportFileNote").textContent = `${file.name} · ${(file.size / 1024).toFixed(0)} KB`;
+    });
+    modal.querySelector(".report-form").onsubmit = async event => {
+      event.preventDefault();
+      const type = modal.querySelector("#reportType").value;
+      const description = modal.querySelector("#reportDescription").value.trim();
+      const file = fileInput.files?.[0] || null;
+      const message = modal.querySelector("#reportFormMessage");
+      message.classList.add("hidden");
+      if (!type) { message.textContent = "Please select a report type."; message.classList.remove("hidden"); return; }
+      if (description.length < 5) { message.textContent = "Please provide a little more detail."; message.classList.remove("hidden"); return; }
+      if (file && file.size > 1024 * 1024) { message.textContent = "Attachment must be 1 MB or smaller."; message.classList.remove("hidden"); return; }
+      let attachmentBase64 = "";
+      if (file) {
+        attachmentBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+      const submit = modal.querySelector("button[type='submit']");
+      submit.disabled = true;
+      try {
+        const response = await fetch(`/api/attempt-questions/${state.questions[state.index][7]}/report`, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            title: type,
+            description,
+            attachmentName: file?.name || "",
+            attachmentType: file?.type || "",
+            attachmentBase64
+          })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "Unable to submit the report.");
+        close();
+        alert("Thanks. Your report has been submitted.");
+      } catch (error) {
+        message.textContent = error.message || "Unable to submit the report.";
+        message.classList.remove("hidden");
+      } finally { submit.disabled = false; }
+    };
+  }
+
+  let resultsLoading = false;
+
+  async function showResults() {
+    hideViews();
+    $("resultsView").classList.remove("hidden");
+
+    const user = await getCurrentUser();
+
+    if (user) {
+      try {
+        const response = await fetch("/api/attempts");
+        const attempts = await response.json();
+
+        if (!response.ok) {
+          throw new Error(attempts.error || "Unable to load your results.");
+        }
+
+        const completed = attempts.filter(item => item.status === "completed");
+        const unfinished = attempts.filter(item => item.status === "in_progress");
+        $("historyContent").innerHTML = completed.length
+          ? `
+            <div style="overflow:auto">
+              <table>
+                <thead>
+                  <tr><th>Subject</th><th>Score</th><th>Percentage</th><th>Status</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  ${completed.map(item => `
+                    <tr>
+                      <td>${escapeHtml(displayText(item.subject))}</td>
+                      <td>${item.score === null ? "—" : `${item.score}/${item.total}`}</td>
+                      <td>${item.percentage === null ? "—" : `${item.percentage}%`}</td>
+                      <td>${escapeHtml(prettyStatus(item.status))}</td>
+                      <td>${escapeHtml(new Date(item.started_at).toLocaleString())}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+            ${unfinished.length ? `<div class="muted" style="margin-top:14px;padding:12px;background:#f8f9fc;border-radius:10px">${unfinished.length} unfinished assessment${unfinished.length===1?"":"s"} is not shown as a result.</div>` : ""}
+          `
+          : `
+            <div style="padding:30px;text-align:center">
+              <h3>No results yet</h3>
+              <div class="muted">Complete an assessment to see your history.</div>
+              ${unfinished.length ? `<div class="muted" style="margin-top:10px">${unfinished.length} unfinished assessment${unfinished.length===1?"":"s"} is not shown as a result.</div>` : ""}
+            </div>
+          `;
+      } catch (error) {
+        console.error("Results API error:", error);
+        $("historyContent").innerHTML = `
+          <div style="padding:30px;text-align:center">
+            <h3>Unable to load results</h3>
+            <div class="muted">${escapeHtml(error.message || "Please try again.")}</div>
+          </div>
+        `;
+      }
+    } else {
+      const history = JSON.parse(
+        localStorage.getItem("meritArcHistory") || "[]"
+      );
+
+      $("historyContent").innerHTML = history.length
+        ? `
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>Subject</th><th>Score</th><th>Percentage</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                ${history.map(item => `
+                  <tr>
+                    <td>${escapeHtml(displayText(item.subject))}</td>
+                    <td>${item.score}/${item.total}</td>
+                    <td>${item.percentage}%</td>
+                    <td>${escapeHtml(item.date)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        `
+        : `
+          <div style="padding:30px;text-align:center">
+            <h3>No results yet</h3>
+            <div class="muted">Complete an assessment to see your history.</div>
+          </div>
+        `;
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    resultsLoading = false;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function renderSuggestions() {
+    const input = $("subjectSearch");
+    const box = $("searchSuggestions");
+    const query = input.value.trim().toLowerCase();
+
+    if (!query) {
+      box.classList.add("hidden");
+      box.innerHTML = "";
+      return;
+    }
+
+    const prefixMatch = (text, q) => {
+      const normalized = String(text).toLowerCase().replaceAll('_', ' ');
+      return normalized.startsWith(q) || normalized.split(/\s+/).some(token => token.startsWith(q));
+    };
+    const matches = Object.entries(DATA)
+      .filter(([name, item]) => prefixMatch(name, query) || prefixMatch(item.group || '', query))
+      .slice(0, 6);
+
+    if (!matches.length) {
+      box.innerHTML = `
+        <div class="search-suggestion" style="color:#6c7a90">
+          No matching subject
+        </div>`;
+      box.classList.remove("hidden");
+      return;
+    }
+
+    box.innerHTML = matches.map(([name, item]) => `
+      <button class="search-suggestion" type="button" data-suggestion="${escapeHtml(name)}">
+        <span class="search-suggestion-icon">${escapeHtml(item.icon)}</span>
+        <span>
+          <strong>${escapeHtml(displayText(name))}</strong><br>
+          <small style="color:#6c7a90">${escapeHtml(item.desc)}</small>
+        </span>
+      </button>
+    `).join("");
+
+    box.classList.remove("hidden");
+
+    box.querySelectorAll("[data-suggestion]").forEach(button => {
+      button.addEventListener("click", () => {
+        input.value = button.dataset.suggestion;
+        box.classList.add("hidden");
+        renderSubjects();
+        document.getElementById("practiceAreasHeading")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+    });
+  }
+
+  function runSearch() {
+    $("searchSuggestions").classList.add("hidden");
+    renderSubjects();
+
+    document.getElementById("practiceAreasHeading")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  $("subjectSearch").addEventListener("input", () => {
+    renderSubjects();
+    renderSuggestions();
+  });
+
+  $("subjectSearch").addEventListener("focus", () => {
+    if ($("subjectSearch").value.trim()) renderSuggestions();
+  });
+
+  $("subjectSearch").addEventListener("keydown", event => {
+    if (event.key === "Enter") runSearch();
+    if (event.key === "Escape") $("searchSuggestions").classList.add("hidden");
+  });
+
+  $("searchButton").addEventListener("click", runSearch);
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".search-wrap")) {
+      $("searchSuggestions").classList.add("hidden");
+    }
+  });
+
+
+  async function getCurrentUser() {
+    try {
+      const response = await fetch("/api/auth/me");
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.authenticated ? data.user : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setAuthMessage(id, message) {
+    const element = $(id);
+    element.textContent = message || "";
+    element.classList.toggle("hidden", !message);
+  }
+
+  function showLogin() {
+    $("loginFormWrap").classList.remove("hidden");
+    $("registerFormWrap").classList.add("hidden");
+    $("loginTab").classList.add("active");
+    $("registerTab").classList.remove("active");
+    $("authForms").classList.remove("hidden");
+    $("accountView").classList.add("hidden");
+    setAuthMessage("loginMessage", "");
+    setAuthMessage("registerMessage", "");
+    $("accessResponseBox")?.classList.add("hidden");
+  }
+
+  function showRegister() {
+    $("loginFormWrap").classList.add("hidden");
+    $("registerFormWrap").classList.remove("hidden");
+    $("loginTab").classList.remove("active");
+    $("registerTab").classList.add("active");
+    $("authForms").classList.remove("hidden");
+    $("accountView").classList.add("hidden");
+    setAuthMessage("loginMessage", "");
+    setAuthMessage("registerMessage", "");
+    $("accessResponseBox")?.classList.add("hidden");
+  }
+
+  function openAuth() {
+    $("authModal").classList.remove("hidden");
+    $("authModal").setAttribute("aria-hidden", "false");
+    refreshAuthView();
+  }
+
+  function closeAuth() {
+    $("authModal").classList.add("hidden");
+    $("authModal").setAttribute("aria-hidden", "true");
+  }
+
+  async function refreshAuthView() {
+    const user = await getCurrentUser();
+    if (user) {
+      $("authForms").classList.add("hidden");
+      $("accountView").classList.remove("hidden");
+      $("accountName").textContent = `Hi, ${user.name}`;
+      $("accountEmail").textContent = user.email;
+      $("authButton").textContent = "Account";
+    } else {
+      $("authForms").classList.remove("hidden");
+      $("accountView").classList.add("hidden");
+      $("authButton").textContent = "Sign In";
+    }
+  }
+
+  async function login(event) {
+    event.preventDefault();
+    setAuthMessage("loginMessage", "");
+    const button = event.target.querySelector("button[type='submit']");
+    button.disabled = true;
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          email: $("loginEmail").value,
+          password: $("loginPassword").value
+        })
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAuthMessage("loginMessage", data.error || "Unable to sign in.");
+        const box = $("accessResponseBox");
+        if (box) {
+          box.classList.toggle("hidden", !(data.requestInput && data.email));
+          if (data.requestInput && data.email) {
+            $("accessResponsePrompt").textContent = data.requestPrompt || "Please tell us why you need access.";
+            $("accessResponseText").value = "";
+            box.dataset.email = data.email;
+            $("accessResponseMessage").textContent = "";
+          }
+        }
+        return;
+      }
+      $("accessResponseBox")?.classList.add("hidden");
+
+      $("loginForm").reset();
+      await refreshAuthView();
+    } catch {
+      setAuthMessage("loginMessage", "Unable to connect to MeritArc.");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function register(event) {
+    event.preventDefault();
+    setAuthMessage("registerMessage", "");
+    const button = event.target.querySelector("button[type='submit']");
+    button.disabled = true;
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: $("registerName").value,
+          email: $("registerEmail").value,
+          password: $("registerPassword").value
+        })
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAuthMessage("registerMessage", data.error || "Unable to create the account.");
+        return;
+      }
+
+      $("registerForm").reset();
+      await refreshAuthView();
+    } catch {
+      setAuthMessage("registerMessage", "Unable to connect to MeritArc.");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function logout() {
+    try {
+      await fetch("/api/auth/logout", {method: "POST"});
+    } finally {
+      await refreshAuthView();
+      closeAuth();
+    }
+  }
+
+  function initAuth() {
+    $("loginForm").addEventListener("submit", login);
+    $("registerForm").addEventListener("submit", register);
+    refreshAuthView();
+  }
+
+  initAuth();
+
+  $("accessResponseButton")?.addEventListener("click", async () => {
+    const box = $("accessResponseBox");
+    const text = $("accessResponseText").value.trim();
+    const email = box?.dataset.email || "";
+    const message = $("accessResponseMessage");
+    if (text.length < 5) { message.textContent = "Please enter a little more detail."; return; }
+    const button = $("accessResponseButton");
+    button.disabled = true;
+    try {
+      const response = await fetch("/api/access-response", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,response:text})});
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Unable to submit your response.");
+      message.textContent = data.message || "Your response has been submitted.";
+      $("accessResponseText").value = "";
+    } catch (error) { message.textContent = error.message; }
+    finally { button.disabled = false; }
+  });
+
+  function closeMobileMenu() {
+    const nav = $("siteNav");
+    const button = $("mobileMenuButton");
+    if (!nav || !button) return;
+    nav.classList.remove("open");
+    button.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleMobileMenu() {
+    const nav = $("siteNav");
+    const button = $("mobileMenuButton");
+    if (!nav || !button) return;
+    const open = nav.classList.toggle("open");
+    button.setAttribute("aria-expanded", String(open));
+  }
+
+  $("mobileMenuButton")?.addEventListener("click", event => { event.stopPropagation(); toggleMobileMenu(); });
+  document.addEventListener("pointerdown", event => {
+    const nav = $("siteNav");
+    const button = $("mobileMenuButton");
+    if (nav?.classList.contains("open") && !nav.contains(event.target) && !button?.contains(event.target)) closeMobileMenu();
+  });
+
+  $("assessmentSetupForm")?.addEventListener("submit", confirmAssessmentSetup);
+  $("assessmentQuestionCount")?.addEventListener("change", updateAssessmentSetupSummary);
+  $("assessmentTimeLimit")?.addEventListener("change", updateAssessmentSetupSummary);
+  $("assessmentDifficulty")?.addEventListener("change", updateAssessmentSetupSummary);
+
+  window.MeritArc = {
+    showHome,
+    showAssessments,
+    showResults,
+    reportQuestion,
+    startAssessment,
+    openAssessmentSetup,
+    closeAssessmentSetup,
+    checkAnswer,
+    nextQuestion,
+    previousQuestion,
+    submitAssessment,
+    openAuth,
+    closeAuth,
+    showLogin,
+    showRegister,
+    logout,
+    closeMobileMenu,
+    showLoading: message => window.showSiteLoading?.(message),
+    hideLoading: () => window.hideSiteLoading?.()
+  };
+
+  renderSubjects();
+  const params = new URLSearchParams(window.location.search);
+  const requestedSubject = params.get("subject");
+  if (requestedSubject && DATA[requestedSubject]) {
+    setTimeout(() => openAssessmentSetup(requestedSubject), 0);
+  } else if (params.get("auth") === "1") {
+    requestAnimationFrame(() => openAuth());
+  } else if (window.location.hash === "#assessment") {
+    window.MeritArc?.hideLoading?.();
+    requestAnimationFrame(() => $("practiceAreasHeading")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  } else if (window.location.hash === "#results") {
+    requestAnimationFrame(() => { window.MeritArc?.hideLoading?.(); showResults(); });
+  }
+})();
