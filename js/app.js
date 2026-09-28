@@ -92,7 +92,7 @@
             </button>`).join("")}</div>
         </section>` : `<div class="card search-empty"><h3>No subjects found</h3><p>We couldn't find a subject matching "${escapeHtml(raw)}".</p></div>`;
     }
-    document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => startAssessment(card.dataset.subject)));
+    document.querySelectorAll(".quick-practice-card").forEach(card => card.addEventListener("click", () => openAssessmentSetup(card.dataset.subject)));
     const subjectCount = $("subjectCountStat");
     if (subjectCount) subjectCount.textContent = Object.keys(DATA).length;
   }
@@ -140,7 +140,84 @@
     }, 1000);
   }
 
-  async function startAssessment(subject) {
+  let assessmentSetupSubject = null;
+
+  function closeAssessmentSetup() {
+    const modal = $("assessmentSetupModal");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    assessmentSetupSubject = null;
+  }
+
+  function updateAssessmentSetupSummary() {
+    const count = Number($("assessmentQuestionCount")?.value || 10);
+    const time = Number($("assessmentTimeLimit")?.value || 0);
+    const difficulty = $("assessmentDifficulty")?.value || "Mixed";
+    const subject = assessmentSetupSubject || "this subject";
+    const timeText = time ? `${Math.round(time / 60)} minute${time === 60 ? "" : "s"}` : "no timer";
+    const summary = $("assessmentSetupSummary");
+    if (summary) {
+      summary.innerHTML = `<strong>${escapeHtml(displayText(subject))}</strong><span>${count} questions · ${escapeHtml(difficulty)} · ${timeText}</span>`;
+    }
+    const hint = $("assessmentQuestionHint");
+    if (hint) hint.textContent = `Questions will be spread across available topics. Up to ${count} will be selected.`;
+  }
+
+  async function openAssessmentSetup(subject) {
+    const modal = $("assessmentSetupModal");
+    if (!modal || !subject) return;
+    assessmentSetupSubject = subject;
+
+    const title = $("assessmentSetupTitle");
+    if (title) title.textContent = `Prepare your ${displayText(subject)} assessment`;
+
+    // Show the setup immediately. Authentication status is loaded afterward so
+    // a slow/unavailable session check can never prevent the setup screen from opening.
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    updateAssessmentSetupSummary();
+
+    const user = await getCurrentUser();
+    if (assessmentSetupSubject !== subject) return;
+    const countSelect = $("assessmentQuestionCount");
+    if (countSelect) {
+      const max = user ? 50 : Math.min(10, DATA[subject]?.questions?.length || 10);
+      [...countSelect.options].forEach(option => {
+        option.disabled = Number(option.value) > max;
+      });
+      if (Number(countSelect.value) > max) countSelect.value = String(max >= 10 ? 10 : max);
+    }
+    const difficultySelect = $("assessmentDifficulty");
+    if (difficultySelect) {
+      difficultySelect.disabled = !user;
+      difficultySelect.title = user ? "Choose a difficulty for your assessment." : "Sign in to use difficulty-specific assessment selection.";
+      if (!user) difficultySelect.value = "Mixed";
+    }
+    const message = $("assessmentSetupMessage");
+    if (message) { message.textContent = ""; message.classList.add("hidden"); }
+    updateAssessmentSetupSummary();
+    const difficultyHint = difficultySelect?.parentElement?.querySelector(".setup-hint");
+    if (difficultyHint) difficultyHint.textContent = user ? "Mixed balances Easy, Medium and Hard questions when available." : "Sign in to enable difficulty-specific selection.";
+    updateAssessmentSetupSummary();
+    requestAnimationFrame(() => $("assessmentQuestionCount")?.focus());
+  }
+
+  async function confirmAssessmentSetup(event) {
+    event.preventDefault();
+    const subject = assessmentSetupSubject;
+    if (!subject) return;
+    const count = Number($("assessmentQuestionCount")?.value || 10);
+    const timeLimit = Number($("assessmentTimeLimit")?.value || 0);
+    const difficulty = $("assessmentDifficulty")?.value || "Mixed";
+    closeAssessmentSetup();
+    await startAssessment(subject, { count, timeLimit, difficulty, fromSetup: true });
+  }
+
+  async function startAssessment(subject, config = {}) {
+    if (!config || config.fromSetup !== true) {
+      return openAssessmentSetup(subject);
+    }
     window.MeritArc?.showLoading?.("Starting assessment…");
     const user = await getCurrentUser();
 
@@ -154,8 +231,6 @@
     clearAssessmentTimer();
     state.timerSeconds = 0;
     state.timerStarted = false;
-    const timerSelect = $("assessmentTimer");
-    if (timerSelect) { timerSelect.value = "0"; timerSelect.disabled = false; }
     updateTimerDisplay();
 
     if (user) {
@@ -163,7 +238,7 @@
         const response = await fetch("/api/attempts", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ subject, count: 10 })
+          body: JSON.stringify({ subject, count: Number(config.count || 10), difficulty: config.difficulty || "Mixed" })
         });
 
         if (!response.ok) {
@@ -191,9 +266,10 @@
       }
     } else {
       const bank = DATA[subject].questions;
+      const guestBank = shuffle(bank);
 
-      state.questions = shuffle(bank)
-        .slice(0, Math.min(10, bank.length))
+      state.questions = guestBank
+        .slice(0, Math.min(Number(config.count || 10), guestBank.length))
         .map(question => {
           const questionText = question[0];
           const options = question.slice(1, 5);
@@ -211,6 +287,7 @@
     }
 
     state.answers = Array(state.questions.length).fill(null);
+    startAssessmentTimer(config.timeLimit || 0);
 
     hideViews();
     $("quizView").classList.remove("hidden");
@@ -988,9 +1065,10 @@
     if (nav?.classList.contains("open") && !nav.contains(event.target) && !button?.contains(event.target)) closeMobileMenu();
   });
 
-  $("assessmentTimer")?.addEventListener("change", event => {
-    startAssessmentTimer(event.target.value);
-  });
+  $("assessmentSetupForm")?.addEventListener("submit", confirmAssessmentSetup);
+  $("assessmentQuestionCount")?.addEventListener("change", updateAssessmentSetupSummary);
+  $("assessmentTimeLimit")?.addEventListener("change", updateAssessmentSetupSummary);
+  $("assessmentDifficulty")?.addEventListener("change", updateAssessmentSetupSummary);
 
   window.MeritArc = {
     showHome,
@@ -998,6 +1076,8 @@
     showResults,
     reportQuestion,
     startAssessment,
+    openAssessmentSetup,
+    closeAssessmentSetup,
     checkAnswer,
     nextQuestion,
     previousQuestion,
@@ -1016,7 +1096,7 @@
   const params = new URLSearchParams(window.location.search);
   const requestedSubject = params.get("subject");
   if (requestedSubject && DATA[requestedSubject]) {
-    setTimeout(() => startAssessment(requestedSubject), 0);
+    setTimeout(() => openAssessmentSetup(requestedSubject), 0);
   } else if (params.get("auth") === "1") {
     requestAnimationFrame(() => openAuth());
   } else if (window.location.hash === "#assessment") {
