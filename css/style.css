@@ -218,3 +218,92 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
 .timer-display.warning{background:#fff4df;color:#8a5a00}
 .timer-display.expired{background:#ffe9e9;color:#a52b2b}
 @media(max-width:600px){.assessment-timer{width:100%}.assessment-timer select{flex:1}.timer-display{margin-left:auto}}
+
+
+/* Final card-link reset: card anchors must never look like underlined text links */
+.exam-card,
+.exam-card:link,
+.exam-card:visited,
+.exam-card:hover,
+.exam-card:focus,
+.exam-card:active,
+.home-library-card,
+.home-library-card:link,
+.home-library-card:visited,
+.home-library-card:hover,
+.home-library-card:focus,
+.home-library-card:active {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-color: transparent !important;
+  text-decoration-style: none !important;
+  text-decoration-thickness: 0 !important;
+  background-image: none !important;
+}
+.exam-card *,
+.home-library-card * {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-color: transparent !important;
+  text-decoration-style: none !important;
+  text-decoration-thickness: 0 !important;
+  background-image: none !important;
+}
+
+/* Final link-card reset and Exam Library search layout */
+.home-library-section a.home-library-link,
+.home-library-section a.home-library-card,
+.home-library-section a.home-library-card *,
+.practice-areas-home-grid a,
+.practice-areas-home-grid a *,
+.exam-library-grid a.exam-card,
+.exam-library-grid a.exam-card *,
+.practice-library-groups a.exam-card,
+.practice-library-groups a.exam-card *,
+.library-section a.exam-card,
+.library-section a.exam-card * {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-style: none !important;
+  text-decoration-thickness: 0 !important;
+  -webkit-text-decoration-line: none !important;
+  -webkit-text-decoration-style: none !important;
+}
+
+.library-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  max-width: 620px;
+}
+.library-search-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 9px;
+  background: #fff;
+  color: #172033;
+  padding: 10px 12px;
+  outline: none;
+}
+.library-search-row input:focus {
+  border-color: #9fc8fa;
+  box-shadow: 0 0 0 3px rgba(159,200,250,.22);
+}
+.library-search-row .secondary {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.library-search-status {
+  margin-top: 7px;
+  color: #d9e9ff;
+  font-size: 12px;
+}
+@media(max-width:520px){
+  .library-search-row {
+    max-width: none;
+  }
+}
