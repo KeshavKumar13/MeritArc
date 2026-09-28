@@ -142,12 +142,15 @@
 
   let assessmentSetupSubject = null;
 
+  function showAssessmentSetupPanel() {
+    const panel = $("assessmentSetupPanel");
+    const active = $("activeAssessmentView");
+    if (panel) panel.classList.remove("hidden");
+    if (active) active.classList.add("hidden");
+  }
+
   function closeAssessmentSetup() {
-    const modal = $("assessmentSetupModal");
-    if (!modal) return;
-    modal.classList.add("hidden");
-    modal.setAttribute("aria-hidden", "true");
-    assessmentSetupSubject = null;
+    showAssessments();
   }
 
   function updateAssessmentSetupSummary() {
@@ -161,28 +164,37 @@
       summary.innerHTML = `<strong>${escapeHtml(displayText(subject))}</strong><span>${count} questions · ${escapeHtml(difficulty)} · ${timeText}</span>`;
     }
     const hint = $("assessmentQuestionHint");
-    if (hint) hint.textContent = `Questions will be spread across available topics. Up to ${count} will be selected.`;
+    if (hint) hint.textContent = `MeritArc will select up to ${count} questions across the available ${displayText(subject)} topics.`;
   }
 
   async function openAssessmentSetup(subject) {
-    const modal = $("assessmentSetupModal");
-    if (!modal || !subject) return;
+    if (!subject || !DATA[subject]) return;
     assessmentSetupSubject = subject;
+
+    hideViews();
+    $("quizView")?.classList.remove("hidden");
+    showAssessmentSetupPanel();
+    document.documentElement.classList.remove("assessment-boot");
 
     const title = $("assessmentSetupTitle");
     if (title) title.textContent = `Prepare your ${displayText(subject)} assessment`;
 
-    // Show the setup immediately. Authentication status is loaded afterward so
-    // a slow/unavailable session check can never prevent the setup screen from opening.
-    // Also clear the deep-link boot overlay before showing the setup modal.
-    document.documentElement.classList.remove("assessment-boot");
-    modal.classList.remove("hidden");
-    modal.setAttribute("aria-hidden", "false");
+    const message = $("assessmentSetupMessage");
+    if (message) { message.textContent = ""; message.classList.add("hidden"); }
+
+    // Apply sensible defaults every time a new assessment is opened.
+    const countSelect = $("assessmentQuestionCount");
+    if (countSelect) countSelect.value = "10";
+    const timeSelect = $("assessmentTimeLimit");
+    if (timeSelect) timeSelect.value = "600";
+    const difficultySelect = $("assessmentDifficulty");
+    if (difficultySelect) difficultySelect.value = "Mixed";
+
     updateAssessmentSetupSummary();
 
     const user = await getCurrentUser();
     if (assessmentSetupSubject !== subject) return;
-    const countSelect = $("assessmentQuestionCount");
+
     if (countSelect) {
       const max = user ? 50 : Math.min(10, DATA[subject]?.questions?.length || 10);
       [...countSelect.options].forEach(option => {
@@ -190,17 +202,20 @@
       });
       if (Number(countSelect.value) > max) countSelect.value = String(max >= 10 ? 10 : max);
     }
-    const difficultySelect = $("assessmentDifficulty");
+
     if (difficultySelect) {
       difficultySelect.disabled = !user;
       difficultySelect.title = user ? "Choose a difficulty for your assessment." : "Sign in to use difficulty-specific assessment selection.";
       if (!user) difficultySelect.value = "Mixed";
     }
-    const message = $("assessmentSetupMessage");
-    if (message) { message.textContent = ""; message.classList.add("hidden"); }
-    updateAssessmentSetupSummary();
-    const difficultyHint = difficultySelect?.parentElement?.querySelector(".setup-hint");
-    if (difficultyHint) difficultyHint.textContent = user ? "Mixed balances Easy, Medium and Hard questions when available." : "Sign in to enable difficulty-specific selection.";
+
+    const difficultyHint = $("assessmentDifficultyHint");
+    if (difficultyHint) {
+      difficultyHint.textContent = user
+        ? "Mixed balances Easy, Medium and Hard questions when available."
+        : "Sign in to enable difficulty-specific selection.";
+    }
+
     updateAssessmentSetupSummary();
     requestAnimationFrame(() => $("assessmentQuestionCount")?.focus());
   }
@@ -209,11 +224,23 @@
     event.preventDefault();
     const subject = assessmentSetupSubject;
     if (!subject) return;
+
     const count = Number($("assessmentQuestionCount")?.value || 10);
     const timeLimit = Number($("assessmentTimeLimit")?.value || 0);
     const difficulty = $("assessmentDifficulty")?.value || "Mixed";
-    closeAssessmentSetup();
-    await startAssessment(subject, { count, timeLimit, difficulty, fromSetup: true });
+
+    const panel = $("assessmentSetupPanel");
+    const message = $("assessmentSetupMessage");
+    const button = event.submitter;
+    if (button) button.disabled = true;
+    if (message) { message.textContent = "Building your assessment…"; message.classList.remove("hidden"); }
+
+    try {
+      await startAssessment(subject, { count, timeLimit, difficulty, fromSetup: true });
+    } finally {
+      if (button) button.disabled = false;
+      if (panel && !state.questions.length) panel.classList.remove("hidden");
+    }
   }
 
   async function startAssessment(subject, config = {}) {
@@ -293,6 +320,8 @@
 
     hideViews();
     $("quizView").classList.remove("hidden");
+    $("assessmentSetupPanel")?.classList.add("hidden");
+    $("activeAssessmentView")?.classList.remove("hidden");
     document.documentElement.classList.remove("assessment-boot");
     renderQuestion();
     window.MeritArc?.hideLoading?.();

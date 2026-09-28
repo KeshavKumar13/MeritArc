@@ -307,3 +307,21 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
     max-width: none;
   }
 }
+
+/* Inline assessment setup: appears inside the assessment area before questions */
+.assessment-setup-panel{max-width:900px;margin:0 auto;padding:8px 0 24px}
+.assessment-setup-card-inline{padding:30px;max-width:900px;margin:0 auto}
+.assessment-setup-header{padding-right:0;margin-bottom:24px}
+.assessment-setup-header h2{margin:6px 0 8px;color:var(--navy)}
+.setup-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;color:#1475ee}
+.assessment-setup-form{display:grid;gap:20px}
+.assessment-setup-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.assessment-setup-form label{display:grid;gap:7px;font-weight:700;color:var(--navy)}
+.assessment-setup-form select{width:100%;padding:12px 13px;border:1px solid #cfd7e3;border-radius:10px;background:#fff;color:var(--navy);font:inherit}
+.assessment-setup-form select:focus{outline:2px solid rgba(20,117,238,.18);border-color:#1475ee}
+.setup-hint{font-size:12px;font-weight:400;color:var(--muted);line-height:1.45}
+.assessment-setup-summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 16px;background:#f4f8fd;border:1px solid #dce9f7;border-radius:12px;color:var(--navy)}
+.assessment-setup-summary strong{font-size:14px}.assessment-setup-summary span{font-size:13px;color:var(--muted);text-align:right}
+.assessment-setup-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:2px}.assessment-setup-actions button{min-width:130px}
+@media(max-width:760px){.assessment-setup-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.assessment-setup-panel{padding:0 0 18px}.assessment-setup-card-inline{padding:22px}.assessment-setup-grid{grid-template-columns:1fr}.assessment-setup-summary{align-items:flex-start;flex-direction:column}.assessment-setup-summary span{text-align:left}.assessment-setup-actions{display:grid;grid-template-columns:1fr 1fr}.assessment-setup-actions button{width:100%;min-width:0}}

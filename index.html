@@ -40,7 +40,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=20260928-1605">
+  <link rel="stylesheet" href="css/style.css?v=20260928-1835">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <script src="/js/site.js"></script><script>function closeSiteNav(){document.getElementById("siteNav")?.classList.remove("open");document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded","false");}</script><style id="meritarc-home-card-link-reset">
 .home-library-section a.home-library-card,.home-library-section a.home-library-card *{text-decoration:none!important;text-decoration-line:none!important;text-decoration-color:transparent!important;text-decoration-style:none!important;text-decoration-thickness:0!important;background-image:none!important;}
@@ -136,38 +136,96 @@
   </section>
 
   <section id="quizView" class="hidden">
-    <div class="toolbar quiz-toolbar">
-      <button class="secondary" onclick="MeritArc.showAssessments()">← Practice Areas</button>
-      <strong id="quizTitle"></strong>
-      <div class="assessment-timer">
-        <span class="muted">Time</span>
-        <span id="timerDisplay" class="timer-display" aria-live="polite">No timer</span>
+    <div id="assessmentSetupPanel" class="assessment-setup-panel hidden">
+      <div class="card assessment-setup-card-inline">
+        <div class="assessment-setup-header">
+          <span class="setup-kicker">ASSESSMENT SETUP</span>
+          <h2 id="assessmentSetupTitle">Prepare your practice session</h2>
+          <p class="muted">Set your preferences before the assessment begins. MeritArc will build the question set from your selections.</p>
+        </div>
+
+        <form id="assessmentSetupForm" class="assessment-setup-form">
+          <div class="assessment-setup-grid">
+            <label>Number of questions
+              <select id="assessmentQuestionCount" required>
+                <option value="5">5 questions</option>
+                <option value="10" selected>10 questions</option>
+                <option value="20">20 questions</option>
+                <option value="30">30 questions</option>
+                <option value="50">50 questions</option>
+              </select>
+              <span id="assessmentQuestionHint" class="setup-hint">Choose how many questions you want in this assessment.</span>
+            </label>
+
+            <label>Time limit
+              <select id="assessmentTimeLimit" required>
+                <option value="0">No timer</option>
+                <option value="300">5 minutes</option>
+                <option value="600" selected>10 minutes</option>
+                <option value="900">15 minutes</option>
+                <option value="1200">20 minutes</option>
+                <option value="1800">30 minutes</option>
+                <option value="3600">60 minutes</option>
+              </select>
+              <span class="setup-hint">The timer starts only when you click Start Assessment.</span>
+            </label>
+
+            <label>Difficulty
+              <select id="assessmentDifficulty" required>
+                <option value="Mixed" selected>Mixed · recommended</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+              <span id="assessmentDifficultyHint" class="setup-hint">Mixed balances Easy, Medium and Hard questions when available.</span>
+            </label>
+          </div>
+
+          <div class="assessment-setup-summary" id="assessmentSetupSummary"></div>
+          <div id="assessmentSetupMessage" class="auth-message hidden"></div>
+
+          <div class="assessment-setup-actions">
+            <button class="secondary" type="button" onclick="MeritArc.showAssessments()">Cancel</button>
+            <button class="primary" type="submit">Start Assessment →</button>
+          </div>
+        </form>
       </div>
-      <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
     </div>
 
-    <div class="card">
-      <div class="toolbar">
-        <span id="questionCount"></span>
-        <span id="answeredCount" class="tag"></span>
+    <div id="activeAssessmentView" class="hidden">
+      <div class="toolbar quiz-toolbar">
+        <button class="secondary" onclick="MeritArc.showAssessments()">← Practice Areas</button>
+        <strong id="quizTitle"></strong>
+        <div class="assessment-timer">
+          <span class="muted">Time</span>
+          <span id="timerDisplay" class="timer-display" aria-live="polite">No timer</span>
+        </div>
+        <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
       </div>
-      <div class="progress"><div id="progressBar" style="width:10%"></div></div>
-      <div id="questionText" class="question"></div>
-      <div id="options"></div>
-      <div id="feedback" class="hidden"></div>
-      <div class="question-actions"><button class="report-question" type="button" onclick="MeritArc.reportQuestion()">Report this question</button></div>
 
-      <div class="toolbar">
-        <button class="secondary" onclick="MeritArc.previousQuestion()">Previous</button>
-        <div>
-          <button id="checkButton" class="secondary" onclick="MeritArc.checkAnswer()">Check Answer</button>
-          <button class="primary" onclick="MeritArc.nextQuestion()">Next →</button>
+      <div class="card">
+        <div class="toolbar">
+          <span id="questionCount"></span>
+          <span id="answeredCount" class="tag"></span>
+        </div>
+        <div class="progress"><div id="progressBar" style="width:10%"></div></div>
+        <div id="questionText" class="question"></div>
+        <div id="options"></div>
+        <div id="feedback" class="hidden"></div>
+        <div class="question-actions"><button class="report-question" type="button" onclick="MeritArc.reportQuestion()">Report this question</button></div>
+
+        <div class="toolbar">
+          <button class="secondary" onclick="MeritArc.previousQuestion()">Previous</button>
+          <div>
+            <button id="checkButton" class="secondary" onclick="MeritArc.checkAnswer()">Check Answer</button>
+            <button class="primary" onclick="MeritArc.nextQuestion()">Next →</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="muted" style="margin-top:12px">
-      Your assessment is built from the selected question count, difficulty and available topics. Retaking gives a fresh set.
+      <div class="muted" style="margin-top:12px">
+        Your assessment is built from the selected question count, difficulty and available topics. Retaking gives a fresh set.
+      </div>
     </div>
   </section>
 
@@ -186,57 +244,6 @@
     </div>
     <div class="card" id="historyContent"></div>
   </section>
-
-<div id="assessmentSetupModal" class="assessment-setup-modal hidden" aria-hidden="true">
-  <div class="assessment-setup-backdrop" onclick="MeritArc.closeAssessmentSetup()"></div>
-  <div class="assessment-setup-card" role="dialog" aria-modal="true" aria-labelledby="assessmentSetupTitle">
-    <button class="auth-close" onclick="MeritArc.closeAssessmentSetup()" aria-label="Close">×</button>
-    <div class="assessment-setup-header">
-      <span class="setup-kicker">ASSESSMENT SETUP</span>
-      <h2 id="assessmentSetupTitle">Prepare your practice session</h2>
-      <p class="muted">Choose how you want to practice before the questions begin. You can review your answers and results after submitting.</p>
-    </div>
-    <form id="assessmentSetupForm" class="assessment-setup-form">
-      <label>Number of questions
-        <select id="assessmentQuestionCount" required>
-          <option value="5">5 questions</option>
-          <option value="10" selected>10 questions</option>
-          <option value="20">20 questions</option>
-          <option value="30">30 questions</option>
-          <option value="50">50 questions</option>
-        </select>
-        <span id="assessmentQuestionHint" class="setup-hint">A balanced practice set across available topics.</span>
-      </label>
-      <label>Time limit
-        <select id="assessmentTimeLimit" required>
-          <option value="0">No timer</option>
-          <option value="300">5 minutes</option>
-          <option value="600" selected>10 minutes</option>
-          <option value="900">15 minutes</option>
-          <option value="1200">20 minutes</option>
-          <option value="1800">30 minutes</option>
-          <option value="3600">60 minutes</option>
-        </select>
-        <span class="setup-hint">The timer starts only after you begin the assessment.</span>
-      </label>
-      <label>Difficulty
-        <select id="assessmentDifficulty" required>
-          <option value="Mixed" selected>Mixed · recommended</option>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-        <span class="setup-hint">Mixed balances Easy, Medium and Hard questions when available.</span>
-      </label>
-      <div class="assessment-setup-summary" id="assessmentSetupSummary"></div>
-      <div class="assessment-setup-actions">
-        <button class="secondary" type="button" onclick="MeritArc.closeAssessmentSetup()">Cancel</button>
-        <button class="primary" type="submit">Start Assessment →</button>
-      </div>
-      <div id="assessmentSetupMessage" class="auth-message hidden"></div>
-    </form>
-  </div>
-</div>
 
 <div id="authModal" class="auth-modal hidden" aria-hidden="true">
   <div class="auth-backdrop" onclick="MeritArc.closeAuth()"></div>
