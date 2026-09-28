@@ -145,6 +145,90 @@ function shuffleArray(items) {
   return copy;
 }
 
+function difficultyTargets(count) {
+  const weights = { Easy: 0.4, Medium: 0.4, Hard: 0.2 };
+  const targets = Object.fromEntries(
+    Object.entries(weights).map(([difficulty, weight]) => [difficulty, Math.floor(count * weight)])
+  );
+
+  let remaining = count - Object.values(targets).reduce((sum, value) => sum + value, 0);
+  const order = Object.entries(weights)
+    .map(([difficulty, weight]) => ({ difficulty, fraction: count * weight - Math.floor(count * weight) }))
+    .sort((a, b) => b.fraction - a.fraction);
+
+  for (let index = 0; index < remaining; index++) {
+    targets[order[index % order.length].difficulty] += 1;
+  }
+
+  return targets;
+}
+
+function pickFromPool(pool, count, selectedIds) {
+  if (count <= 0 || !pool.length) return [];
+
+  const available = pool.filter(q => !selectedIds.has(Number(q.id)));
+  const byTopic = new Map();
+
+  for (const question of available) {
+    const topic = question.topic || "General";
+    if (!byTopic.has(topic)) byTopic.set(topic, []);
+    byTopic.get(topic).push(question);
+  }
+
+  const topics = shuffleArray([...byTopic.keys()]);
+  const picked = [];
+  let topicIndex = 0;
+
+  while (picked.length < count && topics.length) {
+    const topic = topics[topicIndex % topics.length];
+    const bucket = byTopic.get(topic);
+    if (bucket.length) {
+      const question = bucket.shift();
+      picked.push(question);
+      selectedIds.add(Number(question.id));
+    }
+
+    if (!bucket.length) {
+      topics.splice(topicIndex % topics.length, 1);
+      if (!topics.length) break;
+      topicIndex %= topics.length;
+    } else {
+      topicIndex = (topicIndex + 1) % topics.length;
+    }
+  }
+
+  return picked;
+}
+
+function selectAssessmentQuestions(source, requestedCount) {
+  const selected = [];
+  const selectedIds = new Set();
+  const targets = difficultyTargets(requestedCount);
+
+  const unseen = source.filter(q => !q.seen);
+  const seen = source.filter(q => q.seen);
+  const primaryPool = unseen.length >= requestedCount ? unseen : unseen;
+  const fallbackPool = unseen.length >= requestedCount ? [] : seen;
+
+  for (const [difficulty, target] of Object.entries(targets)) {
+    const difficultyPool = primaryPool.filter(q => q.difficulty === difficulty);
+    selected.push(...pickFromPool(difficultyPool, target, selectedIds));
+  }
+
+  // If a difficulty bucket does not have enough questions, fill the gap from
+  // the remaining unseen questions before reusing previously attempted ones.
+  const remainingPrimary = primaryPool.filter(q => !selectedIds.has(Number(q.id)));
+  selected.push(...pickFromPool(remainingPrimary, requestedCount - selected.length, selectedIds));
+
+  // Only reuse previously attempted questions when the subject does not have
+  // enough unseen questions to satisfy the requested assessment size.
+  if (selected.length < requestedCount) {
+    selected.push(...pickFromPool(fallbackPool, requestedCount - selected.length, selectedIds));
+  }
+
+  return shuffleArray(selected.slice(0, requestedCount));
+}
+
 function publicAttemptQuestion(row) {
   return {
     id: Number(row.attempt_question_id),
@@ -382,17 +466,29 @@ app.post("/api/attempts", requireUser, async (req, res) => {
     );
 
     const sourceResult = await db.query(
-      `SELECT id, subject, topic, difficulty, question_text,
-              option_a, option_b, option_c, option_d, correct_option, explanation
-       FROM questions
-       WHERE subject = $1 AND status = 'active'
-       ORDER BY RANDOM()
-       LIMIT $2`,
-      [subject, requestedCount]
+      `SELECT q.id, q.subject, q.topic, q.difficulty, q.question_text,
+              q.option_a, q.option_b, q.option_c, q.option_d, q.correct_option, q.explanation,
+              EXISTS (
+                SELECT 1
+                FROM attempt_questions aq
+                JOIN attempts a ON a.id = aq.attempt_id
+                WHERE a.user_id = $2
+                  AND a.subject = $1
+                  AND aq.question_id = q.id
+              ) AS seen
+       FROM questions q
+       WHERE q.subject = $1 AND q.status = 'active'
+       ORDER BY RANDOM()`,
+      [subject, req.user.id]
     );
     const source = sourceResult.rows;
 
     if (!source.length) return res.status(404).json({ error: "No active questions found for this subject." });
+
+    const selectedQuestions = selectAssessmentQuestions(source, requestedCount);
+    if (!selectedQuestions.length) {
+      return res.status(404).json({ error: "No active questions are available for this subject." });
+    }
 
     const client = await db.connect();
     try {
@@ -402,13 +498,13 @@ app.post("/api/attempts", requireUser, async (req, res) => {
         `INSERT INTO attempts (user_id, subject, total)
          VALUES ($1, $2, $3)
          RETURNING id`,
-        [req.user.id, subject, source.length]
+        [req.user.id, subject, selectedQuestions.length]
       );
       const attemptId = Number(attemptResult.rows[0].id);
       const questions = [];
 
-      for (let index = 0; index < source.length; index++) {
-        const q = source[index];
+      for (let index = 0; index < selectedQuestions.length; index++) {
+        const q = selectedQuestions[index];
         const optionObjects = [
           { text: q.option_a, correct: Number(q.correct_option) === 0 },
           { text: q.option_b, correct: Number(q.correct_option) === 1 },
@@ -441,7 +537,7 @@ app.post("/api/attempts", requireUser, async (req, res) => {
       res.status(201).json({
         attemptId,
         subject,
-        total: source.length,
+        total: selectedQuestions.length,
         questions: questions.map(publicAttemptQuestion)
       });
     } catch (error) {
