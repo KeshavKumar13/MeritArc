@@ -41,3 +41,12 @@
   -webkit-text-decoration-line: none !important;
   -webkit-text-decoration-style: none !important;
 }
+
+/* Quick Practice sidebar: make each subject a clear, touch-friendly action. */
+.exam-quick-practice .quick-practice-links{display:grid;gap:10px;margin-top:14px}
+.exam-quick-practice .quick-practice-link{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#f8fbff;color:var(--navy);text-decoration:none!important;line-height:1.35;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.exam-quick-practice .quick-practice-link:hover{background:#eef6ff;border-color:#9fc8fa;transform:translateY(-1px)}
+.exam-quick-practice .quick-practice-link span{display:block;min-width:0;font-size:13px;font-weight:750;overflow-wrap:anywhere}
+.exam-quick-practice .quick-practice-link small{flex:0 0 auto;color:var(--blue);font-size:11px;font-weight:750;white-space:nowrap}
+.exam-quick-practice .quick-practice-link:focus-visible{outline:3px solid rgba(20,117,238,.22);outline-offset:2px}
+@media(max-width:950px) and (min-width:801px){.exam-layout{grid-template-columns:1fr}.exam-sidebar{position:static}}

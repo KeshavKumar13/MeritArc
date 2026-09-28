@@ -40,7 +40,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=20260928-1835">
+  <link rel="stylesheet" href="css/style.css?v=20260928-1605">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <script src="/js/site.js"></script><script>function closeSiteNav(){document.getElementById("siteNav")?.classList.remove("open");document.getElementById("mobileMenuButton")?.setAttribute("aria-expanded","false");}</script><style id="meritarc-home-card-link-reset">
 .home-library-section a.home-library-card,.home-library-section a.home-library-card *{text-decoration:none!important;text-decoration-line:none!important;text-decoration-color:transparent!important;text-decoration-style:none!important;text-decoration-thickness:0!important;background-image:none!important;}
@@ -73,7 +73,7 @@
         </div>
         <div class="search-hint">Try Windows, Linux, VMware, Quantitative Aptitude, English, Data Structures or DBMS.</div>
         <div class="stats">
-          <div><strong id="questionBankStat">170+</strong><small>Practice Questions</small></div>
+          <div><strong id="questionBankStat">2,119+</strong><small>Practice Questions</small></div>
           <div><strong id="subjectCountStat">17</strong><small>Practice Subjects</small></div>
           <div><strong>25</strong><small>Exam Guides</small></div>
           <div><strong>Fresh</strong><small>Questions Every Attempt</small></div>
@@ -124,108 +124,58 @@
     <section class="home-readable-content" aria-labelledby="aboutMeritArcHeading">
       <div class="home-readable-intro">
         <h2 id="aboutMeritArcHeading">A practical place to learn, practice and improve</h2>
-        <p>MeritArc brings subject practice and exam preparation into one simple workspace. You can start with a focused technical subject such as Windows, Linux, VMware or Azure, build core computer science skills, or move into preparation for competitive examinations. The goal is to make each practice session useful: choose a topic, attempt a fresh set of questions, review the explanations and use your result to decide what to study next.</p>
+        <p>MeritArc brings subject practice and exam preparation into one simple workspace. The current question bank contains <strong>2,119+ original practice questions across 17 subjects</strong>, covering IT infrastructure, computer science, programming, aptitude and competitive exam preparation. Choose a subject, configure the number of questions, time limit and difficulty, then review explanations and results after each session.</p>
       </div>
       <div class="home-readable-grid">
-        <article><h3>Practice by subject</h3><p>Subject based practice is useful when you already know where you need improvement. MeritArc currently organizes technical infrastructure, computer science and aptitude subjects separately so you can work on one skill at a time instead of opening a large mixed question bank.</p></article>
-        <article><h3>Explore exam preparation</h3><p>The Exam Library brings banking, SSC, teaching, railway, government and defence preparation pages together with the existing technical and academic practice areas. Each exam page explains the main preparation areas and links to the relevant MeritArc practice subjects.</p></article>
-        <article><h3>Use practice as a feedback loop</h3><p>A useful practice routine is more than collecting scores. After a session, review the questions you missed, identify whether the problem was knowledge, calculation, interpretation or time management, and then return to that topic. Repeating this cycle makes your preparation more deliberate.</p></article>
+        <article><h3>Practice by subject</h3><p>MeritArc currently organizes <strong>17 practice subjects</strong> across technical infrastructure, computer science, programming and aptitude. Work on one skill at a time instead of opening a large mixed question bank.</p></article>
+        <article><h3>Explore exam preparation</h3><p>The Exam Library currently includes <strong>25 exam guides</strong> across banking, SSC, teaching, railways, government and defence preparation. Each guide connects the preparation areas with relevant MeritArc practice subjects.</p></article>
+        <article><h3>Configure every assessment</h3><p>Before starting, choose <strong>5, 10, 20, 30 or 50 questions</strong>, select a time limit or no timer, and choose Mixed or a specific difficulty when available. The assessment then builds the question set around those preferences.</p></article>
       </div>
       <div class="home-readable-note"><h3>What you can find on MeritArc</h3><p>MeritArc includes original practice questions, explanations, assessment history for signed in users and preparation guidance for a growing set of exams. Exam specific information is presented as a study aid, while official examination authorities remain the source for current eligibility rules, dates, vacancies, syllabi and selection requirements. Previous year questions are kept distinct from original practice material and are only described as previous year material when they have been verified and identified appropriately.</p></div>
     </section>
   </section>
 
   <section id="quizView" class="hidden">
-    <div id="assessmentSetupPanel" class="assessment-setup-panel hidden">
-      <div class="card assessment-setup-card-inline">
-        <div class="assessment-setup-header">
-          <span class="setup-kicker">ASSESSMENT SETUP</span>
-          <h2 id="assessmentSetupTitle">Prepare your practice session</h2>
-          <p class="muted">Set your preferences before the assessment begins. MeritArc will build the question set from your selections.</p>
+    <div class="toolbar quiz-toolbar">
+      <button class="secondary" onclick="MeritArc.showAssessments()">← Practice Areas</button>
+      <strong id="quizTitle"></strong>
+      <div class="assessment-timer">
+        <label for="assessmentTimer">Time limit</label>
+        <select id="assessmentTimer" aria-label="Assessment time limit">
+          <option value="0">No timer</option>
+          <option value="300">5 minutes</option>
+          <option value="600">10 minutes</option>
+          <option value="900">15 minutes</option>
+          <option value="1200">20 minutes</option>
+          <option value="1800">30 minutes</option>
+        </select>
+        <span id="timerDisplay" class="timer-display" aria-live="polite">No timer</span>
+      </div>
+      <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <span id="questionCount"></span>
+        <span id="answeredCount" class="tag"></span>
+      </div>
+      <div class="progress"><div id="progressBar" style="width:10%"></div></div>
+      <div id="questionText" class="question"></div>
+      <div id="options"></div>
+      <div id="feedback" class="hidden"></div>
+      <div class="question-actions"><button class="report-question" type="button" onclick="MeritArc.reportQuestion()">Report this question</button></div>
+
+      <div class="toolbar">
+        <button class="secondary" onclick="MeritArc.previousQuestion()">Previous</button>
+        <div>
+          <button id="checkButton" class="secondary" onclick="MeritArc.checkAnswer()">Check Answer</button>
+          <button class="primary" onclick="MeritArc.nextQuestion()">Next →</button>
         </div>
-
-        <form id="assessmentSetupForm" class="assessment-setup-form">
-          <div class="assessment-setup-grid">
-            <label>Number of questions
-              <select id="assessmentQuestionCount" required>
-                <option value="5">5 questions</option>
-                <option value="10" selected>10 questions</option>
-                <option value="20">20 questions</option>
-                <option value="30">30 questions</option>
-                <option value="50">50 questions</option>
-              </select>
-              <span id="assessmentQuestionHint" class="setup-hint">Choose how many questions you want in this assessment.</span>
-            </label>
-
-            <label>Time limit
-              <select id="assessmentTimeLimit" required>
-                <option value="0">No timer</option>
-                <option value="300">5 minutes</option>
-                <option value="600" selected>10 minutes</option>
-                <option value="900">15 minutes</option>
-                <option value="1200">20 minutes</option>
-                <option value="1800">30 minutes</option>
-                <option value="3600">60 minutes</option>
-              </select>
-              <span class="setup-hint">The timer starts only when you click Start Assessment.</span>
-            </label>
-
-            <label>Difficulty
-              <select id="assessmentDifficulty" required>
-                <option value="Mixed" selected>Mixed · recommended</option>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-              <span id="assessmentDifficultyHint" class="setup-hint">Mixed balances Easy, Medium and Hard questions when available.</span>
-            </label>
-          </div>
-
-          <div class="assessment-setup-summary" id="assessmentSetupSummary"></div>
-          <div id="assessmentSetupMessage" class="auth-message hidden"></div>
-
-          <div class="assessment-setup-actions">
-            <button class="secondary" type="button" onclick="MeritArc.showAssessments()">Cancel</button>
-            <button class="primary" type="submit">Start Assessment →</button>
-          </div>
-        </form>
       </div>
     </div>
 
-    <div id="activeAssessmentView" class="hidden">
-      <div class="toolbar quiz-toolbar">
-        <button class="secondary" onclick="MeritArc.showAssessments()">← Practice Areas</button>
-        <strong id="quizTitle"></strong>
-        <div class="assessment-timer">
-          <span class="muted">Time</span>
-          <span id="timerDisplay" class="timer-display" aria-live="polite">No timer</span>
-        </div>
-        <button class="danger" onclick="MeritArc.submitAssessment()">Submit</button>
-      </div>
-
-      <div class="card">
-        <div class="toolbar">
-          <span id="questionCount"></span>
-          <span id="answeredCount" class="tag"></span>
-        </div>
-        <div class="progress"><div id="progressBar" style="width:10%"></div></div>
-        <div id="questionText" class="question"></div>
-        <div id="options"></div>
-        <div id="feedback" class="hidden"></div>
-        <div class="question-actions"><button class="report-question" type="button" onclick="MeritArc.reportQuestion()">Report this question</button></div>
-
-        <div class="toolbar">
-          <button class="secondary" onclick="MeritArc.previousQuestion()">Previous</button>
-          <div>
-            <button id="checkButton" class="secondary" onclick="MeritArc.checkAnswer()">Check Answer</button>
-            <button class="primary" onclick="MeritArc.nextQuestion()">Next →</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="muted" style="margin-top:12px">
-        Your assessment is built from the selected question count, difficulty and available topics. Retaking gives a fresh set.
-      </div>
+    <div class="muted" style="margin-top:12px">
+      10 questions are randomly selected from the subject bank. Retaking gives a new set.
     </div>
   </section>
 
