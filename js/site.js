@@ -1,22 +1,8 @@
 (function(){
-  function ensureLoader(){
-    if(document.getElementById('siteLoadingOverlay')) return document.getElementById('siteLoadingOverlay');
-    const el=document.createElement('div');el.id='siteLoadingOverlay';el.className='site-loading-overlay hidden';el.innerHTML='<div class="site-loading-card"><div class="site-spinner"></div><div id="siteLoadingText">Loading…</div></div>';
-    document.body.insertBefore(el,document.body.firstChild);return el;
-  }
-  window.showSiteLoading=function(message){const el=ensureLoader();el.querySelector('#siteLoadingText').textContent=message||'Loading…';el.classList.remove('hidden');};
-  window.hideSiteLoading=function(){const el=document.getElementById('siteLoadingOverlay');if(el) el.classList.add('hidden');};
-  document.addEventListener('DOMContentLoaded',function(){
-    ensureLoader();hideSiteLoading();
-    document.addEventListener('click',function(e){
-      const target=e.target.closest('a[href], .nav button, .exam-card, .quick-practice-card');
-      if(!target) return;
-      const href=target.getAttribute('href')||'';
-      if(href.startsWith('mailto:')||href.startsWith('javascript:')) return;
-      if(target.closest('#siteLoadingOverlay')) return;
-      if(target.classList.contains('secondary') && target.id==='clearLibrarySearch') return;
-      showSiteLoading('Loading…');
-    },true);
-    window.addEventListener('pageshow',hideSiteLoading);
-  });
+  let loadingTimer=null;
+  function ensureLoader(){if(document.getElementById('siteLoadingOverlay'))return document.getElementById('siteLoadingOverlay');const el=document.createElement('div');el.id='siteLoadingOverlay';el.className='site-loading-overlay hidden';el.innerHTML='<div class="site-loading-card"><div class="site-spinner"></div><div id="siteLoadingText">Loading…</div></div>';document.body.insertBefore(el,document.body.firstChild);return el;}
+  window.showSiteLoading=function(message){const el=ensureLoader();if(loadingTimer)clearTimeout(loadingTimer);el.querySelector('#siteLoadingText').textContent=message||'Loading…';el.classList.add('hidden');loadingTimer=setTimeout(()=>{el.classList.remove('hidden');loadingTimer=null;},180);};
+  window.hideSiteLoading=function(){if(loadingTimer){clearTimeout(loadingTimer);loadingTimer=null;}const el=document.getElementById('siteLoadingOverlay');if(el)el.classList.add('hidden');};
+  function normalizeVisibleUnderscores(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];let node;while(node=walker.nextNode()){if(node.parentElement&&!['SCRIPT','STYLE','TEXTAREA','INPUT'].includes(node.parentElement.tagName)&&node.nodeValue.includes('_'))nodes.push(node);}nodes.forEach(n=>n.nodeValue=n.nodeValue.replaceAll('_',' '));}
+  document.addEventListener('DOMContentLoaded',function(){ensureLoader();hideSiteLoading();normalizeVisibleUnderscores();document.addEventListener('click',function(e){const target=e.target.closest('a[href], .nav button, .exam-card, .quick-practice-card, .quick-practice-link');if(!target)return;const href=target.getAttribute('href')||'';if(href.startsWith('mailto:')||href.startsWith('javascript:'))return;if(target.closest('#siteLoadingOverlay'))return;if(target.id==='clearLibrarySearch')return;if(target.getAttribute('target')==='_blank')return;showSiteLoading('Loading…');},true);window.addEventListener('pageshow',hideSiteLoading);});
 })();

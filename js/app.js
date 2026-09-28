@@ -171,7 +171,7 @@
     const q = state.questions[state.index];
     const selected = state.answers[state.index];
 
-    $("quizTitle").textContent = state.subject;
+    $("quizTitle").textContent = String(state.subject).replaceAll("_", " ");
     $("questionCount").textContent =
       `Question ${state.index + 1} of ${state.questions.length}`;
     $("answeredCount").textContent =
@@ -573,7 +573,7 @@
                 <tbody>
                   ${completed.map(item => `
                     <tr>
-                      <td>${escapeHtml(item.subject)}</td>
+                      <td>${escapeHtml(String(item.subject).replaceAll("_", " "))}</td>
                       <td>${item.score === null ? "—" : `${item.score}/${item.total}`}</td>
                       <td>${item.percentage === null ? "—" : `${item.percentage}%`}</td>
                       <td>${escapeHtml(prettyStatus(item.status))}</td>
@@ -616,7 +616,7 @@
               <tbody>
                 ${history.map(item => `
                   <tr>
-                    <td>${escapeHtml(item.subject)}</td>
+                    <td>${escapeHtml(String(item.subject).replaceAll("_", " "))}</td>
                     <td>${item.score}/${item.total}</td>
                     <td>${item.percentage}%</td>
                     <td>${escapeHtml(item.date)}</td>
@@ -657,8 +657,12 @@
       return;
     }
 
+    const prefixMatch = (text, q) => {
+      const normalized = String(text).toLowerCase().replaceAll('_', ' ');
+      return normalized.startsWith(q) || normalized.split(/\s+/).some(token => token.startsWith(q));
+    };
     const matches = Object.entries(DATA)
-      .filter(([name, item]) => `${name} ${item.desc}`.toLowerCase().includes(query))
+      .filter(([name, item]) => prefixMatch(name, query) || prefixMatch(item.group || '', query))
       .slice(0, 6);
 
     if (!matches.length) {
@@ -674,7 +678,7 @@
       <button class="search-suggestion" type="button" data-suggestion="${escapeHtml(name)}">
         <span class="search-suggestion-icon">${escapeHtml(item.icon)}</span>
         <span>
-          <strong>${escapeHtml(name)}</strong><br>
+          <strong>${escapeHtml(String(name).replaceAll("_", " "))}</strong><br>
           <small style="color:#6c7a90">${escapeHtml(item.desc)}</small>
         </span>
       </button>

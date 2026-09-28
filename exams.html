@@ -62,11 +62,12 @@ const dropdown=document.createElement('div'); dropdown.id='librarySearchSuggesti
 const items=[...document.querySelectorAll('.library-item')].map(item=>({item,text:(item.dataset.search||item.textContent||'').replaceAll('_',' ').toLowerCase(),title:item.querySelector('h3,strong')?.textContent?.trim()||'Practice area',href:item.getAttribute('href')||'',group:item.closest('.library-group')?.querySelector(':scope > h3')?.textContent?.trim()||'Library'}));
 function updateSearch(){
  const q=search.value.trim().toLowerCase().replaceAll('_',' ');
+ const prefixMatch=(text,query)=>{if(!query)return true;const normalized=String(text).toLowerCase().replaceAll('_',' ');return normalized.startsWith(query)||normalized.split(/\s+/).some(token=>token.startsWith(query));};
  let visible=0;
- document.querySelectorAll('.library-item').forEach(item=>{const hay=(item.dataset.search||item.textContent||'').toLowerCase().replaceAll('_',' ');const show=!q||hay.includes(q);item.classList.toggle('library-hidden',!show);if(show) visible++;});
+ document.querySelectorAll('.library-item').forEach(item=>{const title=item.querySelector('h3,strong')?.textContent||'';const group=item.closest('.library-group')?.querySelector(':scope > h3')?.textContent||'';const show=!q||prefixMatch(title,q)||prefixMatch(group,q);item.classList.toggle('library-hidden',!show);if(show) visible++;});
  document.querySelectorAll('.library-group').forEach(group=>{const any=[...group.querySelectorAll('.library-item')].some(x=>!x.classList.contains('library-hidden'));group.classList.toggle('library-hidden',!any);});
  status.textContent=q?`${visible} matching result${visible===1?'':'s'}`:'Showing all library content';
- const matches=q?items.filter(x=>x.text.includes(q)).slice(0,8):[];
+ const matches=q?items.filter(x=>prefixMatch(x.title,q)||prefixMatch(x.group,q)).slice(0,8):[];
  dropdown.innerHTML=matches.map(x=>`<a href="${x.href}" class="library-suggestion"><strong>${x.title}</strong><span>${x.group}</span></a>`).join('');
  dropdown.classList.toggle('hidden',!matches.length);
 }
