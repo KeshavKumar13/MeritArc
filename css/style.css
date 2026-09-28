@@ -308,20 +308,34 @@ html.assessment-boot #homeView{display:none!important}html.assessment-boot .asse
   }
 }
 
-/* Inline assessment setup: appears inside the assessment area before questions */
-.assessment-setup-panel{max-width:900px;margin:0 auto;padding:8px 0 24px}
-.assessment-setup-card-inline{padding:30px;max-width:900px;margin:0 auto}
-.assessment-setup-header{padding-right:0;margin-bottom:24px}
-.assessment-setup-header h2{margin:6px 0 8px;color:var(--navy)}
-.setup-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;color:#1475ee}
-.assessment-setup-form{display:grid;gap:20px}
+/* Assessment setup: inline pre-start experience */
+.assessment-setup-panel{display:block;margin:8px 0 28px}
+.assessment-setup-card-inline{max-width:900px;margin:0 auto;padding:28px 30px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.assessment-setup-header{margin-bottom:22px}
+.setup-kicker{display:inline-flex;padding:6px 9px;border-radius:8px;background:#eaf4ff;color:#1466c2;font-size:11px;font-weight:900;letter-spacing:.08em}
+.assessment-setup-header h2{margin:10px 0 7px;color:var(--navy);font-size:28px}
+.assessment-setup-header p{margin:0;line-height:1.6}
 .assessment-setup-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.assessment-setup-form label{display:grid;gap:7px;font-weight:700;color:var(--navy)}
-.assessment-setup-form select{width:100%;padding:12px 13px;border:1px solid #cfd7e3;border-radius:10px;background:#fff;color:var(--navy);font:inherit}
-.assessment-setup-form select:focus{outline:2px solid rgba(20,117,238,.18);border-color:#1475ee}
-.setup-hint{font-size:12px;font-weight:400;color:var(--muted);line-height:1.45}
-.assessment-setup-summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 16px;background:#f4f8fd;border:1px solid #dce9f7;border-radius:12px;color:var(--navy)}
-.assessment-setup-summary strong{font-size:14px}.assessment-setup-summary span{font-size:13px;color:var(--muted);text-align:right}
-.assessment-setup-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:2px}.assessment-setup-actions button{min-width:130px}
-@media(max-width:760px){.assessment-setup-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){.assessment-setup-panel{padding:0 0 18px}.assessment-setup-card-inline{padding:22px}.assessment-setup-grid{grid-template-columns:1fr}.assessment-setup-summary{align-items:flex-start;flex-direction:column}.assessment-setup-summary span{text-align:left}.assessment-setup-actions{display:grid;grid-template-columns:1fr 1fr}.assessment-setup-actions button{width:100%;min-width:0}}
+.assessment-setup-grid label{display:flex;flex-direction:column;gap:7px;font-weight:800;color:var(--navy);font-size:14px}
+.assessment-setup-grid select{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--navy);font:inherit;font-weight:700}
+.setup-hint{font-size:12px;line-height:1.45;color:var(--muted);font-weight:500}
+.assessment-setup-summary{margin-top:18px;padding:13px 15px;border-radius:11px;background:#f5f9fe;border:1px solid #dbe9f8;color:var(--navy);display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.assessment-setup-summary strong{font-weight:900}.assessment-setup-summary span{color:var(--muted)}
+.assessment-setup-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.assessment-setup-actions button{min-width:140px}
+.assessment-setup-panel.hidden,.active-assessment-view.hidden{display:none!important}
+@media(max-width:760px){.assessment-setup-card-inline{padding:22px 20px}.assessment-setup-grid{grid-template-columns:1fr}.assessment-setup-actions{justify-content:stretch}.assessment-setup-actions button{flex:1}}
+
+/* Page loading: visible during real page load, then removed on window load */
+.site-loading-overlay{position:fixed;inset:0;background:#f6f9fd;display:grid;place-items:center;z-index:9999;opacity:1;visibility:visible;transition:opacity .18s ease,visibility .18s ease}
+.site-loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.site-loading-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;box-shadow:0 14px 40px rgba(15,39,71,.14);color:var(--navy);font-weight:800}
+.site-spinner{width:20px;height:20px;border:3px solid #dcecff;border-top-color:var(--blue);border-radius:50%;animation:meritArcSpin .75s linear infinite}
+@keyframes meritArcSpin{to{transform:rotate(360deg)}}
+
+/* Quick Practice: slightly bolder and cleaner */
+.quick-practice-links{display:grid;gap:10px;margin-top:14px}
+.quick-practice-link{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;background:#f7faff;border:1px solid var(--line);border-radius:11px;color:var(--navy)!important;font-weight:800!important;line-height:1.35;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.quick-practice-link span{font-weight:850!important}
+.quick-practice-link small{color:#176bc4;font-size:11px;font-weight:800;white-space:nowrap}
+.quick-practice-link:hover{background:#edf6ff;border-color:#9fc8fa;transform:translateY(-1px)}
